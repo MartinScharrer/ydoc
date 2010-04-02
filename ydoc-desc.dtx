@@ -123,6 +123,7 @@
 % \section{Usage}
 %
 % \subsection{Description Macros and Environments}
+%
 % \DescribeMacro\DescribeMacro<\textbackslash macro><macro arguments>
 % The \cs{DescribeMacro} is used to describe macros included their arguments.
 % It takes the to be described \meta{\textbackslash macro} as first argument (can also be enclosed in |{ }|).
@@ -131,6 +132,9 @@
 % Any following non-argument token (normal text, macro, etc.)\ will make \cs{DescribeMacro} stop collecting arguments.
 % For example, if a \TeX\ group should be started using |{ }| direct after \cs{DescribeMacro} a |\relax| (or a similar macro) should be inserted
 % between them, otherwise the group will be taken as mandatory argument of the described macro.
+%
+% Multiple \cs{DescribeMacro} in a row will automatically stacked inside one framed box. If this is not wanted simply separate them with |\relax|
+% or any other macro or token. See also the \env{DescribeMacros} environment below.
 %
 % \subsubsection*{Examples:}
 % \par\noindent |\DescribeMacro\mymacro*[<optional>]{<meta text>}| will result in\\
@@ -221,7 +225,8 @@
 %     \Macro\pkg{<package name>} & \Macro\cls{<class name>}       \\
 %   \endtabular
 % \end{DescribeMacros}
-% This macros format macros, environments, packages and classes, respectively.
+% This macros can be used to format names of macros, environments, packages and classes, respectively.
+% At the moment they simply use |\texttt|.
 %
 % \StopEventually{}
 %
@@ -400,9 +405,14 @@
   \PackageInfo{ydoc-desc}{Redefining \string\DescribeMacro}{}%
 }
 %    \end{macrocode}
+% A \cs{DescribeMacro} places itself in a \env{DescribeMacros} environment.
+% Multiple \cs{DescribeMacro} macros will stack themselves inside this environment.
+% For this to work \cs{DescribeMacros} is locally defined to |\egroup| to close the
+% |\hbox| from the previous \cs{DescribeMacro}.
 %    \begin{macrocode}
 \def\DescribeMacro{%
   \DescribeMacros
+  \let\DescribeMacros\egroup
   \def\after@Macro@args{\endDescribeMacros}%
   \begingroup\makeatletter
   \Describe@Macro
@@ -449,27 +459,6 @@
 % \begin{macro}{\AlsoMacro@}
 %    \begin{macrocode}
 \def\AlsoMacro@#1{%
-  \endgroup
-  \PrintMacroName{#1}%
-  \read@Macro@arg
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\Env@Macro}
-%    \begin{macrocode}
-\def\Env@Macro{%
-  \begingroup
-  \let\end@Macro@args\endgroup
-  \begingroup\makeatletter
-  \Env@Macro@
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\Env@Macro@}
-%    \begin{macrocode}
-\def\Env@Macro@#1{%
   \endgroup
   \PrintMacroName{#1}%
   \read@Macro@arg
@@ -655,30 +644,31 @@
    \ifx\@let@token\bgroup1\else
    \ifx\@let@token[\empty2\else
    \ifx\@let@token(\empty3\else
-  \ifx\@let@token<\empty4\else
-  \ifx\@let@token*\empty5\else
-  \ifx\@let@token'\empty6\else
-  \ifx\@let@token!\empty7\else
-  \ifx\@let@token\@sptoken8\else
-  \ifx\@let@token\space9\else
-  \ifx\@let@token\ignorespaces10\else
-  \ifx\@let@token\AlsoMacro11\fi
-  \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
-\relax
-    \unskip
-    \expandafter\end@Macro@args %0
-\or\expandafter\read@Macro@marg%1
-\or\expandafter\read@Macro@oarg%2
-\or\expandafter\read@Macro@parg%3
-\or\expandafter\read@Macro@angle%4
-\or\expandafter\read@Macro@sarg%5
-\or\expandafter\read@Macro@verb%6
-\or\expandafter\read@Macro@cmds%7
-\or\expandafter\read@Macro@space%8
-\or\expandafter\expandafter\expandafter\read@Macro@arg%9
-\or\expandafter\read@Macro@ignorespaces%10
-\else%11-
-\fi
+   \ifx\@let@token<\empty4\else
+   \ifx\@let@token*\empty5\else
+   \ifx\@let@token'\empty6\else
+   \ifx\@let@token!\empty7\else
+   \ifx\@let@token\@sptoken8\else
+   \ifx\@let@token\space9\else
+   \ifx\@let@token\ignorespaces10\else
+   \ifx\@let@token\AlsoMacro11\else
+   \ifx\@let@token\DescribeMacro12\fi
+   \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+  \relax
+   \unskip
+   \expandafter\end@Macro@args%0
+   \or\expandafter\read@Macro@marg%1
+   \or\expandafter\read@Macro@oarg%2
+   \or\expandafter\read@Macro@parg%3
+   \or\expandafter\read@Macro@angle%4
+   \or\expandafter\read@Macro@sarg%5
+   \or\expandafter\read@Macro@verb%6
+   \or\expandafter\read@Macro@cmds%7
+   \or\expandafter\read@Macro@space%8
+   \or\expandafter\expandafter\expandafter\read@Macro@arg%9
+   \or\expandafter\read@Macro@ignorespaces%10
+  \else%11-
+  \fi
 }
 %    \end{macrocode}
 % \end{macro}
@@ -686,8 +676,6 @@
 % \begin{macro}{\DescribeMacros}
 %    \begin{macrocode}
 \def\DescribeMacros{%
-  \par\bigskip
-  \noindent\hspace*{\MacroIndent}%
   \begingroup
   \let\Macro\@Macro
   \parindent=0pt\relax
@@ -709,6 +697,8 @@
 % \begin{macro}{\PrintMacros}
 %    \begin{macrocode}
 \def\PrintMacros{%
+  \par\bigskip
+  \noindent\hspace*{\MacroIndent}%
   \ifdim\wd\@tempboxa>\linewidth
     \makebox[\linewidth][c]{\fbox{\hspace*{\MacroInternalIndent}\usebox{\@tempboxa}\hspace*{\MacroInternalIndent}}}
   \else
@@ -744,19 +734,9 @@
 %    \end{macrocode}
 %    \begin{macrocode}
 \newcommand*\DescribeEnv[2][]{%
-  \ifx\Macro\Env@Macro\else
-    \par\bigskip\noindent
-    \hspace*{\MacroIndent}%
-  \fi
   \begingroup
-  \let\Macro\Env@Macro
-  \def\@EnvName{#2}%
-  \def\\{%
-    \strut\egroup
-    \hbox\bgroup
-    \hspace*{\MacroInternalIndent}%
-    \ignorespaces
-  }%
+  \def\DescribeEnv@name{#2}%
+  \let\\\DescribeEnv@newline
   \ifx\@currenvir\DescribeEnv@string
     \def\after@Macro@args{%
       \envcodestyle
@@ -791,6 +771,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\DescribeEnv@newline}
+% Generates a new |\hbox|.
+%    \begin{macrocode}
+\def\DescribeEnv@newline{%
+  \strut\egroup
+  \hbox\bgroup
+  \hspace*{\MacroInternalIndent}%
+  \ignorespaces
+}%
+%    \end{macrocode}
+% \end{macro}
+%
 %    \begin{macrocode}
 \newbox\mybox
 %    \end{macrocode}
@@ -802,12 +794,11 @@
   \hbox{%
     \texttt{\strut\char92end%
     \string{%
-    {\macrodescstyle\@EnvName}%
+    {\macrodescstyle\DescribeEnv@name}%
     \string}%
     }%
   }%
   \egroup % closes outer \vbox\bgroup
-  \unskip
   \PrintEnv
   \endgroup
 }
@@ -829,6 +820,8 @@
 % \begin{macro}{\PrintEnv}
 %    \begin{macrocode}
 \def\PrintEnv{%
+  \par\bigskip
+  \hspace*{\MacroIndent}%
   \fbox{\hspace*{\MacroInternalIndent}\usebox{\@tempboxa}\hspace*{\MacroInternalIndent}}%
   \par\medskip
 }

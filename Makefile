@@ -3,13 +3,13 @@
 PACKAGE     = ydoc-desc
 PACKAGE_STY = ${PACKAGE}.sty
 PACKAGE_DTX = ${PACKAGE}.dtx
-PACKAGE_SCR = ${PACKAGE}.pl
+PACKAGE_SCR =
 PACKAGE_DOC = $(PACKAGE_DTX:.dtx=.pdf)
-PACKAGE_SRC = ${PACKAGE_DTX} ${PACKAGE}.ins Makefile example_chap1.tex example_main.tex group_example.tex
+PACKAGE_SRC = ${PACKAGE_DTX} ${PACKAGE}.ins Makefile
 PACKFILES   = ${PACKAGE_SRC} ${PACKAGE_DOC} README
 
 TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.fdb_latexmk *.tmp *.cpr
-INSGENERATED = ${PACKAGE_STY} svnkw.sty svn-multi.pl
+INSGENERATED = ${PACKAGE_STY}
 GENERATED = ${INSGENERATED} ${PACKAGE}.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
 ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
 TDSZIPFILE = ${PACKAGE}-${ZIPVERSION}.tds.zip

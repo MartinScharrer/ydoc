@@ -38,6 +38,7 @@
 \documentclass{ltxdoc}
 \RequirePackage{ydoc-desc}[\filedate]
 
+\usepackage{lmodern}
 \usepackage{listings}
 \usepackage{booktabs}
 
@@ -180,7 +181,7 @@
 %   \MacroArgs<body content>\relax\space |\\|\\
 %   \MacroArgs<more body content>
 % \end{DescribeEnv}
-% \vspace{-\bigskipamount}
+% \vspace{-\beforedescskip}
 % \DescribeMacro\DescribeEnv[<body content>]{<name>}<arguments>
 % The \env{DescribeEnv} can be used to describe environments in the same way the \cs{DescribeMacro} macro describes macros.
 % It also exists in macro form as \cs{DescribeEnv}. Possible \meta{arguments} are shown in Table~\ref{tab:macroargs}.
@@ -236,7 +237,6 @@
 %<*package>
 %\fi
 %    \begin{macrocode}
-\RequirePackage{lmodern}
 \RequirePackage{xcolor}
 \definecolor{macrodesc}{rgb}{0.0,0.0,0.8}
 \definecolor{macroimpl}{rgb}{0.0,0.0,0.4}
@@ -387,9 +387,24 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\MacroIndent}
+% \begin{macro}{\descindent}
 %    \begin{macrocode}
-\edef\MacroIndent{-\the\parindent}
+\newdimen\descindent
+\descindent=-\parindent
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\beforedescskip}
+%    \begin{macrocode}
+\newdimen\beforedescskip
+\beforedescskip=\bigskipamount
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\afterdescskip}
+%    \begin{macrocode}
+\newdimen\afterdescskip
+\afterdescskip=\medskipamount
 %    \end{macrocode}
 % \end{macro}
 %
@@ -697,14 +712,14 @@
 % \begin{macro}{\PrintMacros}
 %    \begin{macrocode}
 \def\PrintMacros{%
-  \par\bigskip
-  \noindent\hspace*{\MacroIndent}%
+  \par\vspace\beforedescskip
+  \noindent\hspace*{\descindent}%
   \ifdim\wd\@tempboxa>\linewidth
     \makebox[\linewidth][c]{\fbox{\hspace*{\MacroInternalIndent}\usebox{\@tempboxa}\hspace*{\MacroInternalIndent}}}
   \else
     \fbox{\hspace*{\MacroInternalIndent}\usebox{\@tempboxa}\hspace*{\MacroInternalIndent}}%
   \fi
-  \par\medskip
+  \par\vspace\afterdescskip
 }
 %    \end{macrocode}
 % \end{macro}
@@ -820,10 +835,10 @@
 % \begin{macro}{\PrintEnv}
 %    \begin{macrocode}
 \def\PrintEnv{%
-  \par\bigskip
-  \noindent\hspace*{\MacroIndent}%
+  \par\vspace\beforedescskip
+  \noindent\hspace*{\descindent}%
   \fbox{\hspace*{\MacroInternalIndent}\usebox{\@tempboxa}\hspace*{\MacroInternalIndent}}%
-  \par\medskip
+  \par\vspace\afterdescskip
 }
 %    \end{macrocode}
 % \end{macro}

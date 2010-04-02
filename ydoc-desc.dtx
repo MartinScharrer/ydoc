@@ -219,6 +219,9 @@
 % \end{tabular}
 % \end{table}
 %
+% \DescribeMacro\DescribeLength<\textbackslash name>{<default value>}
+% This macro can be used to describe \LaTeX\ lengths also known as dimensions. Multiple \cs{DescribeLength} macros in a row will automatically be grouped.
+%
 % \subsection{Format Macros}
 % \begin{DescribeMacros}
 %   \tabular{@{}ll@{}}
@@ -228,6 +231,14 @@
 % \end{DescribeMacros}
 % This macros can be used to format names of macros, environments, packages and classes, respectively.
 % At the moment they simply use |\texttt|.
+%
+% \subsection{Settings}
+% The following macro and dimensions can be redefined by the user to adjust the layout of the package documentation.
+%
+% \DescribeLength\descindent    {-20pt}
+% \DescribeLength\beforedescskip{~12pt plus 4pt minus 4pt}
+% \DescribeLength\afterdescskip {~~6pt plus 2pt minus 2pt}
+% These length define the indention and vertical distances before and after a \cs{Describe\ldots} macro or environment, respectively.
 %
 % \StopEventually{}
 %
@@ -494,11 +505,17 @@
 % \begin{macro}{\PrintMacroName}
 %    \begin{macrocode}
 \def\PrintMacroName#1{%
-  {\macrodescstyle
+  {\macrodescstyle\strut
    \texttt{\char92}%
    \escapechar\m@ne
    \string#1}%
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintLengthName}
+%    \begin{macrocode}
+\let\PrintLengthName\PrintMacroName
 %    \end{macrocode}
 % \end{macro}
 %
@@ -724,6 +741,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\PrintLength}
+%    \begin{macrocode}
+\let\PrintLength\PrintMacros
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\DescribeEnv@content}
 %    \begin{macrocode}
 \def\DescribeEnv@content{%
@@ -847,6 +870,35 @@
 %    \begin{macrocode}
 \def\PrintEnv@{%
   \hbox{\hbox{\usebox{\@tempboxa}}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DescribeLength}
+%    \begin{macrocode}
+\newcommand*\DescribeLength{%
+  \begingroup
+  \let\DescribeLength\Describe@Length
+  \setbox\@tempboxa\hbox\bgroup
+    \tabular{@{}l@{\hspace{2em}}l@{}}%
+    \Describe@Length
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Describe@Length}
+%    \begin{macrocode}
+\newcommand*\Describe@Length[2]{%
+  \PrintLengthName{#1}&
+  (Default: {\macroargsstyle#2\unskip})%
+  \@ifnextchar\DescribeLength
+    {\\}%
+    {%
+      \endtabular
+      \egroup
+      \PrintLength
+      \endgroup
+    }%
 }
 %    \end{macrocode}
 % \end{macro}

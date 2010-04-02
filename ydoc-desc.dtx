@@ -31,9 +31,11 @@
 %<package>\ProvidesPackageSVN
 %<*driver|package>
     {$Id$}
+    [v0.1 ydoc: description macros]
 %</driver|package>
 %
 %<*driver>
+\DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass{ltxdoc}
 \RequirePackage{ydoc-desc}[\filedate]
@@ -112,7 +114,7 @@
 % This documentation uses the \pkg{ydoc-desc} package itself and therefore also acts as a live example.
 %
 % \subsection{Similar Packages}
-% Other documentation related classes and packages are \pkg{ltxdoc}, \pkg{doc}, \pkg{dox}, \pkg{xdoc}/\pkg{xdoc2}, \pkg{gmdoc}, \pkg{pauldoc}, \pkg{hypdoc},
+% Other documentation related classes and packages are \pkg{ltxdoc}, \pkg{doc}, \pkg{dox}, \pkg{xdoc}, \pkg{gmdoc}, \pkg{pauldoc}, \pkg{hypdoc},
 % \pkg{codedoc}, \pkg{nicetext} and \pkg{tkz-doc}.
 %
 % The \pkg{ydoc-desc} macro provides some alternative versions of macros also provided by \LaTeX\ standard documentation package \pkg{doc}.

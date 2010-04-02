@@ -1,6 +1,11 @@
 # $Id$
 
+
 doc: ydoc-desc.pdf
+
+view.pdf: ydoc-desc.pdf
+	cp $< $@
+	pdfreload --file $@
 
 package: ydoc-desc.sty
 

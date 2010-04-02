@@ -1,3 +1,4 @@
+# $Id$
 
 doc: ydoc-desc.pdf
 

@@ -3,8 +3,12 @@
 
 doc: ydoc-desc.pdf
 
-view.pdf: ydoc-desc.pdf
-	cp $< $@
+view: view.pdf
+
+view.pdf: ydoc-desc.dtx ydoc-desc.ins
+	pdflatex -interaction=nonstopmode ydoc-desc.ins
+	pdflatex -interaction=nonstopmode ydoc-desc.dtx
+	cp ydoc-desc.pdf $@
 	pdfreload --file $@
 
 package: ydoc-desc.sty

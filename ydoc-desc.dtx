@@ -22,7 +22,7 @@
 %
 % \iffalse
 %<*driver|package>
-\RequirePackage{svn-prov}[2010/04/01]
+\RequirePackage{svn-prov}[2010/04/03]
 %</driver|package>
 %<*driver>
 \ProvidesFileSVN[ydoc-desc.dtx]
@@ -58,8 +58,8 @@
 \RecordChanges
 \begin{document}
   \DocInput{ydoc-desc.dtx}
-  \PrintChanges
-  \PrintIndex
+  \yPrintChanges
+  \yPrintIndex
 \end{document}
 %</driver>
 % \fi
@@ -186,9 +186,13 @@
 % \vspace{-\beforedescskip}
 % \DescribeMacro\DescribeEnv[<body content>]{<name>}<arguments>
 % The \env{DescribeEnv} can be used to describe environments in the same way the \cs{DescribeMacro} macro describes macros.
-% It also exists in macro form as \cs{DescribeEnv}. Possible \meta{arguments} are shown in Table~\ref{tab:macroargs}.
-% Possible \meta{body content} can be placed (e.g.\ using \cs{MacroArgs}) between the begin and end of the environment description to explain the user what kind of material
-% should be placed inside it. The content is placed into a indented |\hbox{}| stacked inside a |\vbox{}| also holding the environment begin and end line.
+% Supported \meta{arguments} are shown in Table~\ref{tab:macroargs}.
+% Potential \meta{body content} can be placed between the begin and end of the environment description to explain the user what kind of material
+% should be placed inside it. 
+% The environment also exists in macro form as \cs{DescribeEnv}, which allows to provide small \meta{body content} as an optional argument.
+% Please note that for this optional argument a \cs{MacroArgs} is automatically inserted, but not for the \cs{DescribeEnv} environment content.
+%
+% The body content is placed into a indented |\hbox{}| stacked inside a |\vbox{}| also holding the environment begin and end line.
 % The |\\| macro is redefined to create a new indented |\hbox| acting as new code line.
 %
 % \begin{table}
@@ -299,7 +303,7 @@
 \definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
 \definecolor{optioncolor}{rgb}{0.3.0.2,0}
 \colorlet{optional}{black!65!white}
-\colorlet{metaoptional}{optional!65!meta}
+\colorlet{metaoptional}{optional!50!meta}
 %    \end{macrocode}
 %
 % \subsection{Text Formatting Macros}
@@ -427,12 +431,17 @@
 % \begin{macro}{\pkg}
 % \begin{macro}{\cls}
 % \begin{macro}{\env}
+% \begin{macro}{\cs}
+% \begin{macro}{\opt}
 %    \begin{macrocode}
 \def\pkg{\texttt}
 \def\cls{\texttt}
 \def\env{\texttt}
 \def\cs#1{\texttt{\textbackslash #1}}
+\def\opt{\textsf}
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
 % \end{macro}
 % \end{macro}
 % \end{macro}
@@ -768,7 +777,7 @@
 \def\Describe@Macro#1{%
   \endgroup
   \hbox\bgroup
-  \PrintMacroName{#1}%
+  \yPrintMacroName{#1}%
   \macroargsstyle
   \read@Macro@arg
 }
@@ -802,7 +811,7 @@
 }
 \def\AlsoMacro@#1{%
   \endgroup
-  \PrintMacroName{#1}%
+  \yPrintMacroName{#1}%
   \read@Macro@arg
 }
 %    \end{macrocode}
@@ -835,7 +844,7 @@
 %    \begin{macrocode}
 \def\endDescribeMacros{%
   \egroup
-  \PrintMacros
+  \yPrintMacros
   \endgroup
 }
 %    \end{macrocode}
@@ -858,14 +867,14 @@
 % \begin{macro}{\Describe@Length}
 %    \begin{macrocode}
 \newcommand*\Describe@Length[2]{%
-  \PrintLengthName{#1}&
+  \yPrintLengthName{#1}&
   (Default: {\macroargsstyle#2\unskip})%
   \@ifnextchar\DescribeLength
     {\\}%
     {%
       \endtabular
       \egroup
-      \PrintLength
+      \yPrintLength
       \endgroup
     }%
 }
@@ -907,12 +916,12 @@
   \else
     \ifx\relax#1\relax
       \def\after@Macro@args{%
-        \bgroup\end{DescribeEnv}
+        \bgroup\endDescribeEnv
       }%
     \else
       \def\after@Macro@args{%
-        \bgroup\DescribeEnv@newline#1%
-        \end{DescribeEnv}
+        \bgroup\DescribeEnv@newline\MacroArgs#1%
+        \endDescribeEnv
       }%
     \fi
   \fi
@@ -921,9 +930,9 @@
 %    \begin{macrocode}
   \setbox\descbox\vbox\bgroup
   \envcodestyle
-  \let\PrintEnv\PrintSubEnv
+  \let\yPrintEnv\yPrintSubEnv
   \hbox\bgroup
-  \PrintEnvName{\begin}{\DescribeEnv@name}%
+  \yPrintEnvName{\begin}{\DescribeEnv@name}%
   \macroargsstyle
   \read@Macro@arg
 }
@@ -960,9 +969,9 @@
 %    \begin{macrocode}
 \def\endDescribeEnv{%
   \egroup
-  \hbox{\PrintEnvName{\end}{\DescribeEnv@name}}%
+  \hbox{\yPrintEnvName{\end}{\DescribeEnv@name}}%
   \egroup
-  \PrintEnv
+  \yPrintEnv
   \endgroup
 }
 %    \end{macrocode}
@@ -971,10 +980,10 @@
 %
 % \subsection{Print Macros}
 %
-% \begin{macro}{\PrintMacroName}
+% \begin{macro}{\yPrintMacroName}
 % Formats macro name. The backslash is forced to |tt| font.
 %    \begin{macrocode}
-\def\PrintMacroName#1{%
+\def\yPrintMacroName#1{%
   {\macrodescstyle{\strut
    \texttt{\char92}%
    \escapechar\m@ne
@@ -983,18 +992,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\PrintLengthName}
+% \begin{macro}{\yPrintLengthName}
 % Formats length register name.
 %    \begin{macrocode}
-\let\PrintLengthName\PrintMacroName
+\let\yPrintLengthName\yPrintMacroName
 %    \end{macrocode}
 % \end{macro}
 %
 %
-% \begin{macro}{\PrintEnvName}
+% \begin{macro}{\yPrintEnvName}
 % |#1| = `|\begin|' or `|\end|', |#2| = env name.
 %    \begin{macrocode}
-\def\PrintEnvName#1#2{%
+\def\yPrintEnvName#1#2{%
   \strut
   \string#1\braceleft
   {\macrodescstyle#2}%
@@ -1003,12 +1012,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\PrintMacros}
+% \begin{macro}{\yPrintMacros}
 % Prints macros described using \cs{DescribeMacros}.
 % The actual content was stored inside \cs{descbox}.
 % If it is wider than the line width it is centered.
 %    \begin{macrocode}
-\def\PrintMacros{%
+\def\yPrintMacros{%
   \par\vspace\beforedescskip
   \noindent\hspace*{\descindent}%
   \ifdim\wd\descbox>\linewidth
@@ -1021,18 +1030,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\PrintLength}
+% \begin{macro}{\yPrintLength}
 % Prints lengths registers described using one or multiple \cs{DescribeLength}.
 %    \begin{macrocode}
-\let\PrintLength\PrintMacros
+\let\yPrintLength\yPrintMacros
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\PrintEnv}
+% \begin{macro}{\yPrintEnv}
 % Prints \env{DescribeEnv} environments.
 % The actual content was stored inside \cs{descbox}.
 %    \begin{macrocode}
-\def\PrintEnv{%
+\def\yPrintEnv{%
   \par\vspace\beforedescskip
   \noindent\hspace*{\descindent}%
   \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
@@ -1041,12 +1050,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\PrintSubEnv}
+% \begin{macro}{\yPrintSubEnv}
 % Prints sub environments, i.e.\ \env{DescribeEnv} environments
 % inside the body of another \env{DescribeEnv}.
 % The actual content was stored inside \cs{descbox}.
 %    \begin{macrocode}
-\def\PrintSubEnv{%
+\def\yPrintSubEnv{%
   \hbox{\hbox{\usebox{\descbox}}}%
 }
 %    \end{macrocode}

@@ -1,0 +1,158 @@
+% \iffalse
+%<*copyright>
+%% Copyright (c) 2010 by Martin Scharrer <martin@scharrer-online.de>
+%% WWW: http://latex.scharrer-online.de/
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%  http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Martin Scharrer.
+%%
+%% This work consists of the files ydoc-code.dtx and ydoc-code.ins
+%% and the derived file ydoc-code.sty.
+%</copyright>
+% \fi
+%
+% \iffalse
+%<*driver|package>
+\RequirePackage{svn-prov}[2010/04/03]
+%</driver|package>
+%<*driver>
+\ProvidesFileSVN[ydoc-code.dtx]
+%</driver>
+%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<package>\ProvidesPackageSVN
+%<*driver|package>
+    {$Id: ydoc-code.dtx 1802 2010-04-03 13:52:09Z martin $}
+    [v0.1 ydoc: code description macros]
+%</driver|package>
+%
+%<*driver>
+\DefineFileInfoSVN
+\GetFileInfoSVN*
+\documentclass{ltxdoc}
+\RequirePackage{ydoc-desc}
+\RequirePackage{ydoc-code}[\filedate]
+
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{booktabs}
+
+\newdimen\tempskip
+
+\def\tablecaption{%
+  \tempskip=\abovecaptionskip
+  \abovecaptionskip=\belowcaptionskip
+  \belowcaptionskip=\tempskip
+  \caption
+}
+
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{ydoc-code.dtx}
+  \yPrintChanges
+  \yPrintIndex
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v0.1}{2010/04/01}{Initial version}
+%
+% \DoNotIndex{\newcommand,\newenvironment}
+%
+% \GetFileInfoSVN{ydoc-code.dtx}
+% \title{The \textsf{ydoc-code} package}
+% \author{Martin Scharrer \\ \texttt{martin@scharrer-online.de}}
+% \date{\fileversion\ from \filedate}
+%
+% \maketitle
+%
+% \begin{abstract}
+% {\color{red}This package is currently under development.
+% All functionality, settings and macro names can change in later versions.}
+%
+% This package is part of the \pkg{ydoc} bundle and provides macros and environments to document
+% the source code of \LaTeX\ packages and classes.
+% \end{abstract}
+%
+% \section{Introduction}
+% The \pkg{ydoc} packages allow the documentation of \LaTeX\ packages and classes.
+% The name stands for ``\emph{Y}et another \emph{Doc}umentation Package'' and is a pun on
+% the fact that there are several documentation packages written by package developers
+% to document their own packages. All these packages didn't suited the author and therefore he,
+% take a guess, wrote his own documentation package.
+%
+% This documentation uses the \pkg{ydoc-code} package itself and therefore also acts as a live example.
+%
+% \subsection{Similar Packages}
+% Other documentation related classes and packages are \pkg{ltxdoc}, \pkg{doc}, \pkg{dox}, \pkg{xdoc}, \pkg{gmdoc}, \pkg{pauldoc}, \pkg{hypdoc},
+% \pkg{codedoc}, \pkg{nicetext} and \pkg{tkz-doc}.
+%
+% The \pkg{ydoc-code} macro provides some alternative versions of macros also provided by \LaTeX\ standard documentation package \pkg{doc}.
+% It implements some features also provided by the package \pkg{nicetext}.
+%
+% \subsection{Copyright and Licence}
+% \lstinputlisting[basicstyle=\footnotesize\ttfamily]{ydoc-code.cpr}
+%
+% \section{Usage}
+%
+% \subsection{Description Macros and Environments}
+%
+% \StopEventually{}
+%
+% \clearpage
+% \section{Implementation}
+%\iffalse
+%<*package>
+%\fi
+%
+% \subsection{Color and style definitions}
+%    \begin{macrocode}
+\RequirePackage{xcolor}
+\definecolor{macroimpl}{rgb}{0.0,0.0,0.4}
+%    \end{macrocode}
+%
+% \begin{environment}{macro}
+%    \begin{macrocode}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{environment}{environment}
+%    \begin{macrocode}
+%    \end{macrocode}
+% \end{environment}
+%
+%
+%\iffalse
+%</package>
+%\fi
+%\Finale
+\endinput

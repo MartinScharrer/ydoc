@@ -240,6 +240,37 @@
 % They should only be used with text-typer font when used in text, because other fonts might not have the
 % correct characters. The macros must be protected when used in a moving argument.
 %
+% \DescribeMacros
+%   \hbox\bgroup
+%   \tabular{@{}ll@{}}
+%     \Macro\meta{<meta text>}     &
+%     \Macro\marg{<argument text>} \\
+%     \Macro\oarg{<argument text>} &
+%     \Macro\parg{<argument text>} \\
+%     \Macro\aarg{<argument text>} &
+%     \Macro\sarg                  \\
+%   \endtabular
+%   \egroup
+% \endDescribeMacros
+% This macros allow to typeset meta text and mandatory, optional, picture and beamer overlay arguments as well as a star symbol.
+% They are used internally by \cs{MacroArgs} and friends. See Table~\ref{tab:macroargs} for examples.
+%
+% \DescribeMacros
+%   \hbox\bgroup
+%   \tabular{@{}ll@{}}
+%     \Macro\metastyle &
+%     \Macro\margstyle \\
+%     \Macro\oargstyle &
+%     \Macro\pargstyle \\
+%     \Macro\aargstyle &
+%     \Macro\sargstyle \\
+%   \endtabular
+%   \egroup
+% \endDescribeMacros
+% This macros are used to define the style in which the corresponding macros above are being formatted.
+% They are used like \MacroArgs '{'<\textbackslash stylemacro>{<material>}'}' to allow the styles to
+% use macros like |\ttfamily| or |\texttt|\marg{material}. By default the optional argument and the also optional star are
+% printed in the color `|optional|' which is a 65\% gray. 
 %
 % \subsection{Settings}
 % The following macro and dimensions can be redefined by the user to adjust the layout of the package documentation.
@@ -271,7 +302,11 @@
 %
 % \begin{macro}{\meta}
 %    \begin{macrocode}
-\def\meta#1{{\metastyle\ensuremath\langle#1\/\ensuremath\rangle}}
+\def\meta#1{%
+  \ensuremath\langle
+  {\metastyle{#1\/}}%
+  \ensuremath\rangle
+}
 %    \end{macrocode}
 % \end{macro}
 %

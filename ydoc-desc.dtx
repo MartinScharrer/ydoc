@@ -187,7 +187,7 @@
 % \DescribeMacro\DescribeEnv[<body content>]{<name>}<arguments>
 % The \env{DescribeEnv} can be used to describe environments in the same way the \cs{DescribeMacro} macro describes macros.
 % It also exists in macro form as \cs{DescribeEnv}. Possible \meta{arguments} are shown in Table~\ref{tab:macroargs}.
-% Possible \meta{body content} can be placed between the begin and end of the environment description to explain the user what kind of material
+% Possible \meta{body content} can be placed (e.g.\ using \cs{MacroArgs}) between the begin and end of the environment description to explain the user what kind of material
 % should be placed inside it. The content is placed into a indented |\hbox{}| stacked inside a |\vbox{}| also holding the environment begin and end line.
 % The |\\| macro is redefined to create a new indented |\hbox| acting as new code line.
 %
@@ -211,9 +211,8 @@
 %   Verbatim content           &  |'$&^%_#$\'| & \MacroArgs'$&^%_#$\' \\
 %   ---, produce |'| char      &  |''|         & \MacroArgs''         \\
 %   Insert any \TeX\ code      &  |!\fbox{T}!| & \MacroArgs!\fbox{T}! \\
-%  \midrule
-%   Space (explicit macro)     &  |{}\space{}| & \MacroArgs{}\space{} \\
-%   Ignore spaces (explicit macro) &  |{}\ignorespaces {}|   & \MacroArgs{}\ignorespaces {} \\
+%   Unbreakable Space          &  |~|          & \\
+%   Space (explicit macro)     &  |\space|     & \\
 %  \midrule
 %   Second macro (e.g.\ endmarker) &  |\AlsoMacro\macro| & \MacroArgs\AlsoMacro\macro \\
 %  \bottomrule
@@ -290,6 +289,8 @@
 %\iffalse
 %<*package>
 %\fi
+%
+% \subsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
 \definecolor{macrodesc}{rgb}{0.0,0.0,0.8}
@@ -298,9 +299,13 @@
 \definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
 \definecolor{optioncolor}{rgb}{0.3.0.2,0}
 \colorlet{optional}{black!65!white}
+\colorlet{metaoptional}{optional!65!meta}
 %    \end{macrocode}
 %
+% \subsection{Text Formatting Macros}
+%
 % \begin{macro}{\meta}
+% Prints \meta{meta text}.
 %    \begin{macrocode}
 \def\meta#1{%
   \ensuremath\langle
@@ -311,17 +316,20 @@
 % \end{macro}
 %
 % \begin{macro}{\@meta}
+% Checks if |#1| is surrounded by angles |< >|.
+% If so it calls \cs{is@meta} which removes the angles and calls \cs{meta}.
 %    \begin{macrocode}
 \def\@meta#1{%
   \@ifnextchar<%
     {\is@meta}%
-    {\no@meta}%
-  #1\relax
+    {}%
+  #1%
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\is@meta}
+% Only removes the |< >| ands calls \cs{meta}.
 %    \begin{macrocode}
 \def\is@meta<#1>{%
   \meta{#1}%
@@ -329,39 +337,36 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\no@meta}
-%    \begin{macrocode}
-\def\no@meta#1\relax{%
-  #1%
-}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\marg}
+% Calls \cs{marg} with angles added to force meta format.
 %    \begin{macrocode}
 \def\marg#1{\@marg{<#1>}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\oarg}
+% Calls \cs{oarg} with angles added to force meta format.
 %    \begin{macrocode}
 \def\oarg#1{\@oarg{<#1>}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\parg}
+% Calls \cs{parg} with angles added to force meta format.
 %    \begin{macrocode}
 \def\parg#1{\@parg{<#1>}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\aarg}
+% Calls \cs{aarg} with angles added to force meta format.
 %    \begin{macrocode}
 \def\aarg#1{\@aarg{<#1>}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@marg}
+% Sets style and adds braces. Text is formatted with \cs{@meta} which might add meta format.
 %    \begin{macrocode}
 \def\@marg#1{%
   {\margstyle{%
@@ -374,6 +379,7 @@
 % \end{macro}
 %
 % \begin{macro}{\@oarg}
+% Sets style and adds brackets. Text is formatted with \cs{@meta} which might add meta format.
 %    \begin{macrocode}
 \def\@oarg#1{%
   {\oargstyle{%
@@ -386,6 +392,7 @@
 % \end{macro}
 %
 % \begin{macro}{\@parg}
+% Sets style and adds parentheses. Text is formatted with \cs{@meta} which might add meta format.
 %    \begin{macrocode}
 \def\@parg#1{%
   {\pargstyle{%
@@ -398,6 +405,7 @@
 % \end{macro}
 %
 % \begin{macro}{\@aarg}
+% Sets style and adds angles. Text is formatted with \cs{@meta} which might add meta format.
 %    \begin{macrocode}
 \def\@aarg#1{%
   {\aargstyle{%
@@ -410,64 +418,99 @@
 % \end{macro}
 %
 % \begin{macro}{\sarg}
+% Prints star with given style.
 %    \begin{macrocode}
 \def\sarg{{\sargstyle{*}}}
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\pkg}
+% \begin{macro}{\cls}
+% \begin{macro}{\env}
+%    \begin{macrocode}
+\def\pkg{\texttt}
+\def\cls{\texttt}
+\def\env{\texttt}
+\def\cs#1{\texttt{\textbackslash #1}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \subsection{Text Formatting Styles}
+%
 % \begin{macro}{\macrodescstyle}
+% Style of described macro names.
 %    \begin{macrocode}
 \def\macrodescstyle{\ttfamily\bfseries\color{macrodesc}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\macroargsstyle}
+% Default style for macro arguments (e.g.\ \cs{MacroArgs}).
 %    \begin{macrocode}
 \def\macroargsstyle{\ttfamily}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\envcodestyle}
+% Default style for code body content in described environments.
 %    \begin{macrocode}
 \def\envcodestyle{\ttfamily}
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\verbstyle}
+% Style for verbatim text inside macro argument list.
+%    \begin{macrocode}
+\def\verbstyle{\ttfamily}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\metastyle}
+% Meta text style. Because \cs{macroargsstyle} might be also active a |\normalfont| reset
+% the font.
 %    \begin{macrocode}
 \def\metastyle{\normalfont\itshape\color{meta}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\margstyle}
+% Style for \cs{marg}.
 %    \begin{macrocode}
 \def\margstyle{}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\oargstyle}
+% Style for \cs{oarg}. A special color is set to show the `optional' status.
 %    \begin{macrocode}
-\def\oargstyle{\color{optional}\colorlet{meta}{optional!65!meta}}
+\def\oargstyle{\color{optional}\colorlet{meta}{metaoptional}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\pargstyle}
+% Style for \cs{parg}.
 %    \begin{macrocode}
 \def\pargstyle{}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\aargstyle}
+% Style for \cs{aarg}.
 %    \begin{macrocode}
 \def\aargstyle{}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\sargstyle}
+% Style for \cs{sarg}. A special color is set to show the `optional' status.
 %    \begin{macrocode}
 \def\sargstyle{\ttfamily\color{optional}}
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsection{Dimension Registers}
 %
 % \begin{macro}{\descindent}
 %    \begin{macrocode}
@@ -491,6 +534,7 @@
 % \end{macro}
 %
 % \begin{macro}{\descsep}
+% Set to |1em| in |tt| font.
 %    \begin{macrocode}
 \newdimen\descsep
 \begingroup
@@ -500,101 +544,58 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\DescribeMacro}
+%
+% \subsection{Macro Argument Reading Mechanism}
+%
+% \begin{macro}{\read@Macro@arg}
+% Reads next token and calls second macro.
 %    \begin{macrocode}
-\@ifundefined{DescribeMacro}{}{%
-  \PackageInfo{ydoc-desc}{Redefining \string\DescribeMacro}{}%
-}
-%    \end{macrocode}
-% A \cs{DescribeMacro} places itself in a \env{DescribeMacros} environment.
-% Multiple \cs{DescribeMacro} macros will stack themselves inside this environment.
-% For this to work \cs{DescribeMacros} is locally defined to |\egroup| to close the
-% |\hbox| from the previous \cs{DescribeMacro}.
-%    \begin{macrocode}
-\def\DescribeMacro{%
-  \DescribeMacros
-  \let\DescribeMacros\egroup
-  \def\after@Macro@args{\endDescribeMacros}%
-  \begingroup\makeatletter
-  \Describe@Macro
+\def\read@Macro@arg{%
+  \futurelet\@let@token\handle@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@Macro}
+% \begin{macro}{\handle@Macro@arg}
+% Checks if next token is the begin of a valid macro argument and calls
+% the appropriate read macro or the end macro otherwise. 
 %    \begin{macrocode}
-\def\@Macro{%
-  \begingroup\makeatletter
-  \Describe@Macro
+\def\handle@Macro@arg{%
+  \ifcase0%
+   \ifx\@let@token\bgroup1\else
+   \ifx\@let@token[\empty2\else
+   \ifx\@let@token(\empty3\else
+   \ifx\@let@token<\empty4\else
+   \ifx\@let@token*\empty5\else
+   \ifx\@let@token'\empty6\else
+   \ifx\@let@token!\empty7\else
+   \ifx\@let@token\@sptoken8\else
+   \ifx\@let@token\space9\else
+   \ifx\@let@token~9\else
+   \ifx\@let@token\AlsoMacro10\else
+   \ifx\@let@token\DescribeMacro11\fi
+   \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+  \relax
+   \unskip
+   \expandafter\end@Macro@args%0
+   \or\expandafter\read@Macro@marg%1
+   \or\expandafter\read@Macro@oarg%2
+   \or\expandafter\read@Macro@parg%3
+   \or\expandafter\read@Macro@angle%4
+   \or\expandafter\read@Macro@sarg%5
+   \or\expandafter\read@Macro@verb%6
+   \or\expandafter\read@Macro@cmds%7
+   \or\expandafter\read@Macro@rmspace%8
+   \or\expandafter\read@Macro@addtoken%9
+  \else%10-
+  \fi
 }
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\Describe@Macro}
-%    \begin{macrocode}
-\def\Describe@Macro#1{%
-  \endgroup
-  \hbox\bgroup
-  \PrintMacroName{#1}%
-  \macroargsstyle
-  \read@Macro@arg
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\Macro}
-%    \begin{macrocode}
-\newcommand*\Macro{\MacroArgs\AlsoMacro}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\AlsoMacro}
-%    \begin{macrocode}
-\newcommand*\AlsoMacro{%
-  \begingroup\makeatletter
-  \AlsoMacro@
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\AlsoMacro@}
-%    \begin{macrocode}
-\def\AlsoMacro@#1{%
-  \endgroup
-  \PrintMacroName{#1}%
-  \read@Macro@arg
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\MacroArgs}
-%    \begin{macrocode}
-\newcommand*\MacroArgs{%
-  \begingroup
-  \let\end@Macro@args\endgroup
-  \read@Macro@arg
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\PrintMacroName}
-%    \begin{macrocode}
-\def\PrintMacroName#1{%
-  {\macrodescstyle\strut
-   \texttt{\char92}%
-   \escapechar\m@ne
-   \string#1}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\PrintLengthName}
-%    \begin{macrocode}
-\let\PrintLengthName\PrintMacroName
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\end@Macro@args}
+% Closes box as calls hook. Might be locally redefined by some 
+% macros calling \cs{read@Macro@args}.
 %    \begin{macrocode}
 \def\end@Macro@args{%
   \egroup
@@ -604,11 +605,15 @@
 % \end{macro}
 %
 % \begin{macro}{\after@Macro@args}
+% Hook to add additional commands in certain situations.
 %    \begin{macrocode}
 \def\after@Macro@args{%
 }
 %    \end{macrocode}
 % \end{macro}
+%
+% \subsubsection*{Macro argument reading macros}
+% This macros read the macro arguments and call the appropriate format macros.
 %
 % \begin{macro}{\read@Macro@marg}
 %    \begin{macrocode}
@@ -679,8 +684,9 @@
 % \end{macro}
 %
 % \begin{macro}{\read@Macro@verb}
+% Sets up verbatim mode calls second macro.
 %    \begin{macrocode}
-\def\read@Macro@verb'{%
+\def\read@Macro@verb{%
   \begingroup
   \let\do\@makeother
   \dospecials
@@ -690,13 +696,15 @@
 % \end{macro}
 %
 % \begin{macro}{\read@Macro@verb@}
+% Closes verbatim mode and formats text.
+% If |#1| is empty (|''|) than a single |'| is printed.
 %    \begin{macrocode}
-\def\read@Macro@verb@#1'{%
+\def\read@Macro@verb@'#1'{%
   \endgroup
   \ifx\relax#1\relax
-    \texttt{\string'}%
+    {\verbstyle{\string'}}%
   \else
-    \texttt{#1}%
+    {\verbstyle{#1}}%
   \fi
   \read@Macro@arg
 }
@@ -704,6 +712,7 @@
 % \end{macro}
 %
 % \begin{macro}{\read@Macro@cmds}
+% Simply executes given code.
 %    \begin{macrocode}
 \def\read@Macro@cmds!#1!{%
   #1\relax
@@ -712,70 +721,101 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\read@Macro@space}
+% \begin{macro}{\read@Macro@rmspace}
+% Removes space. The |\@firstofone| is used to preserve the space in the macro definition.
 %    \begin{macrocode}
-\@firstofone{\def\read@Macro@space} {%
+\@firstofone{\def\read@Macro@rmspace} {%
   \read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\read@Macro@ignorespaces}
+% \begin{macro}{\read@Macro@addtoken}
+% Takes token over from input to output `stream'. This is used for |\space| and |~|.
 %    \begin{macrocode}
-\def\read@Macro@ignorespaces\ignorespaces{%
-  \expandafter\read@Macro@ignorespaces@\space
+\def\read@Macro@addtoken#1{%
+  #1\read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\read@Macro@ignorespaces@}
+% \subsection{Description Macros}
+% \subsubsection*{For Macros}
+%
+% \begin{macro}{\DescribeMacro}
 %    \begin{macrocode}
-\@firstofone{\def\read@Macro@ignorespaces@} {%
+\@ifundefined{DescribeMacro}{}{%
+  \PackageInfo{ydoc-desc}{Redefining \string\DescribeMacro}{}%
+}
+%    \end{macrocode}
+% A \cs{DescribeMacro} places itself in a \env{DescribeMacros} environment.
+% Multiple \cs{DescribeMacro} macros will stack themselves inside this environment.
+% For this to work \cs{DescribeMacros} is locally defined to |\egroup| to close the
+% |\hbox| from the previous \cs{DescribeMacro}.
+%    \begin{macrocode}
+\def\DescribeMacro{%
+  \DescribeMacros
+  \let\DescribeMacros\egroup
+  \def\after@Macro@args{\endDescribeMacros}%
+  \begingroup\makeatletter
+  \Describe@Macro
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Describe@Macro}
+%    \begin{macrocode}
+\def\Describe@Macro#1{%
+  \endgroup
+  \hbox\bgroup
+  \PrintMacroName{#1}%
+  \macroargsstyle
   \read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\read@Macro@arg}
+% \begin{macro}{\Macro}
+% Simply uses the two macros below.
 %    \begin{macrocode}
-\def\read@Macro@arg{%
-  \futurelet\@let@token\handle@Macro@arg
+\newcommand*\Macro{\MacroArgs\AlsoMacro}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\@Macro}
+% Alternative definition of \cs{Macro} inside \env{DescribeMacros} environments.
+%    \begin{macrocode}
+\def\@Macro{%
+  \begingroup\makeatletter
+  \Describe@Macro
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\handle@Macro@arg}
+% \begin{macro}{\AlsoMacro}
+% Reads argument while |@| is a letter,
+% prints the macro name and reads further arguments.
 %    \begin{macrocode}
-\def\handle@Macro@arg{%
-  \ifcase0%
-   \ifx\@let@token\bgroup1\else
-   \ifx\@let@token[\empty2\else
-   \ifx\@let@token(\empty3\else
-   \ifx\@let@token<\empty4\else
-   \ifx\@let@token*\empty5\else
-   \ifx\@let@token'\empty6\else
-   \ifx\@let@token!\empty7\else
-   \ifx\@let@token\@sptoken8\else
-   \ifx\@let@token\space9\else
-   \ifx\@let@token\ignorespaces10\else
-   \ifx\@let@token\AlsoMacro11\else
-   \ifx\@let@token\DescribeMacro12\fi
-   \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
-  \relax
-   \unskip
-   \expandafter\end@Macro@args%0
-   \or\expandafter\read@Macro@marg%1
-   \or\expandafter\read@Macro@oarg%2
-   \or\expandafter\read@Macro@parg%3
-   \or\expandafter\read@Macro@angle%4
-   \or\expandafter\read@Macro@sarg%5
-   \or\expandafter\read@Macro@verb%6
-   \or\expandafter\read@Macro@cmds%7
-   \or\expandafter\read@Macro@space%8
-   \or\expandafter\expandafter\expandafter\read@Macro@arg%9
-   \or\expandafter\read@Macro@ignorespaces%10
-  \else%11-
-  \fi
+\newcommand*\AlsoMacro{%
+  \begingroup\makeatletter
+  \AlsoMacro@
+}
+\def\AlsoMacro@#1{%
+  \endgroup
+  \PrintMacroName{#1}%
+  \read@Macro@arg
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\MacroArgs}
+% Uses the normal macro argument reading mechanism from \cs{DescribeMacro}.
+% Instead of a box a simple group is added.
+%    \begin{macrocode}
+\newcommand*\MacroArgs{%
+  \begingroup
+  \let\end@Macro@args\endgroup
+  \read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}
@@ -786,7 +826,7 @@
   \begingroup
   \let\Macro\@Macro
   \parindent=0pt\relax
-  \setbox\@tempboxa\vbox\bgroup
+  \setbox\descbox\vbox\bgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -801,160 +841,14 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\PrintMacros}
-%    \begin{macrocode}
-\def\PrintMacros{%
-  \par\vspace\beforedescskip
-  \noindent\hspace*{\descindent}%
-  \ifdim\wd\@tempboxa>\linewidth
-    \makebox[\linewidth][c]{\fbox{\hspace*{\descsep}\usebox{\@tempboxa}\hspace*{\descsep}}}
-  \else
-    \fbox{\hspace*{\descsep}\usebox{\@tempboxa}\hspace*{\descsep}}%
-  \fi
-  \par\vspace\afterdescskip
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\PrintLength}
-%    \begin{macrocode}
-\let\PrintLength\PrintMacros
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\DescribeEnv@content}
-%    \begin{macrocode}
-\def\DescribeEnv@content{%
-  \hbox\bgroup\strut
-  \hspace*{\descsep}%
-  \ignorespaces
-}%
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\DescribeEnv@string}
-%    \begin{macrocode}
-\def\DescribeEnv@string{DescribeEnv}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\DescribeEnv}
-%    \begin{macrocode}
-\@ifundefined{DescribeEnv}{}{%
-  \PackageInfo{ydoc-desc}{Redefining \string\DescribeEnv}{}%
-}
-\let\DescribeEnv\relax
-%    \end{macrocode}
-%    \begin{macrocode}
-\newcommand*\DescribeEnv[2][]{%
-  \begingroup
-  \def\DescribeEnv@name{#2}%
-  \let\\\DescribeEnv@newline
-  \ifx\@currenvir\DescribeEnv@string
-    \def\after@Macro@args{%
-      \envcodestyle
-      \let\after@Macro@args\empty
-      \@ifnextchar\end
-        {\bgroup}%
-        {%
-         \hbox\bgroup\strut
-         \hspace*{\descsep}%
-         \ignorespaces
-        }%
-    }%
-  \else
-    \ifx\relax#1\relax
-      \def\after@Macro@args{%
-        \bgroup\end{DescribeEnv}
-      }%
-    \else
-      \def\after@Macro@args{%
-        \hbox{\hspace*{\descsep}\strut\envcodestyle\MacroArgs#1}%
-        \bgroup\end{DescribeEnv}
-      }%
-    \fi
-  \fi
-  \setbox\@tempboxa\vbox\bgroup
-  \let\PrintEnv\PrintEnv@
-  \hbox\bgroup
-  \PrintEnvName{#2}%
-  \macroargsstyle
-  \read@Macro@arg
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\DescribeEnv@newline}
-% Generates a new |\hbox|.
-%    \begin{macrocode}
-\def\DescribeEnv@newline{%
-  \strut\egroup
-  \hbox\bgroup
-  \hspace*{\descsep}%
-  \ignorespaces
-}%
-%    \end{macrocode}
-% \end{macro}
-%
-%    \begin{macrocode}
-\newbox\mybox
-%    \end{macrocode}
-%
-% \begin{macro}{\endDescribeEnv}
-%    \begin{macrocode}
-\def\endDescribeEnv{%
-  \egroup
-  \hbox{%
-    \texttt{\strut\char92end%
-    \string{%
-    {\macrodescstyle\DescribeEnv@name}%
-    \string}%
-    }%
-  }%
-  \egroup
-  \PrintEnv
-  \endgroup
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\PrintEnvName}
-%    \begin{macrocode}
-\def\PrintEnvName#1{%
-  \texttt{\strut\char92begin%
-   \string{%
-   {\macrodescstyle#1}%
-   \string}%
-  }%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\PrintEnv}
-%    \begin{macrocode}
-\def\PrintEnv{%
-  \par\vspace\beforedescskip
-  \noindent\hspace*{\descindent}%
-  \fbox{\hspace*{\descsep}\usebox{\@tempboxa}\hspace*{\descsep}}%
-  \par\vspace\afterdescskip
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\PrintEnv@}
-%    \begin{macrocode}
-\def\PrintEnv@{%
-  \hbox{\hbox{\usebox{\@tempboxa}}}%
-}
-%    \end{macrocode}
-% \end{macro}
+% \subsubsection*{For Lengths}
 %
 % \begin{macro}{\DescribeLength}
 %    \begin{macrocode}
 \newcommand*\DescribeLength{%
   \begingroup
   \let\DescribeLength\Describe@Length
-  \setbox\@tempboxa\hbox\bgroup
+  \setbox\descbox\hbox\bgroup
     \tabular{@{}l@{\hspace{2em}}l@{}}%
     \Describe@Length
 }
@@ -978,18 +872,188 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\pkg}
-% \begin{macro}{\cls}
-% \begin{macro}{\env}
+% \subsubsection*{For Environments}
+%
+% \begin{macro}{\DescribeEnv}
 %    \begin{macrocode}
-\def\pkg{\texttt}
-\def\cls{\texttt}
-\def\env{\texttt}
-\def\cs#1{\texttt{\textbackslash #1}}
+\@ifundefined{DescribeEnv}{}{%
+  \PackageInfo{ydoc-desc}{Redefining \string\DescribeEnv}{}%
+}
+\let\DescribeEnv\relax
+%    \end{macrocode}
+%    \begin{macrocode}
+\newcommand*\DescribeEnv[2][]{%
+  \begingroup
+  \def\DescribeEnv@name{#2}%
+  \let\\\DescribeEnv@newline
+%    \end{macrocode}
+%
+% Sets after-macro-arguments hook.
+% First checks if the environment or macro version was used.
+% The environment starts a new line only if the next token isn't |\end|, 
+% which is taken as end of the environment.
+%    \begin{macrocode}
+  \ifx\@currenvir\DescribeEnv@string
+    \def\after@Macro@args{%
+      \let\after@Macro@args\empty
+      \@ifnextchar\end
+        {\bgroup}%
+        {\bgroup\DescribeEnv@newline}%
+      #1%
+    }%
+%    \end{macrocode}
+% The macro version adds the optional argument as content line if given.
+%    \begin{macrocode}
+  \else
+    \ifx\relax#1\relax
+      \def\after@Macro@args{%
+        \bgroup\end{DescribeEnv}
+      }%
+    \else
+      \def\after@Macro@args{%
+        \bgroup\DescribeEnv@newline#1%
+        \end{DescribeEnv}
+      }%
+    \fi
+  \fi
+%    \end{macrocode}
+% Start |\vbox| and adds first line.
+%    \begin{macrocode}
+  \setbox\descbox\vbox\bgroup
+  \envcodestyle
+  \let\PrintEnv\PrintSubEnv
+  \hbox\bgroup
+  \PrintEnvName{\begin}{\DescribeEnv@name}%
+  \macroargsstyle
+  \read@Macro@arg
+}
 %    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\DescribeEnv@newline}
+% Closes existing and starts a new horizontal box representing a indented line.
+%    \begin{macrocode}
+\def\DescribeEnv@newline{%
+  \egroup
+  \hbox\bgroup\strut
+  \hspace*{\descsep}%
+  \ignorespaces
+}%
+%    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\DescribeEnv@string}
+% Holds the environment name for comparison.
+%    \begin{macrocode}
+\def\DescribeEnv@string{DescribeEnv}
+%    \end{macrocode}
 % \end{macro}
+%
+% \begin{macro}{\descbox}
+% Save box to store description content.
+%    \begin{macrocode}
+\newbox\descbox
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endDescribeEnv}
+%    \begin{macrocode}
+\def\endDescribeEnv{%
+  \egroup
+  \hbox{\PrintEnvName{\end}{\DescribeEnv@name}}%
+  \egroup
+  \PrintEnv
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{Print Macros}
+%
+% \begin{macro}{\PrintMacroName}
+% Formats macro name. The backslash is forced to |tt| font.
+%    \begin{macrocode}
+\def\PrintMacroName#1{%
+  {\macrodescstyle{\strut
+   \texttt{\char92}%
+   \escapechar\m@ne
+   \string#1}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintLengthName}
+% Formats length register name.
+%    \begin{macrocode}
+\let\PrintLengthName\PrintMacroName
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\PrintEnvName}
+% |#1| = `|\begin|' or `|\end|', |#2| = env name.
+%    \begin{macrocode}
+\def\PrintEnvName#1#2{%
+  \strut
+  \string#1\braceleft
+  {\macrodescstyle#2}%
+  \braceright
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintMacros}
+% Prints macros described using \cs{DescribeMacros}.
+% The actual content was stored inside \cs{descbox}.
+% If it is wider than the line width it is centered.
+%    \begin{macrocode}
+\def\PrintMacros{%
+  \par\vspace\beforedescskip
+  \noindent\hspace*{\descindent}%
+  \ifdim\wd\descbox>\linewidth
+    \makebox[\linewidth][c]{\fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}}
+  \else
+    \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
+  \fi
+  \par\vspace\afterdescskip
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintLength}
+% Prints lengths registers described using one or multiple \cs{DescribeLength}.
+%    \begin{macrocode}
+\let\PrintLength\PrintMacros
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintEnv}
+% Prints \env{DescribeEnv} environments.
+% The actual content was stored inside \cs{descbox}.
+%    \begin{macrocode}
+\def\PrintEnv{%
+  \par\vspace\beforedescskip
+  \noindent\hspace*{\descindent}%
+  \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
+  \par\vspace\afterdescskip
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintSubEnv}
+% Prints sub environments, i.e.\ \env{DescribeEnv} environments
+% inside the body of another \env{DescribeEnv}.
+% The actual content was stored inside \cs{descbox}.
+%    \begin{macrocode}
+\def\PrintSubEnv{%
+  \hbox{\hbox{\usebox{\descbox}}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsubsection{Special Character Macros}
 %
 % \begin{macro}{\bslash}
 % Defines an expandable backslash with catcode 12: `\texttt{\bslash}$_{12}$'.

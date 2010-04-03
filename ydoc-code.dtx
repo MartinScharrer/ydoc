@@ -59,8 +59,8 @@
 \RecordChanges
 \begin{document}
   \DocInput{ydoc-code.dtx}
-  \yPrintChanges
-  \yPrintIndex
+  \PrintChanges
+  \PrintIndex
 \end{document}
 %</driver>
 % \fi
@@ -180,7 +180,7 @@
 }
 \def\endmacrocode{}
 %    \end{macrocode}
-% \end{macro}
+% \end{environment}
 %
 % \begin{macro}{\macro@code}
 %    \begin{macrocode}
@@ -225,9 +225,9 @@
 %
 % \begin{macro}{\a}
 %    \begin{macrocode}
-\def\newlinemacro{\\}
-\def\spacemacro{ }
-\def\bslashmacro{\textbackslash}
+\def\newlinemacro{\\\null}
+\def\spacemacro{\ }
+\def\bslashmacro{\char92}
 %    \end{macrocode}
 % \end{macro}
 %

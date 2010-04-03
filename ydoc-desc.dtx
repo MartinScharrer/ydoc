@@ -337,25 +337,43 @@
 %
 % \begin{macro}{\@oarg}
 %    \begin{macrocode}
-\def\@oarg#1{{\oargstyle[\@meta{#1}]}}
+\def\@oarg#1{%
+  {\oargstyle{%
+    {\ttfamily[}%
+    \@meta{#1}%
+    {\ttfamily]}%
+  }}%
+}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@parg}
 %    \begin{macrocode}
-\def\@parg#1{{\pargstyle(\@meta{#1})}}
+\def\@parg#1{%
+  {\pargstyle{%
+    {\ttfamily(}%
+    \@meta{#1}%
+    {\ttfamily)}%
+  }}%
+}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\@aarg}
 %    \begin{macrocode}
-\def\@aarg#1{{\aargstyle<\@meta{#1}>}}
+\def\@aarg#1{%
+  {\aargstyle{%
+    {\ttfamily<}%
+    \@meta{#1}%
+    {\ttfamily>}%
+  }}%
+}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\sarg}
 %    \begin{macrocode}
-\def\sarg{{\sargstyle*}}
+\def\sarg{{\sargstyle{*}}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -379,7 +397,7 @@
 %
 % \begin{macro}{\metastyle}
 %    \begin{macrocode}
-\def\metastyle{\itshape\color{meta}}
+\def\metastyle{\normalfont\itshape\color{meta}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -391,19 +409,19 @@
 %
 % \begin{macro}{\oargstyle}
 %    \begin{macrocode}
-\def\oargstyle{\ttfamily\color{optional}\colorlet{meta}{optional!65!meta}}
+\def\oargstyle{\color{optional}\colorlet{meta}{optional!65!meta}}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\pargstyle}
 %    \begin{macrocode}
-\def\pargstyle{\ttfamily}
+\def\pargstyle{}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\aargstyle}
 %    \begin{macrocode}
-\def\aargstyle{\ttfamily}
+\def\aargstyle{}
 %    \end{macrocode}
 % \end{macro}
 %

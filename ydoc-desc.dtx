@@ -195,24 +195,24 @@
 % \tablecaption{Supported `arguments' for \cs{DescribeMacro}/\cs{DescribeEnv}/\cs{MacroArgs}.}\label{tab:macroargs}
 % \begin{tabular}{llll}
 %  \toprule
-%   Description                &  Syntax     &  Result            & Macro$^{a}$ \\
+%   Description                &  Syntax       &  Result              & Macro$^{a}$ \\
 %  \midrule
-%   Meta text                  &  |<text>|   & \MacroArgs<text>   & |\meta| \\
-%   Mandatory Argument         &  |{<text>}| & \MacroArgs{<text>} & |\marg| \\
-%   ---, without meta text     &  |{text}|   & \MacroArgs{text}   & \\
-%   Optional Argument          &  |[<text>]| & \MacroArgs[<text>] & |\oarg| \\
-%   ---, without meta text     &  |[text]|   & \MacroArgs[text]   & \\
-%   Picture Argument           &  |(<text>)| & \MacroArgs(<text>) & |\parg| \\
-%   ---, without meta text     &  |(text)|   & \MacroArgs(text)   & \\
-%   Beamer Overlay Argument    &  |<<text>>| & \MacroArgs<<text>> & |\aarg| \\
+%   Meta text                  &  |<text>|     & \MacroArgs<text>     & |\meta| \\
+%   Mandatory Argument         &  |{<text>}|   & \MacroArgs{<text>}   & |\marg| \\
+%   ---, without meta text     &  |{text}|     & \MacroArgs{text}     & \\
+%   Optional Argument          &  |[<text>]|   & \MacroArgs[<text>]   & |\oarg| \\
+%   ---, without meta text     &  |[text]|     & \MacroArgs[text]     & \\
+%   Picture Argument           &  |(<text>)|   & \MacroArgs(<text>)   & |\parg| \\
+%   ---, without meta text     &  |(text)|     & \MacroArgs(text)     & \\
+%   Beamer Overlay Argument    &  |<<text>>|   & \MacroArgs<<text>>   & |\aarg| \\
 %   ---, without meta text     &  |'<'text'>'| & \MacroArgs'<'text'>' \\
-%   Star                       &  |*|          & \MacroArgs*   \\
+%   Star                       &  |*|          & \MacroArgs*          \\
 %  \midrule
 %   Verbatim content           &  |'$&^%_#$\'| & \MacroArgs'$&^%_#$\' \\
-%   ---, produce |'| char      &  |''|         & \MacroArgs'' \\
+%   ---, produce |'| char      &  |''|         & \MacroArgs''         \\
 %   Insert any \TeX\ code      &  |!\fbox{T}!| & \MacroArgs!\fbox{T}! \\
 %  \midrule
-%   Space (explicit macro)     &  |{}\space{}|   & \MacroArgs{}\space{} \\
+%   Space (explicit macro)     &  |{}\space{}| & \MacroArgs{}\space{} \\
 %   Ignore spaces (explicit macro) &  |{}\ignorespaces {}|   & \MacroArgs{}\ignorespaces {} \\
 %  \midrule
 %   Second macro (e.g.\ endmarker) &  |\AlsoMacro\macro| & \MacroArgs\AlsoMacro\macro \\
@@ -233,6 +233,13 @@
 % \end{DescribeMacros}
 % This macros can be used to format names of macros, environments, packages and classes, respectively.
 % At the moment they simply use |\texttt|.
+%
+% \DescribeMacros\hbox{\Macro\bslash~~~~\Macro\percent~~~~\Macro\braceleft~~~~\Macro\braceright}\endDescribeMacros
+% This macros define expandable backslash (\texttt{\bslash}$_{12}$), percent char (\texttt{\percent}$_{12}$),
+% and left (\texttt{\braceleft}$_{12}$) and right (\texttt{\braceright}$_{12}$) braces with catcode 12 (other), respectively.
+% They should only be used with text-typer font when used in text, because other fonts might not have the
+% correct characters. The macros must be protected when used in a moving argument.
+%
 %
 % \subsection{Settings}
 % The following macro and dimensions can be redefined by the user to adjust the layout of the package documentation.
@@ -318,7 +325,13 @@
 %
 % \begin{macro}{\@marg}
 %    \begin{macrocode}
-\def\@marg#1{{\margstyle\string{\@meta{#1}\string}}}
+\def\@marg#1{%
+  {\margstyle{%
+    {\ttfamily\braceleft}%
+    \@meta{#1}%
+    {\ttfamily\braceright}%
+  }}%
+}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -372,7 +385,7 @@
 %
 % \begin{macro}{\margstyle}
 %    \begin{macrocode}
-\def\margstyle{\ttfamily}
+\def\margstyle{}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -912,8 +925,48 @@
 \def\pkg{\texttt}
 \def\cls{\texttt}
 \def\env{\texttt}
+\def\cs#1{\texttt{\textbackslash #1}}
 %    \end{macrocode}
 % \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\bslash}
+% Defines an expandable backslash with catcode 12: `\texttt{\bslash}$_{12}$'.
+% The |\@firstofone| trick is used to read the |\gdef\bslash| code before changing the catcode.
+%    \begin{macrocode}
+{%
+\@firstofone{%
+  \catcode`\\=12
+  \gdef\bslash
+}{\}
+}%}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\percent}
+% Defines an expandable percent character with catcode 12: `\percent$_{12}$'.
+%    \begin{macrocode}
+\begingroup
+\catcode`\%=12
+\gdef\percent{%}
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\braceleft}
+% \begin{macro}{\braceright}
+% Defines expandable left and right braces with catcode 12: `\texttt{\braceleft}$_{12}$' `\texttt{\braceright}$_{12}$'.
+%    \begin{macrocode}
+\begingroup
+\catcode`\<=1
+\catcode`\>=2
+\catcode`\{=12
+\catcode`\}=12
+\gdef\braceleft <{>
+\gdef\braceright<}>
+\endgroup
+%    \end{macrocode}
 % \end{macro}
 % \end{macro}
 %

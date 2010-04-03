@@ -140,10 +140,169 @@
 \definecolor{macroimpl}{rgb}{0.0,0.0,0.4}
 %    \end{macrocode}
 %
-% \begin{environment}{macro}
+% \begin{macro}{\ydocwrite}
 %    \begin{macrocode}
+\@ifundefined{ydocwrite}{%
+  \newwrite\ydocwrite
+}{}
 %    \end{macrocode}
-% \end{environment}
+% \end{macro}
+%
+% \begin{macro}{\ydocwrite}
+%    \begin{macrocode}
+\@ifundefined{ydoctempwrite}{%
+  \def\ydoctempwrite{\jobname.cod}%
+}{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@catcodes}
+%    \begin{macrocode}
+\def\ydoc@catcodes{%
+  \let\do\@makeother
+  \dospecials
+  \catcode`\\=\active
+  %\endlinechar=10%
+  %\obeyspaces
+  \obeylines
+  %\catcode10=12%
+  \catcode`\ =\active%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{macrocode}
+%    \begin{macrocode}
+\def\macrocode{%
+  \begingroup
+  \ydoc@catcodes
+  \macro@code
+}
+\def\endmacrocode{}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@code}
+%    \begin{macrocode}
+\begingroup
+\@firstofone{%
+\catcode`\|=0\relax
+\catcode`\(=1\relax
+\catcode`\)=2\relax
+\catcode`\*=14\relax
+\catcode`\\=\active
+\catcode`\{=12\relax
+\catcode`\}=12\relax
+\catcode`\ =12\relax
+\catcode`\%=12\relax
+\catcode13=\active
+\obeylines
+\catcode`\ =\active%
+}*
+|gdef|macro@code#1^^M%    \end{macrocode}(*
+|endgroup|expandafter|macro@@code|expandafter(|ydoc@removeline#1^^M)*
+)*
+|gdef|ydoc@removeline#1^^M(#1)*
+|gdef|ydoc@defspecialmacros(*
+|def^^M(|noexpand|newlinemacro)*
+|def (|noexpand|spacemacro)*
+|def\(|noexpand|bslashmacro)*
+)*
+|endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@@code}
+%    \begin{macrocode}
+\def\macro@@code#1{%
+  {\ydoc@defspecialmacros
+  \xdef\themacrocode{#1}}%
+  \yPrintMacroCode
+  \end{macrocode}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\a}
+%    \begin{macrocode}
+\def\newlinemacro{\\}
+\def\spacemacro{ }
+\def\bslashmacro{\textbackslash}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\yPrintMacroCode}
+%    \begin{macrocode}
+\begingroup
+\catcode`\^^M=\active%
+\gdef\LL{\def^^M{.\\}}%
+\gdef\BM{\def^^M{\egroup\hbox\bgroup\strut}}%
+\endgroup
+\def\yPrintMacroCode{%
+  \begingroup
+  \ttfamily
+  \ydoc@letbslash\ydoc@otherbslash
+  \obeylines
+  \noindent\themacrocode
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@activeM}
+%    \begin{macrocode}
+\begingroup
+\obeylines%
+\catcode13=\active%
+\global\let\ydoc@activeMtoken=^^M%
+\global\def\ydoc@activeM{^^M}%
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@activebslash}
+%    \begin{macrocode}
+{
+\@firstofone{%
+\catcode`\\=\active%
+\gdef\ydoc@activebslash
+}{\}%}
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@otherbslash}
+%    \begin{macrocode}
+\begingroup
+\escapechar\m@ne
+\xdef\ydoc@otherbslash{\string\\}
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@letbslash}
+%    \begin{macrocode}
+\def\ydoc@letbslash{%
+  \expandafter\let\ydoc@activebslash
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@defbslash}
+%    \begin{macrocode}
+\def\ydoc@defbslash{%
+  \expandafter\def\ydoc@activebslash
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@edefbslash}
+%    \begin{macrocode}
+\def\ydoc@edefbslash{%
+  \expandafter\def\ydoc@activebslash
+}
+%    \end{macrocode}
+% \end{macro}
 %
 % \begin{environment}{environment}
 %    \begin{macrocode}

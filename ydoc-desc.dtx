@@ -249,6 +249,9 @@
 % \DescribeLength\afterdescskip {~~6pt plus 2pt minus 2pt}
 % These length define the indention and vertical distances before and after a \cs{Describe\ldots} macro or environment, respectively.
 %
+% \DescribeLength\descsep       {1em in \texttt{tt} font = 10.5pt}
+% This macro defines the space on the left and right side between the description text and the framed box.
+%
 % \StopEventually{}
 %
 % \clearpage
@@ -452,9 +455,13 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\MacroInternalIndent}
+% \begin{macro}{\descsep}
 %    \begin{macrocode}
-\def\MacroInternalIndent{1em}
+\newdimen\descsep
+\begingroup
+\ttfamily
+\global\descsep=1em\relax
+\endgroup
 %    \end{macrocode}
 % \end{macro}
 %
@@ -765,9 +772,9 @@
   \par\vspace\beforedescskip
   \noindent\hspace*{\descindent}%
   \ifdim\wd\@tempboxa>\linewidth
-    \makebox[\linewidth][c]{\fbox{\hspace*{\MacroInternalIndent}\usebox{\@tempboxa}\hspace*{\MacroInternalIndent}}}
+    \makebox[\linewidth][c]{\fbox{\hspace*{\descsep}\usebox{\@tempboxa}\hspace*{\descsep}}}
   \else
-    \fbox{\hspace*{\MacroInternalIndent}\usebox{\@tempboxa}\hspace*{\MacroInternalIndent}}%
+    \fbox{\hspace*{\descsep}\usebox{\@tempboxa}\hspace*{\descsep}}%
   \fi
   \par\vspace\afterdescskip
 }
@@ -784,7 +791,7 @@
 %    \begin{macrocode}
 \def\DescribeEnv@content{%
   \hbox\bgroup\strut
-  \hspace*{\MacroInternalIndent}%
+  \hspace*{\descsep}%
   \ignorespaces
 }%
 %    \end{macrocode}
@@ -816,7 +823,7 @@
         {\bgroup}%
         {%
          \hbox\bgroup\strut
-         \hspace*{\MacroInternalIndent}%
+         \hspace*{\descsep}%
          \ignorespaces
         }%
     }%
@@ -827,7 +834,7 @@
       }%
     \else
       \def\after@Macro@args{%
-        \hbox{\hspace*{\MacroInternalIndent}\strut\envcodestyle\MacroArgs#1}%
+        \hbox{\hspace*{\descsep}\strut\envcodestyle\MacroArgs#1}%
         \bgroup\end{DescribeEnv}
       }%
     \fi
@@ -848,7 +855,7 @@
 \def\DescribeEnv@newline{%
   \strut\egroup
   \hbox\bgroup
-  \hspace*{\MacroInternalIndent}%
+  \hspace*{\descsep}%
   \ignorespaces
 }%
 %    \end{macrocode}
@@ -893,7 +900,7 @@
 \def\PrintEnv{%
   \par\vspace\beforedescskip
   \noindent\hspace*{\descindent}%
-  \fbox{\hspace*{\MacroInternalIndent}\usebox{\@tempboxa}\hspace*{\MacroInternalIndent}}%
+  \fbox{\hspace*{\descsep}\usebox{\@tempboxa}\hspace*{\descsep}}%
   \par\vspace\afterdescskip
 }
 %    \end{macrocode}

@@ -1,0 +1,237 @@
+% \iffalse
+%<*copyright>
+%% Copyright (c) 2010 by Martin Scharrer <martin@scharrer-online.de>
+%% WWW: http://latex.scharrer-online.de/
+%%
+%% This work may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License, either version 1.3
+%% of this license or (at your option) any later version.
+%% The latest version of this license is in
+%%  http://www.latex-project.org/lppl.txt
+%% and version 1.3 or later is part of all distributions of LaTeX
+%% version 2005/12/01 or later.
+%%
+%% This work has the LPPL maintenance status `maintained'.
+%%
+%% The Current Maintainer of this work is Martin Scharrer.
+%%
+%% This work consists of the files ydoc-expl.dtx and ydoc-expl.ins
+%% and the derived file ydoc-expl.sty.
+%</copyright>
+% \fi
+%
+% \iffalse
+%<*driver|package>
+\RequirePackage{svn-prov}[2010/04/03]
+%</driver|package>
+%<*driver>
+\ProvidesFileSVN[ydoc-expl.dtx]
+%</driver>
+%<package>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<package>\ProvidesPackageSVN
+%<*driver|package>
+    {$Id: ydoc-expl.dtx 1802 2010-04-03 13:52:09Z martin $}
+    [v0.1 ydoc: code description macros]
+%</driver|package>
+%
+%<*driver>
+\DefineFileInfoSVN
+\GetFileInfoSVN*
+\documentclass{ltxdoc}
+\RequirePackage{ydoc-desc}
+\RequirePackage{ydoc-code}
+\RequirePackage{ydoc-expl}[\filedate]
+
+\usepackage{lmodern}
+\usepackage{tikz}
+\usepackage{showexpl}
+\usepackage{booktabs}
+
+\newdimen\tempskip
+
+\def\tablecaption{%
+  \tempskip=\abovecaptionskip
+  \abovecaptionskip=\belowcaptionskip
+  \belowcaptionskip=\tempskip
+  \caption
+}
+
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+\begin{document}
+  \DocInput{ydoc-expl.dtx}
+  \PrintChanges
+  \PrintIndex
+\end{document}
+%</driver>
+% \fi
+%
+% \CheckSum{0}
+%
+% \CharacterTable
+%  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
+%   Lower-case    \a\b\c\d\e\f\g\h\i\j\k\l\m\n\o\p\q\r\s\t\u\v\w\x\y\z
+%   Digits        \0\1\2\3\4\5\6\7\8\9
+%   Exclamation   \!     Double quote  \"     Hash (number) \#
+%   Dollar        \$     Percent       \%     Ampersand     \&
+%   Acute accent  \'     Left paren    \(     Right paren   \)
+%   Asterisk      \*     Plus          \+     Comma         \,
+%   Minus         \-     Point         \.     Solidus       \/
+%   Colon         \:     Semicolon     \;     Less than     \<
+%   Equals        \=     Greater than  \>     Question mark \?
+%   Commercial at \@     Left bracket  \[     Backslash     \\
+%   Right bracket \]     Circumflex    \^     Underscore    \_
+%   Grave accent  \`     Left brace    \{     Vertical bar  \|
+%   Right brace   \}     Tilde         \~}
+%
+%
+% \changes{v0.1}{2010/04/01}{Initial version}
+%
+% \DoNotIndex{\newcommand,\newenvironment}
+%
+% \GetFileInfoSVN{ydoc-expl.dtx}
+% \title{The \textsf{ydoc-expl} package}
+% \author{Martin Scharrer \\ \texttt{martin@scharrer-online.de}}
+% \date{\fileversion\ from \filedate}
+%
+% \maketitle
+%
+% \begin{abstract}
+% {\color{red}This package is currently under development.
+% All functionality, settings and macro names can change in later versions.}
+%
+% This package is part of the \pkg{ydoc} bundle and provides macros and environments to document
+% the source code of \LaTeX\ packages and classes.
+% \end{abstract}
+%
+% \section{Introduction}
+% The \pkg{ydoc} packages allow the documentation of \LaTeX\ packages and classes.
+% The name stands for ``\emph{Y}et another \emph{Doc}umentation Package'' and is a pun on
+% the fact that there are several documentation packages written by package developers
+% to document their own packages. All these packages didn't suited the author and therefore he,
+% take a guess, wrote his own documentation package.
+%
+% This documentation uses the \pkg{ydoc-expl} package itself and therefore also acts as a live example.
+%
+% \subsection{Similar Packages}
+% Other documentation related classes and packages are \pkg{ltxdoc}, \pkg{doc}, \pkg{dox}, \pkg{xdoc}, \pkg{gmdoc}, \pkg{pauldoc}, \pkg{hypdoc},
+% \pkg{codedoc}, \pkg{nicetext} and \pkg{tkz-doc}.
+%
+% The \pkg{ydoc-expl} macro provides some alternative versions of macros also provided by \LaTeX\ standard documentation package \pkg{doc}.
+% It implements some features also provided by the package \pkg{nicetext}.
+%
+% \subsection{Copyright and Licence}
+% \lstinputlisting[basicstyle=\footnotesize\ttfamily]{ydoc-expl.cpr}
+%
+% \section{Usage}
+%
+% \subsection{Description Macros and Environments}
+%
+% \begin{examplecode}[gobble=4]
+%   \begin{tikzpicture}
+%     \draw node {A} -- +(3,2) node {B};
+%   \end{tikzpicture}
+% \end{examplecode}
+%
+% \begin{example}
+%   \caption{Test}
+%   \begin{examplecode}[gobble=6]
+%     \begin{tikzpicture}
+%       \draw node {A} -- +(3,2) node {B};
+%     \end{tikzpicture}
+%   \end{examplecode}
+% \end{example}
+%
+% \StopEventually{}
+%
+% \clearpage
+% \section{Implementation}
+% \iffalse
+%<*package>
+% \fi
+%
+%    \begin{macrocode}
+\newcounter{example}
+\def\examplename{Example}
+\newenvironment{example}[1]{%
+  \par\bigskip\noindent
+  \centerline{\examplename~\refstepcounter{example}\theexample: #1}%
+  \smallskip
+  \hrule
+  \smallskip
+}{%
+  \smallskip
+  \hrule
+  \par\bigskip
+}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\RequirePackage{listings}
+\lst@RequireAspects{writefile}
+\def\ydoc@exafile{\jobname.exa}
+\def\exampleprintsettings{frame=lines}%
+
+\newbox\examplecodebox
+\newbox\exampleresultbox
+
+\def\HandleExample{%
+  \setbox\examplecodebox\hbox{\color@setgroup
+    \expandafter\expandafter\expandafter\lstinputlisting
+    \expandafter\expandafter\expandafter[%
+    \expandafter\exampleprintsettings\expandafter,\thisexampleprintsettings]%
+    {\ydoc@exafile}%
+  \color@endgroup}%
+  \setbox\exampleresultbox\hbox{\color@setgroup
+    \@@input\ydoc@exafile\relax
+  \color@endgroup}%
+  \PrintExample
+}
+
+\def\HandleExample{%
+  \begingroup
+  \lstset{basicstyle=\ttfamily}%
+  \LTXinputExample[varwidth]{\ydoc@exafile}%
+  \endgroup
+}
+
+\def\PrintExample{%
+  \usebox\examplecodebox
+  \hfill
+  \usebox\exampleresultbox
+}
+\def\examplecodesettings{gobble=4}
+%    \end{macrocode}
+%
+% \begin{environment}{examplecode}
+%    \begin{macrocode}
+\lstnewenvironment{examplecode}[1][]{%
+  \def\thisexampleprintsettings{#1}%
+  \expandafter\lstset\expandafter{\examplecodesettings,#1}%
+  \setbox\@tempboxa\hbox\bgroup
+  \lst@BeginWriteFile{\ydoc@exafile}%
+}
+{%
+  \lst@EndWriteFile
+  \egroup
+  \HandleExample
+}
+%    \end{macrocode}
+% \end{environment}
+%
+%    \begin{macrocode}
+\RequirePackage{float}
+
+\floatstyle{ruled}
+\newfloat{example}{tbhp}{loe}
+\floatname{example}{\examplename}
+\def\examplename{Example}
+%    \end{macrocode}
+%
+%
+% \iffalse
+%</package>
+% \fi
+%\Finale
+\endinput

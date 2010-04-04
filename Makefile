@@ -1,6 +1,6 @@
 # $Id$
 
-PACKAGE     = ydoc-desc
+PACKAGE     = ydoc-code
 PACKAGE_STY = ${PACKAGE}.sty
 PACKAGE_DTX = ${PACKAGE}.dtx
 PACKAGE_SCR =

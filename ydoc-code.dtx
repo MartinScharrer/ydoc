@@ -142,16 +142,14 @@
 %
 % \begin{macro}{\ydocwrite}
 %    \begin{macrocode}
-\@ifundefined{ydocwrite}{%
-  \newwrite\ydocwrite
-}{}
+\newwrite\ydocwrite
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ydocwrite}
+% \begin{macro}{\ydocfname}
 %    \begin{macrocode}
-\@ifundefined{ydoctempwrite}{%
-  \def\ydoctempwrite{\jobname.cod}%
+\@ifundefined{ydocfname}{%
+  \def\ydocfname{\jobname.cod}%
 }{}
 %    \end{macrocode}
 % \end{macro}
@@ -162,11 +160,8 @@
   \let\do\@makeother
   \dospecials
   \catcode`\\=\active
-  %\endlinechar=10%
-  %\obeyspaces
-  \obeylines
-  %\catcode10=12%
-  \catcode`\ =\active%
+  \catcode`\^^M=\active
+  \catcode`\ =\active
 }
 %    \end{macrocode}
 % \end{macro}
@@ -174,6 +169,7 @@
 % \begin{environment}{macrocode}
 %    \begin{macrocode}
 \def\macrocode{%
+  \par\noindent
   \begingroup
   \ydoc@catcodes
   \macro@code
@@ -185,28 +181,33 @@
 % \begin{macro}{\macro@code}
 %    \begin{macrocode}
 \begingroup
+\endlinechar\m@ne
 \@firstofone{%
 \catcode`\|=0\relax
 \catcode`\(=1\relax
 \catcode`\)=2\relax
 \catcode`\*=14\relax
-\catcode`\\=\active
 \catcode`\{=12\relax
 \catcode`\}=12\relax
 \catcode`\ =12\relax
 \catcode`\%=12\relax
-\catcode13=\active
-\obeylines
-\catcode`\ =\active%
+\catcode`\\=\active
+\catcode`\^^M=\active
+\catcode`\ =\active
 }*
 |gdef|macro@code#1^^M%    \end{macrocode}(*
-|endgroup|expandafter|macro@@code|expandafter(|ydoc@removeline#1^^M)*
+|endgroup|expandafter|macro@@code|expandafter(|ydoc@removeline#1|noexpand|lastlinemacro^^M)*
 )*
-|gdef|ydoc@removeline#1^^M(#1)*
+|gdef|ydoc@removeline#1^^M(|noexpand|firstlinemacro)*
 |gdef|ydoc@defspecialmacros(*
 |def^^M(|noexpand|newlinemacro)*
 |def (|noexpand|spacemacro)*
 |def\(|noexpand|bslashmacro)*
+)*
+|gdef|ydoc@defrevspecialmacros(*
+|def|newlinemacro(|noexpand^^M)*
+|def|spacemacro(|noexpand )*
+|def|bslashmacro(|noexpand\)*
 )*
 |endgroup
 %    \end{macrocode}
@@ -223,84 +224,109 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\a}
+% \begin{macro}{\linenumberbox}
 %    \begin{macrocode}
 \def\newlinemacro{\\\null}
 \def\spacemacro{\ }
 \def\bslashmacro{\char92}
+\def\lastlinemacro#1{}
+\def\firstlinemacro{\linenumberbox}
+\def\newlinemacro{\\\linenumberbox}
+\newcounter{linenumber}
+\def\linenumberbox{%
+  \hbox to 1.25em{}%
+  \llap{%
+    \stepcounter{linenumber}%
+    {\footnotesize\color{gray}\thelinenumber~}%
+  }
+}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\yPrintMacroCode}
 %    \begin{macrocode}
-\begingroup
-\catcode`\^^M=\active%
-\gdef\LL{\def^^M{.\\}}%
-\gdef\BM{\def^^M{\egroup\hbox\bgroup\strut}}%
-\endgroup
 \def\yPrintMacroCode{%
   \begingroup
   \ttfamily
-  \ydoc@letbslash\ydoc@otherbslash
-  \obeylines
   \noindent\themacrocode
   \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ydoc@activeM}
+% \begin{macro}{\yPrintMacroCode}
 %    \begin{macrocode}
-\begingroup
-\obeylines%
-\catcode13=\active%
-\global\let\ydoc@activeMtoken=^^M%
-\global\def\ydoc@activeM{^^M}%
-\endgroup
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\ydoc@activebslash}
-%    \begin{macrocode}
-{
-\@firstofone{%
-\catcode`\\=\active%
-\gdef\ydoc@activebslash
-}{\}%}
+\def\yPrintMacroCode{%
+  \begingroup
+  \let\firstlinemacro\empty
+  \let\lastlinemacro\empty
+  \def\newlinemacro{^^J}%
+  \let\bslashmacro\bslash
+  \let\spacemacro\space
+  \immediate\openout\ydocwrite=\ydocfname\relax
+  \immediate\write\ydocwrite{\themacrocode}%
+  \immediate\closeout\ydocwrite
+  \ydoclistingssettings
+  \lstinputlisting{\ydocfname}%
+  \endgroup
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ydoc@otherbslash}
+% \begin{macro}{\ydoclistingssettings}
 %    \begin{macrocode}
-\begingroup
-\escapechar\m@ne
-\xdef\ydoc@otherbslash{\string\\}
-\endgroup
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\ydoc@letbslash}
-%    \begin{macrocode}
-\def\ydoc@letbslash{%
-  \expandafter\let\ydoc@activebslash
+\def\ydoclistingssettings{%
+  \lstset{%
+    language=[latex]tex,basicstyle=\ttfamily,
+    numbers=left,numberstyle=\tiny\color{gray},firstnumber=last,
+    breaklines,prebreak={\mbox{\tiny$\swarrow$}}%
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ydoc@defbslash}
+% \begin{environment}{macro}
 %    \begin{macrocode}
-\def\ydoc@defbslash{%
-  \expandafter\def\ydoc@activebslash
+\def\macro#1{%
+  \yPrintMacroImplName{#1}%
+}
+\def\endmacro{}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{environment}{environment}
+%    \begin{macrocode}
+\def\environment#1{%
+  \yPrintEnvImplName{#1}%
+}
+\def\endenvironment{}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{macro}{\yPrintMacroImplName}
+%    \begin{macrocode}
+\def\yPrintMacroImplName#1{%
+  \par\bigskip\noindent
+  \hbox{\hspace*{\descindent}\fbox{{\implstyle{\string#1}}}}%
+  \par\medskip
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ydoc@edefbslash}
+% \begin{macro}{\yPrintEnvImplName}
+% test
 %    \begin{macrocode}
-\def\ydoc@edefbslash{%
-  \expandafter\def\ydoc@activebslash
+\def\yPrintEnvImplName#1{%
+  \par\bigskip\noindent
+  \hbox{\hspace*{\descindent}\fbox{{\implstyle{#1}}}}%
+  \par\medskip
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\implstyle}
+%    \begin{macrocode}
+\def\implstyle{\ttfamily\bfseries\color{macroimpl}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -308,6 +334,34 @@
 %    \begin{macrocode}
 %    \end{macrocode}
 % \end{environment}
+%
+% \begin{environment}{environment}
+%    \begin{macrocode}
+
+%    \end{macrocode}
+% \end{environment}
+%
+%
+% \begin{environment}{environment}
+%    \begin{macrocode}
+
+
+%    \end{macrocode}
+% \end{environment}
+%
+%
+% \begin{macro}{\bslash}
+% Defines an expandable backslash with catcode 12: `\texttt{\bslash}$_{12}$'.
+% The |\@firstofone| trick is used to read the |\gdef\bslash| code before changing the catcode.
+%    \begin{macrocode}
+{%
+\@firstofone{%
+  \catcode`\\=12
+  \gdef\bslash
+}{\}
+}%}
+%    \end{macrocode}
+% \end{macro}
 %
 %
 %\iffalse

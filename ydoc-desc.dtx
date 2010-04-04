@@ -607,7 +607,7 @@
 % macros calling \cs{read@Macro@args}.
 %    \begin{macrocode}
 \def\end@Macro@args{%
-  \egroup
+  \y@egroup
   \after@Macro@args
 }
 %    \end{macrocode}
@@ -759,12 +759,12 @@
 %    \end{macrocode}
 % A \cs{DescribeMacro} places itself in a \env{DescribeMacros} environment.
 % Multiple \cs{DescribeMacro} macros will stack themselves inside this environment.
-% For this to work \cs{DescribeMacros} is locally defined to |\egroup| to close the
+% For this to work \cs{DescribeMacros} is locally defined to |\y@egroup| to close the
 % |\hbox| from the previous \cs{DescribeMacro}.
 %    \begin{macrocode}
 \def\DescribeMacro{%
   \DescribeMacros
-  \let\DescribeMacros\egroup
+  \let\DescribeMacros\y@egroup
   \def\after@Macro@args{\endDescribeMacros}%
   \begingroup\makeatletter
   \Describe@Macro
@@ -776,7 +776,7 @@
 %    \begin{macrocode}
 \def\Describe@Macro#1{%
   \endgroup
-  \hbox\bgroup
+  \hbox\y@bgroup
   \yPrintMacroName{#1}%
   \macroargsstyle
   \read@Macro@arg
@@ -835,7 +835,7 @@
   \begingroup
   \let\Macro\@Macro
   \parindent=0pt\relax
-  \setbox\descbox\vbox\bgroup
+  \setbox\descbox\vbox\y@bgroup
 }
 %    \end{macrocode}
 % \end{macro}
@@ -843,7 +843,7 @@
 % \begin{macro}{\endDescribeMacros}
 %    \begin{macrocode}
 \def\endDescribeMacros{%
-  \egroup
+  \y@egroup
   \yPrintMacros
   \endgroup
 }
@@ -857,7 +857,7 @@
 \newcommand*\DescribeLength{%
   \begingroup
   \let\DescribeLength\Describe@Length
-  \setbox\descbox\hbox\bgroup
+  \setbox\descbox\hbox\y@bgroup
     \tabular{@{}l@{\hspace{2em}}l@{}}%
     \Describe@Length
 }
@@ -873,7 +873,7 @@
     {\\}%
     {%
       \endtabular
-      \egroup
+      \y@egroup
       \yPrintLength
       \endgroup
     }%
@@ -905,9 +905,9 @@
   \ifx\@currenvir\DescribeEnv@string
     \def\after@Macro@args{%
       \let\after@Macro@args\empty
-      \@ifnextchar\end
-        {\bgroup}%
-        {\bgroup\DescribeEnv@newline}%
+      \setbox\@tempboxa\hbox\y@bgroup
+      \@ifnextchar\end{}%
+        {\DescribeEnv@newline}%
       #1%
     }%
 %    \end{macrocode}
@@ -916,11 +916,13 @@
   \else
     \ifx\relax#1\relax
       \def\after@Macro@args{%
-        \bgroup\endDescribeEnv
+        \y@bgroup
+        \endDescribeEnv
       }%
     \else
       \def\after@Macro@args{%
-        \bgroup\DescribeEnv@newline\MacroArgs#1%
+        \setbox\@tempboxa\hbox\y@bgroup
+        \DescribeEnv@newline\MacroArgs#1%
         \endDescribeEnv
       }%
     \fi
@@ -928,10 +930,10 @@
 %    \end{macrocode}
 % Start |\vbox| and adds first line.
 %    \begin{macrocode}
-  \setbox\descbox\vbox\bgroup
+  \setbox\descbox\vbox\y@bgroup
   \envcodestyle
   \let\yPrintEnv\yPrintSubEnv
-  \hbox\bgroup
+  \hbox\y@bgroup
   \yPrintEnvName{\begin}{\DescribeEnv@name}%
   \macroargsstyle
   \read@Macro@arg
@@ -941,10 +943,13 @@
 %
 % \begin{macro}{\DescribeEnv@newline}
 % Closes existing and starts a new horizontal box representing a indented line.
+% The optional argument allows to add extra space between lines like the normal |\\|.
+% Negative values are not supported.
 %    \begin{macrocode}
-\def\DescribeEnv@newline{%
-  \egroup
-  \hbox\bgroup\strut
+\newcommand*\DescribeEnv@newline[1][0pt]{%
+  \strut\y@egroup
+  {\vskip#1}%
+  \hbox\y@bgroup\strut
   \hspace*{\descsep}%
   \ignorespaces
 }%
@@ -968,9 +973,21 @@
 % \begin{macro}{\endDescribeEnv}
 %    \begin{macrocode}
 \def\endDescribeEnv{%
-  \egroup
-  \hbox{\yPrintEnvName{\end}{\DescribeEnv@name}}%
-  \egroup
+  \y@egroup
+  \begingroup
+  \setbox\@tempboxa\lastbox
+  \ifcase0%
+    \ifdim\wd\@tempboxa>\descsep1\fi
+    \ifdim\ht\@tempboxa>\ht\strutbox1\fi
+    \ifdim\dp\@tempboxa>\dp\strutbox1\fi
+  \else
+    \box\@tempboxa
+  \fi
+  \endgroup
+  \hbox\y@bgroup
+    \yPrintEnvName{\end}{\DescribeEnv@name}
+  \y@egroup
+  \y@egroup
   \yPrintEnv
   \endgroup
 }
@@ -1099,6 +1116,18 @@
 \gdef\braceleft <{>
 \gdef\braceright<}>
 \endgroup
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \subsubsection{Other Macros}
+%
+% \begin{macro}{\y@bgroup}
+% \begin{macro}{\y@egroup}
+% These macros are used to begin and end |\vbox|/|\hbox|-es.
+%    \begin{macrocode}
+\def\y@bgroup{\bgroup\color@setgroup}
+\def\y@egroup{\color@endgroup\egroup}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}

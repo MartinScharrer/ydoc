@@ -177,7 +177,13 @@
 % The macros are described using \cs{Macro}, which has a slightly different definition than outside of this environment, to place the
 % description into a |\hbox|. The environment stacks these |\hbox|es in a |\vbox|. The macros can also be placed freely using anything
 % which produces a |\hbox|, e.g.\ |\hbox{\Macro\A ~~~ \Macro\B}| or using
-% a |tabular| wrapped with a |\hbox| (use |@{}| before the first and after the last column declaration to to get rid of the extra spacing).
+% a |tabular| (see also \env{DescribeMacrosTab}).
+%
+% \DescribeEnv[<tabular content>]{DescribeMacrosTab}{<tabular column definition>}
+% This is a special version of the \env{DescribeMacros} environment which adds a tabular environment around the content.
+% This is useful if a large set of small macros should be desribed at once. Placing them all below each other would result in a very bad page layout.
+% The environment has one argument which is passed to \env{tabular} as the column definition. A `|@{}|' is added before and after to remove any margins.
+%
 %
 % \begin{DescribeEnv}{DescribeEnv}{<name>}<arguments>
 %   \MacroArgs<body content>\relax\space |\\|\\
@@ -194,6 +200,7 @@
 %
 % The body content is placed into a indented |\hbox{}| stacked inside a |\vbox{}| also holding the environment begin and end line.
 % The |\\| macro is redefined to create a new indented |\hbox| acting as new code line.
+% Therefore this environment is similar to a one-column \env{tabular}: all macros placed into a line are only valid up to the next line end.
 %
 % \begin{table}
 % \tablecaption{Supported `arguments' for \cs{DescribeMacro}/\cs{DescribeEnv}/\cs{MacroArgs}.}\label{tab:macroargs}
@@ -228,11 +235,9 @@
 % This macro can be used to describe \LaTeX\ lengths also known as dimensions. Multiple \cs{DescribeLength} macros in a row will automatically be grouped.
 %
 % \subsection{Format Macros}
-% \begin{DescribeMacros}
-%   \hbox{\begin{tabular}{@{}ll@{}}
+% \begin{DescribeMacrosTab}{ll}
 %     \Macro\cs{<macro name>}    & \Macro\env{<environment name>} \\
 %     \Macro\pkg{<package name>} & \Macro\cls{<class name>}       \\
-%   \end{tabular}}
 % \end{DescribeMacros}
 % This macros can be used to format names of macros, environments, packages and classes, respectively.
 % At the moment they simply use |\texttt|.
@@ -243,33 +248,25 @@
 % They should only be used with text-typer font when used in text, because other fonts might not have the
 % correct characters. The macros must be protected when used in a moving argument.
 %
-% \DescribeMacros
-%   \hbox\bgroup
-%   \tabular{@{}ll@{}}
+% \DescribeMacrosTab{@{}ll@{}}
 %     \Macro\meta{<meta text>}     &
 %     \Macro\marg{<argument text>} \\
 %     \Macro\oarg{<argument text>} &
 %     \Macro\parg{<argument text>} \\
 %     \Macro\aarg{<argument text>} &
 %     \Macro\sarg                  \\
-%   \endtabular
-%   \egroup
-% \endDescribeMacros
+% \endDescribeMacrosTab
 % This macros allow to typeset meta text and mandatory, optional, picture and beamer overlay arguments as well as a star symbol.
 % They are used internally by \cs{MacroArgs} and friends. See Table~\ref{tab:macroargs} for examples.
 %
-% \DescribeMacros
-%   \hbox\bgroup
-%   \tabular{@{}ll@{}}
+% \DescribeMacrosTab{ll}
 %     \Macro\metastyle &
 %     \Macro\margstyle \\
 %     \Macro\oargstyle &
 %     \Macro\pargstyle \\
 %     \Macro\aargstyle &
 %     \Macro\sargstyle \\
-%   \endtabular
-%   \egroup
-% \endDescribeMacros
+% \endDescribeMacrosTab
 % This macros are used to define the style in which the corresponding macros above are being formatted.
 % They are used like \MacroArgs '{'<\textbackslash stylemacro>{<material>}'}' to allow the styles to
 % use macros like |\ttfamily| or |\texttt|\marg{material}. By default the optional argument and the also optional star are
@@ -846,6 +843,33 @@
   \y@egroup
   \yPrintMacros
   \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DescribeMacrosTabcolsep}
+%    \begin{macrocode}
+\def\DescribeMacrosTabcolsep{\tabcolsep}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DescribeMacrosTab}
+%    \begin{macrocode}
+\def\DescribeMacrosTab{%
+  \DescribeMacros
+  \hbox\y@bgroup
+  \tabcolsep=\DescribeMacrosTabcolsep\relax
+  \DescribeMacrosTab@
+}
+\def\DescribeMacrosTab@#1{\tabular{@{}#1@{}}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endDescribeMacrosTab}
+%    \begin{macrocode}
+\def\endDescribeMacrosTab{%
+  \endtabular\y@egroup
+  \endDescribeMacros
 }
 %    \end{macrocode}
 % \end{macro}

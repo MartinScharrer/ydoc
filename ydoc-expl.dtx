@@ -128,11 +128,16 @@
 %
 % \subsection{Description Macros and Environments}
 %
-% \begin{examplecode}[gobble=4]
-%   \begin{tikzpicture}
-%     \draw node {A} -- +(3,2) node {B};
-%   \end{tikzpicture}
-% \end{examplecode}
+% \DescribeEnv[<example code>]{examplecode}[<options>]
+%
+% \begin{DescribeEnv}{example}
+%   \MacroArgs '\caption'{<caption text>}  \\[\medskipamount]
+%   \MacroArgs <other \TeX\ code>          \\[\medskipamount]
+%   \begin{DescribeEnv}{examplecode}[<options>]
+%     \MacroArgs <example code>
+%   \end{DescribeEnv}                      \\[\medskipamount]
+%   \MacroArgs <other \TeX\ code>          \\[\medskipamount]
+% \end{DescribeEnv}
 %
 % \begin{example}
 %   \caption{Test}
@@ -151,6 +156,8 @@
 %<*package>
 % \fi
 %
+% \iffalse
+%<*dontinclude>
 %    \begin{macrocode}
 \newcounter{example}
 \def\examplename{Example}
@@ -167,16 +174,38 @@
 }
 %    \end{macrocode}
 %
+% \begin{macro}{\PrintExample}
+%    \begin{macrocode}
+\def\PrintExample{%
+  \usebox\examplecodebox
+  \hfill
+  \usebox\exampleresultbox
+}
+%    \end{macrocode}
+% \end{macro}
+%</dontinclude>
+% \fi
+%
 %    \begin{macrocode}
 \RequirePackage{listings}
 \lst@RequireAspects{writefile}
 \def\ydoc@exafile{\jobname.exa}
+%    \end{macrocode}
+%
+% \begin{macro}{\exampleprintsettings}
+%    \begin{macrocode}
 \def\exampleprintsettings{frame=lines}%
-
+%    \end{macrocode}
+% \end{macro}
+%
+%    \begin{macrocode}
 \newbox\examplecodebox
 \newbox\exampleresultbox
-
-\def\HandleExample{%
+%    \end{macrocode}
+%
+% \begin{macro}{\BoxExample}
+%    \begin{macrocode}
+\def\BoxExample{%
   \setbox\examplecodebox\hbox{\color@setgroup
     \expandafter\expandafter\expandafter\lstinputlisting
     \expandafter\expandafter\expandafter[%
@@ -186,21 +215,24 @@
   \setbox\exampleresultbox\hbox{\color@setgroup
     \@@input\ydoc@exafile\relax
   \color@endgroup}%
-  \PrintExample
 }
-
-\def\HandleExample{%
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintExample}
+%    \begin{macrocode}
+\def\PrintExample{%
   \begingroup
   \lstset{basicstyle=\ttfamily}%
+  \MakePercentComment
   \LTXinputExample[varwidth]{\ydoc@exafile}%
   \endgroup
 }
-
-\def\PrintExample{%
-  \usebox\examplecodebox
-  \hfill
-  \usebox\exampleresultbox
-}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%    \begin{macrocode}
 \def\examplecodesettings{gobble=4}
 %    \end{macrocode}
 %
@@ -215,20 +247,23 @@
 {%
   \lst@EndWriteFile
   \egroup
-  \HandleExample
+  \PrintExample
 }
 %    \end{macrocode}
 % \end{environment}
 %
 %    \begin{macrocode}
 \RequirePackage{float}
-
+%    \end{macrocode}
+%
+% \begin{environment}{example}
+%    \begin{macrocode}
 \floatstyle{ruled}
 \newfloat{example}{tbhp}{loe}
 \floatname{example}{\examplename}
 \def\examplename{Example}
 %    \end{macrocode}
-%
+% \end{environment}
 %
 % \iffalse
 %</package>

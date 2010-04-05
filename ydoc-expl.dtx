@@ -44,7 +44,6 @@
 
 \usepackage{lmodern}
 \usepackage{tikz}
-\usepackage{showexpl}
 \usepackage{booktabs}
 
 \newdimen\tempskip
@@ -221,6 +220,7 @@
 %
 % \begin{macro}{\PrintExample}
 %    \begin{macrocode}
+\RequirePackage{showexpl}
 \def\PrintExample{%
   \begingroup
   \lstset{basicstyle=\ttfamily}%
@@ -258,10 +258,20 @@
 %
 % \begin{environment}{example}
 %    \begin{macrocode}
-\floatstyle{ruled}
+\floatstyle{plain}
 \newfloat{example}{tbhp}{loe}
 \floatname{example}{\examplename}
 \def\examplename{Example}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{environment}{exampletable}
+%    \begin{macrocode}
+\newenvironment{exampletable}{%
+  \floatstyle{plaintop}%
+  \restylefloat{example}%
+  \example
+}{\endexample}
 %    \end{macrocode}
 % \end{environment}
 %

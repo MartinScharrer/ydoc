@@ -126,6 +126,28 @@
 %
 % \subsection{Description Macros and Environments}
 %
+% \begin{DescribeEnv}{macro}[<number of arguments>]!\color{optional}\colorlet{meta}{metaoptional}!{<arg~1~description>}!\ldots!{<arg~$n$~description>}
+%  \MacroArgs<macro documentation>\\
+%  \begin{DescribeEnv}{macrocode}
+%     \MacroArgs<macro code>
+%  \end{DescribeEnv}\\
+%  \ldots
+% \end{DescribeEnv}
+% The implementation of macros can be documented using this environment. The actual \meta{macro code} must be placed in a \env{macrocode} environment.
+% Longer macro definition can be split using multiple \env{macrocode} environments with interleaved documentation texts.
+%
+% The \pkg{ydoc} definition of the \env{macro} environment has an additional feature compare to \pkg{doc}. The arguments of the macro (|#1|, |#2|, \ldots) can be 
+% documented in a vertical list. The environment has an optional argument to declare the \meta{number of arguments} the macro implementation has.
+% The descriptions of this macro arguments are read from the next arguments of the environment. If the \meta{number of arguments} is not given or zero (or less)
+% no further arguments are read by the \env{macro} environment.
+%
+% \begin{DescribeEnv}{macrocode}
+%     \MacroArgs<macro code>
+% \end{DescribeEnv}
+% This environment wraps around any \TeX\ code and types it verbatim. The environment end is read verbatim as well and must be written on a separate
+% line beginning with a percent followed by exactly four spaces: `\verb*+%    \end{macrocode}+'.
+%
+%
 % \StopEventually{}
 %
 % \clearpage
@@ -142,7 +164,9 @@
 %
 % \begin{macro}{\ydocwrite}
 %    \begin{macrocode}
-\newwrite\ydocwrite
+\@ifundefined{ydocwrite}{%
+  \newwrite\ydocwrite
+}{}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -178,7 +202,7 @@
 %    \end{macrocode}
 % \end{environment}
 %
-% \begin{macro}{\macro@code}
+% \begin{macro}{\macro@code}[1]{verbatim macro code}
 %    \begin{macrocode}
 \begingroup
 \endlinechar\m@ne
@@ -213,7 +237,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\macro@@code}
+% \begin{macro}{\macro@@code}[1]{verbatim macro code}
 %    \begin{macrocode}
 \def\macro@@code#1{%
   {\ydoc@defspecialmacros
@@ -256,6 +280,9 @@
 %
 % \begin{macro}{\yPrintMacroCode}
 %    \begin{macrocode}
+\RequirePackage{listings}
+%    \end{macrocode}
+%    \begin{macrocode}
 \def\yPrintMacroCode{%
   \begingroup
   \let\firstlinemacro\empty
@@ -285,35 +312,90 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{environment}{macro}
+% \begin{macro}{\macro@impl@args}[1]{number of macro arguments}
+%    \begin{macrocode}
+\def\macro@impl@args[#1]{%
+  \begingroup
+  \parindent=10pt\relax
+  \let\macro@impl@argcnt\@tempcnta
+  \let\macro@impl@curarg\@tempcntb
+  \macro@impl@argcnt=#1\relax
+  \macro@impl@curarg=0\relax
+  \ifnum\macro@impl@curarg<\macro@impl@argcnt\relax
+    \expandafter\macro@impl@arg
+  \else
+    \expandafter\macro@impl@endargs
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@impl@endargs}
+%    \begin{macrocode}
+\def\macro@impl@endargs{%
+  \endgroup
+  \unskip\par\noindent\ignorespaces
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@impl@argline}[2]{argument number}{argument description}
+%    \begin{macrocode}
+\def\macro@impl@argline#1#2{%
+  \par{\texttt{\##1}:~#2}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@impl@arg}[1]{argument description}
+%    \begin{macrocode}
+\def\macro@impl@arg#1{%
+  \advance\macro@impl@curarg by\@ne\relax
+  \macro@impl@argline{\the\macro@impl@curarg}{#1}%
+  \ifnum\macro@impl@curarg<\macro@impl@argcnt\relax
+    \expandafter\macro@impl@arg
+  \else
+    \expandafter\macro@impl@endargs
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{macro}[1]{implemented macro}
 %    \begin{macrocode}
 \def\macro#1{%
   \yPrintMacroImplName{#1}%
+  \@ifnextchar[%]
+    {\macro@impl@args}%
+    {}%
 }
 \def\endmacro{}
 %    \end{macrocode}
 % \end{environment}
 %
-% \begin{environment}{environment}
+% \begin{environment}{environment}[1]{environment name}
 %    \begin{macrocode}
 \def\environment#1{%
   \yPrintEnvImplName{#1}%
+  \@ifnextchar[%]
+    {\macro@impl@args}%
+    {}%
 }
 \def\endenvironment{}
 %    \end{macrocode}
 % \end{environment}
 %
-% \begin{macro}{\yPrintMacroImplName}
+% \begin{macro}{\yPrintMacroImplName}[1]{macro (token)}
 %    \begin{macrocode}
 \def\yPrintMacroImplName#1{%
   \par\bigskip\noindent
   \hbox{\hspace*{\descindent}\fbox{{\implstyle{\string#1}}}}%
-  \par\medskip
+  \par\medskip\noindent
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintEnvImplName}
+% \begin{macro}{\yPrintEnvImplName}[1]{environment name}
 % test
 %    \begin{macrocode}
 \def\yPrintEnvImplName#1{%
@@ -329,26 +411,6 @@
 \def\implstyle{\ttfamily\bfseries\color{macroimpl}}
 %    \end{macrocode}
 % \end{macro}
-%
-% \begin{environment}{environment}
-%    \begin{macrocode}
-%    \end{macrocode}
-% \end{environment}
-%
-% \begin{environment}{environment}
-%    \begin{macrocode}
-
-%    \end{macrocode}
-% \end{environment}
-%
-%
-% \begin{environment}{environment}
-%    \begin{macrocode}
-
-
-%    \end{macrocode}
-% \end{environment}
-%
 %
 % \begin{macro}{\bslash}
 % Defines an expandable backslash with catcode 12: `\texttt{\bslash}$_{12}$'.

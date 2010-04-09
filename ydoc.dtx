@@ -71,7 +71,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1075}
+% \CheckSum{1134}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -97,10 +97,12 @@
 % \GetFileInfoSVN{ydoc.dtx}
 %
 % \title{The \textsf{ydoc} Class and Packages}
-% \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
+% \author{Martin Scharrer \\ \href{mailto:martin@scharrer-online.de}{martin@scharrer-online.de} \\
 % \url{http://latex.scharrer-online.de/ydoc/}\\
 % CTAN: \url{http://tug.ctan.org/pkg/ydoc}}
+% \makeatletter
 % \date{Version \expandafter\@gobble\fileversion\\[0.5ex]\filedate}
+% \makeatother
 %
 % \maketitle
 %
@@ -356,7 +358,7 @@
 % \subsection{Class File}
 %    \begin{macrocode}
 \LoadClassWithOptions{article}
-\RequirePackage{doc}
+%%\RequirePackage{doc}
 \RequirePackage{ydoc}
 \RequirePackage{shortvrb}
 \RequirePackage{newverbs}
@@ -557,12 +559,101 @@
 \def\CheckSum#1{%
   \gdef\ydoc@checksum{#1}%
 }
+\let\ydoc@checksum\z@
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\AlsoImplementation}
+% \begin{macro}{\OnlyDescription}
+% \begin{macro}{\StopEventually}
+% \begin{macro}{\Finale}
+% The first two macros modify the \cs{StopEventually} macro which either
+% stores its argument in \cs{Final} or executes it itself.
+%    \begin{macrocode}
+\def\AlsoImplementation{%
+  \gdef\StopEventually##1{%
+    \@bsphack
+    \gdef\Finale{##1\ydoc@checkchecksum}%
+    \@esphack
+  }%
+}
+\AlsoImplementation
+\def\OnlyDescription{%
+  \@bsphack
+  \long\gdef\StopEventually##1{##1\endinput}%
+  \@esphack
+}
+\let\Finale\relax
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\MakePercentComment}
+% \begin{macro}{\MakePercentIgnore}
+%    \begin{macrocode}
+\def\MakePercentIgnore{\catcode`\%9\relax}
+\def\MakePercentComment{\catcode`\%14\relax}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\DocInput}
+%    \begin{macrocode}
+\def\DocInput#1{\MakePercentIgnore\input{#1}\MakePercentComment}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\CharacterTable}
+%    \begin{macrocode}
+\def\CharacterTable#1{%
+  \PackageWarning{ydoc}{Ignoring Character Table - not implemented yet!}{}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DoNotIndex}
+%    \begin{macrocode}
+\def\DoNotIndex#1{%
+  \PackageWarning{ydoc}{Ignoring DoNotIndex - not implemented yet!}{}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\changes}
+%    \begin{macrocode}
+\def\changes#1#2#3{%
+  \PackageWarning{ydoc}{Ignoring changes - not implemented yet!}{}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintChanges}
+%    \begin{macrocode}
+\def\PrintChanges{%
+  \PackageWarning{ydoc}{List of changes not implemented yet!}{}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintIndex}
+%    \begin{macrocode}
+\def\PrintIndex{%
+  \PackageWarning{ydoc}{Code index not implemented yet!}{}{}%
+}
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\ydoc@checkchecksum}
 %    \begin{macrocode}
 \def\ydoc@checkchecksum{%
+  \ifnum\ydoc@checksum=\m@ne
+    \message{^^J}%
+    \message{**********************^^J}%
+    \message{* No Checksum found! *^^J}%
+    \message{**********************^^J}%
+  \else
   \ifnum\ydoc@checksum=\ydoc@bslashcnt
     \message{^^J}%
     \message{*******************^^J}%
@@ -575,8 +666,8 @@
     \message{****************************^^J}%
     \GenericError{Checksum wrong}{}{}{}%
   \fi
+  \fi
 }
-\AtEndDocument{\ydoc@checkchecksum}
 %    \end{macrocode}
 % \end{macro}
 %

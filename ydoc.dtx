@@ -1,5 +1,4 @@
 % \iffalse
-%<*copyright>
 %% Copyright (c) 2010 by Martin Scharrer <martin@scharrer-online.de>
 %% WWW: http://latex.scharrer-online.de/
 %%
@@ -7,7 +6,7 @@
 %% conditions of the LaTeX Project Public License, either version 1.3
 %% of this license or (at your option) any later version.
 %% The latest version of this license is in
-%%  http://www.latex-project.org/lppl.txt
+%%   http://www.latex-project.org/lppl.txt
 %% and version 1.3 or later is part of all distributions of LaTeX
 %% version 2005/12/01 or later.
 %%
@@ -16,8 +15,9 @@
 %% The Current Maintainer of this work is Martin Scharrer.
 %%
 %% This work consists of the files ydoc.dtx and ydoc.ins
-%% and the derived file ydoc.sty.
-%</copyright>
+%% and the derived file ydoc.cls, ydoc.sty, ydoc-code.sty,
+%% ydoc-expl.sty and ydoc-desc.sty.
+%%
 % \fi
 %
 % \iffalse
@@ -28,17 +28,25 @@
 \ProvidesFileSVN[ydoc.dtx]
 %</driver>
 %<package|code|desc|expl>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<class>\ProvidesClassSVN
 %<package|code|desc|expl>\ProvidesPackageSVN
-%<*driver|package|code|desc|expl>
+%<code>    [ydoc-code]
+%<desc>    [ydoc-desc]
+%<expl>    [ydoc-expl]
+%<*driver|class|package|code|desc|expl>
     {$Id: ydoc.dtx 1802 2010-04-03 13:52:09Z martin $}
-    [v0.1 Class and packages to document LaTeX class and packages]
-%</driver|package|code|desc|expl>
+    [v0.1]
+%</driver|class|package|code|desc|expl>
+%<class>   [ydoc class: document LaTeX class and packages]
+%<package> [ydoc package: document LaTeX class and packages]
+%<code>    [ydoc package to document macro code]
+%<desc>    [ydoc package to describe macros, environments, options etc.]
+%<expl>    [ydoc package to insert live examples of LaTeX code]
 %
 %<*driver>
 \DefineFileInfoSVN
 \GetFileInfoSVN*
-\documentclass{ltxdoc}
-\usepackage{ydoc}[\filedate]
+\documentclass{ydoc}[\filedate]
 
 \usepackage{xcolor}
 \usepackage{hyperref}
@@ -54,6 +62,7 @@
   \belowcaptionskip=\tempskip
   \caption
 }
+
 \begin{document}
   \DocInput{ydoc.dtx}
   \PrintChanges
@@ -87,7 +96,7 @@
 %
 % \GetFileInfoSVN{ydoc.dtx}
 %
-% \title{The \textsf{ydoc} Packages}
+% \title{The \textsf{ydoc} Class and Packages}
 % \author{Martin Scharrer \\ \url{martin@scharrer-online.de} \\
 % \url{http://latex.scharrer-online.de/ydoc/}\\
 % CTAN: \url{http://tug.ctan.org/pkg/ydoc}}
@@ -106,11 +115,12 @@
 %
 %
 % \begin{abstract}
-% {\color{red}This package is currently under development.
-% All functionality, settings and macro names can change in later versions.}
+% {\color{red}This package bundle is currently under development.
+% All functionality, settings and macro as well as file names can change in later versions and may be incomplete!}
 %
-% This package is part of the \pkg{ydoc} bundle and provides macros and environments to document
-% the source code of \LaTeX\ packages and classes.
+% The \pkg{ydoc} class and packages provide macros to document the functionality and implementation of \LaTeX{} classes and packages.
+% It is similar to the \pkg{ltxdoc} class with the \pkg{doc} package, but uses more modern features/packages by default
+% (e.g.\ \pkg{xcolor}, \pkg{hyperref}, \pkg{listings}). However, some of the features like code indexing is not yet included.
 % \end{abstract}
 %
 % \section{Introduction}
@@ -119,24 +129,29 @@
 % the fact that there are several documentation packages written by package developers
 % to document their own packages. All these packages didn't suited the author and therefore he,
 % take a guess, wrote his own documentation package.
+% It (will) support(s) all macros and environments (but not necessary with full/identical features) provided by the \pkg{doc}
+% package to allow the fast adaption of existing |.dtx| files.
 %
-% This documentation uses the \pkg{ydoc-code} package itself and therefore also acts as a live example.
+% This documentation uses the \pkg{ydoc} packages itself and therefore also acts as a live example.
+%
+% \subsection{\pkg{ydoc} Files}
+% The \pkg{ydoc} bundle consists (at the moment, subject to change) of the \cls{ydoc} class and the packages \pkg{ydoc}, \pkg{ydoc-code},
+% \pkg{ydoc-desc} and \pkg{ydoc-expl}. The \cls{ydoc} class and package allow the user the freedom to use the functionality with other classes if wanted.
+% The class will load the package. The \pkg{ydoc} package loads the packages \pkg{ydoc-code}, \pkg{ydoc-desc} and \pkg{ydoc-expl}, which
+% provide the functionality to document \LaTeX\ code implementation, describe the user-level macro and include live code examples, respectively.
+% This packages can be loaded on their own in other kind of \LaTeX\ documents if required.
 %
 % \subsection{Similar Packages}
 % Other documentation related classes and packages are \pkg{ltxdoc}, \pkg{doc}, \pkg{dox}, \pkg{xdoc}, \pkg{gmdoc}, \pkg{pauldoc}, \pkg{hypdoc},
 % \pkg{codedoc}, \pkg{nicetext} and \pkg{tkz-doc}.
 %
-% The \pkg{ydoc-code} macro provides some alternative versions of macros also provided by \LaTeX\ standard documentation package \pkg{doc}.
-% It implements some features also provided by the package \pkg{nicetext}.
-%
-% \subsection{Copyright and Licence}
-% \lstinputlisting[basicstyle=\footnotesize\ttfamily]{ydoc-code.cpr}
 %
 % \section{Usage}
+% (section incomplete)
 %
-% \subsection{Description Macros and Environments}
+% \subsection{Code Documentation Environments}
 %
-% \begin{DescribeEnv}{macro}[<number of arguments>]!\color{optional}\colorlet{meta}{metaoptional}!{<arg~1~description>}!\ldots!{<arg~$n$~description>}
+% \begin{DescribeEnv}{macro}{<macro>}[<number of arguments>]!\color{optional}\colorlet{meta}{metaoptional}!{<arg~1~description>}!\ldots!{<arg~$n$~description>}
 %  \MacroArgs<macro documentation>\\
 %  \begin{DescribeEnv}{macrocode}
 %     \MacroArgs<macro code>
@@ -157,29 +172,15 @@
 % This environment wraps around any \TeX\ code and types it verbatim. The environment end is read verbatim as well and must be written on a separate
 % line beginning with a percent followed by exactly four spaces: `\verb*+%    \end{macrocode}+'.
 %
+% \begin{DescribeEnv}{environment}{<environment name>}[<number of arguments>]!\color{optional}\colorlet{meta}{metaoptional}!{<arg~1~description>}!\ldots!{<arg~$n$~description>}
+%  \MacroArgs<environment documentation>\\
+%  \begin{DescribeEnv}{macrocode}
+%     \MacroArgs<macro code>
+%  \end{DescribeEnv}\\
+%  \ldots
+% \end{DescribeEnv}
+% This environment provides the same functionality as the \env{macro} environment above, but for environments instead.
 %
-% \section{Description Macros}
-%
-% \section{Introduction}
-% The \pkg{ydoc} packages allow the documentation of \LaTeX\ packages and classes.
-% The name stands for ``\emph{Y}et another \emph{Doc}umentation Package'' and is a pun on
-% the fact that there are several documentation packages written by package developers
-% to document their own packages. All these packages didn't suited the author and therefore he,
-% take a guess, wrote his own documentation package.
-%
-% This documentation uses the \pkg{ydoc-desc} package itself and therefore also acts as a live example.
-%
-% \subsection{Similar Packages}
-% Other documentation related classes and packages are \pkg{ltxdoc}, \pkg{doc}, \pkg{dox}, \pkg{xdoc}, \pkg{gmdoc}, \pkg{pauldoc}, \pkg{hypdoc},
-% \pkg{codedoc}, \pkg{nicetext} and \pkg{tkz-doc}.
-%
-% The \pkg{ydoc-desc} macro provides some alternative versions of macros also provided by \LaTeX\ standard documentation package \pkg{doc}.
-% It implements some features also provided by the package \pkg{nicetext}.
-%
-% \subsection{Copyright and Licence}
-% \lstinputlisting[basicstyle=\footnotesize\ttfamily]{ydoc-desc.cpr}
-%
-% \section{Usage}
 %
 % \subsection{Description Macros and Environments}
 %
@@ -339,6 +340,10 @@
 % \DescribeLength\descsep       {1em in \texttt{tt} font = 10.5pt}
 % This macro defines the space on the left and right side between the description text and the framed box.
 %
+% \subsection{Macros and Environments to include LaTeX Code Examples}
+% \DescribeEnv{example}
+% \DescribeEnv{examplecode}
+% (to be written)
 %
 % \StopEventually{}
 %
@@ -348,9 +353,15 @@
 % \iffalse
 %<*class>
 % \fi
+% \subsection{Class File}
 %    \begin{macrocode}
 \LoadClassWithOptions{article}
+\RequirePackage{doc}
 \RequirePackage{ydoc}
+\RequirePackage{shortvrb}
+\RequirePackage{newverbs}
+\MakeShortVerb{\|}
+\MakeSpecialShortVerb{\qverb}{\"}
 %    \end{macrocode}
 % \iffalse
 %</class>
@@ -359,6 +370,7 @@
 % \iffalse
 %<*package>
 % \fi
+% \subsection{Package File}
 %    \begin{macrocode}
 \RequirePackage{ydoc-code}
 \RequirePackage{ydoc-expl}
@@ -372,12 +384,16 @@
 %<*code>
 % \fi
 %
-% \subsection{Color and style definitions}
+% \subsection{Macros and Environments to document Implementations}
+%
+% \subsubsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
 \definecolor{macroimpl}{rgb}{0.0,0.0,0.4}
 %    \end{macrocode}
 %
+% \subsubsection{General Macros}
+%    \begin{macrocode}
 % \begin{macro}{\ydocwrite}
 %    \begin{macrocode}
 \@ifundefined{ydocwrite}{%
@@ -406,6 +422,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \subsubsection{Handling Macrocode}
 % \begin{environment}{macrocode}
 %    \begin{macrocode}
 \def\macrocode{%
@@ -649,9 +666,9 @@
 %<*desc>
 % \fi
 %
-% \section{Implementation}
+% \subsection{Description Macros and Environments}
 %
-% \subsection{Color and style definitions}
+% \subsubsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
 \definecolor{macrodesc}{rgb}{0.0,0.0,0.8}
@@ -663,7 +680,8 @@
 \colorlet{metaoptional}{optional!50!meta}
 %    \end{macrocode}
 %
-% \subsection{Text Formatting Macros}
+%
+% \subsubsection{Text Formatting Macros}
 %
 % \begin{macro}{\meta}
 % Prints \meta{meta text}.
@@ -803,7 +821,7 @@
 % \end{macro}
 % \end{macro}
 %
-% \subsection{Text Formatting Styles}
+% \subsubsection{Text Formatting Styles}
 %
 % \begin{macro}{\macrodescstyle}
 % Style of described macro names.
@@ -876,7 +894,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Dimension Registers}
+% \subsubsection{Dimension Registers}
 %
 % \begin{macro}{\descindent}
 %    \begin{macrocode}
@@ -911,7 +929,7 @@
 % \end{macro}
 %
 %
-% \subsection{Macro Argument Reading Mechanism}
+% \subsubsection{Macro Argument Reading Mechanism}
 %
 % \begin{macro}{\read@Macro@arg}
 % Reads next token and calls second macro.
@@ -1105,7 +1123,7 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \subsection{Description Macros}
+% \subsubsection{Description Macros}
 % \subsubsection*{For Macros}
 %
 % \begin{macro}{\DescribeMacro}
@@ -1379,7 +1397,7 @@
 % \end{macro}
 %
 %
-% \subsection{Print Macros}
+% \subsubsection{Print Macros}
 %
 % \begin{macro}{\yPrintMacroName}
 % Formats macro name. The backslash is forced to |tt| font.
@@ -1523,6 +1541,7 @@
 % \iffalse
 %<*expl>
 % \fi
+% \subsection{Include Code Examples}
 %
 % \iffalse
 %<*dontinclude>

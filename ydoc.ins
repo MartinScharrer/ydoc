@@ -5,29 +5,13 @@
 % See file 'ydoc.dtx' for copyright and licence information.
 % $Id: ydoc.ins 1805 2010-04-03 14:32:32Z martin $
 
-\let\originput\input
 \input docstrip
-
-\declarepreamble\dtxpreamble
-\endpreamble
-
-\def\prewrapper{\string\declarepreamble\string\dtxpreamble^^J}
-\def\postwrapper{^^J\string\endpreamble}
 
 \keepsilent
 \askforoverwritefalse
 
-\def\gobble#1{}
-
-% Extract copyright message from DTX file and use it as preamble for all (real) source files
-\generate{%
-  \let\MetaPrefix\empty
-  \file{ydoc.tmp}{\usepreamble\prewrapper\usepostamble\postwrapper\from{ydoc.dtx}{copyright}}%
-  \file{ydoc.cpr}{\nopreamble\nopostamble\from{ydoc.dtx}{copyright}}%
-}
-\originput ydoc.tmp
-
-\usepreamble\dtxpreamble
+\preamble
+\endpreamble
 
 \generate{%
   \file{ydoc.cls}{\from{ydoc.dtx}{class}}%

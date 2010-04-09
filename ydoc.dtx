@@ -34,7 +34,7 @@
 %<desc>    [ydoc-desc]
 %<expl>    [ydoc-expl]
 %<*driver|class|package|code|desc|expl>
-    {$Id: ydoc.dtx 1802 2010-04-03 13:52:09Z martin $}
+    {$Id$}
     [v0.1]
 %</driver|class|package|code|desc|expl>
 %<class>   [ydoc class: document LaTeX class and packages]
@@ -477,7 +477,7 @@
 \def\macro@@code#1{%
   {\ydoc@defspecialmacros
   \xdef\themacrocode{#1}}%
-  \yPrintMacroCode
+  \PrintMacroCode
   \end{macrocode}%
 }
 %    \end{macrocode}
@@ -502,9 +502,9 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintMacroCode}
+% \begin{macro}{\PrintMacroCode}
 %    \begin{macrocode}
-\def\yPrintMacroCode{%
+\def\PrintMacroCode{%
   \begingroup
   \ttfamily
   \noindent\themacrocode
@@ -513,12 +513,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintMacroCode}
+% \begin{macro}{\PrintMacroCode}
 %    \begin{macrocode}
 \RequirePackage{listings}
 %    \end{macrocode}
 %    \begin{macrocode}
-\def\yPrintMacroCode{%
+\def\PrintMacroCode{%
   \begingroup
   \let\firstlinemacro\empty
   \let\lastlinemacro\empty
@@ -735,7 +735,7 @@
 % \begin{environment}{macro}[1]{implemented macro}
 %    \begin{macrocode}
 \def\macro#1{%
-  \yPrintMacroImplName{#1}%
+  \PrintMacroImplName{#1}%
   \@ifnextchar[%]
     {\macro@impl@args}%
     {}%
@@ -747,7 +747,7 @@
 % \begin{environment}{environment}[1]{environment name}
 %    \begin{macrocode}
 \def\environment#1{%
-  \yPrintEnvImplName{#1}%
+  \PrintEnvImplName{#1}%
   \@ifnextchar[%]
     {\macro@impl@args}%
     {}%
@@ -756,9 +756,9 @@
 %    \end{macrocode}
 % \end{environment}
 %
-% \begin{macro}{\yPrintMacroImplName}[1]{macro (token)}
+% \begin{macro}{\PrintMacroImplName}[1]{macro (token)}
 %    \begin{macrocode}
-\def\yPrintMacroImplName#1{%
+\def\PrintMacroImplName#1{%
   \par\bigskip\noindent
   \hbox{\hspace*{\descindent}\fbox{{\implstyle{\string#1}}}}%
   \par\medskip\noindent
@@ -766,10 +766,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintEnvImplName}[1]{environment name}
+% \begin{macro}{\PrintEnvImplName}[1]{environment name}
 % test
 %    \begin{macrocode}
-\def\yPrintEnvImplName#1{%
+\def\PrintEnvImplName#1{%
   \par\bigskip\noindent
   \hbox{\hspace*{\descindent}\fbox{{\implstyle{#1}}}}%
   \par\medskip
@@ -1289,7 +1289,7 @@
 \def\Describe@Macro#1{%
   \endgroup
   \hbox\y@bgroup
-  \yPrintMacroName{#1}%
+  \PrintMacroName{#1}%
   \macroargsstyle
   \read@Macro@arg
 }
@@ -1323,7 +1323,7 @@
 }
 \def\AlsoMacro@#1{%
   \endgroup
-  \yPrintMacroName{#1}%
+  \PrintMacroName{#1}%
   \read@Macro@arg
 }
 %    \end{macrocode}
@@ -1356,7 +1356,7 @@
 %    \begin{macrocode}
 \def\endDescribeMacros{%
   \y@egroup
-  \yPrintMacros
+  \PrintMacros
   \endgroup
 }
 %    \end{macrocode}
@@ -1406,14 +1406,14 @@
 % \begin{macro}{\Describe@Length}
 %    \begin{macrocode}
 \newcommand*\Describe@Length[2]{%
-  \yPrintLengthName{#1}&
+  \PrintLengthName{#1}&
   (Default: {\macroargsstyle#2\unskip})%
   \@ifnextchar\DescribeLength
     {\\}%
     {%
       \endtabular
       \y@egroup
-      \yPrintLength
+      \PrintLength
       \endgroup
     }%
 }
@@ -1471,9 +1471,9 @@
 %    \begin{macrocode}
   \setbox\descbox\vbox\y@bgroup
   \envcodestyle
-  \let\yPrintEnv\yPrintSubEnv
+  \let\PrintEnv\PrintSubEnv
   \hbox\y@bgroup
-  \yPrintEnvName{\begin}{\DescribeEnv@name}%
+  \PrintEnvName{\begin}{\DescribeEnv@name}%
   \macroargsstyle
   \read@Macro@arg
 }
@@ -1524,10 +1524,10 @@
   \fi
   \endgroup
   \hbox\y@bgroup
-    \yPrintEnvName{\end}{\DescribeEnv@name}
+    \PrintEnvName{\end}{\DescribeEnv@name}
   \y@egroup
   \y@egroup
-  \yPrintEnv
+  \PrintEnv
   \endgroup
 }
 %    \end{macrocode}
@@ -1536,10 +1536,10 @@
 %
 % \subsubsection{Print Macros}
 %
-% \begin{macro}{\yPrintMacroName}
+% \begin{macro}{\PrintMacroName}
 % Formats macro name. The backslash is forced to |tt| font.
 %    \begin{macrocode}
-\def\yPrintMacroName#1{%
+\def\PrintMacroName#1{%
   {\macrodescstyle{\strut
    \texttt{\char92}%
    \escapechar\m@ne
@@ -1548,18 +1548,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintLengthName}
+% \begin{macro}{\PrintLengthName}
 % Formats length register name.
 %    \begin{macrocode}
-\let\yPrintLengthName\yPrintMacroName
+\let\PrintLengthName\PrintMacroName
 %    \end{macrocode}
 % \end{macro}
 %
 %
-% \begin{macro}{\yPrintEnvName}
+% \begin{macro}{\PrintEnvName}
 % |#1| = `|\begin|' or `|\end|', |#2| = env name.
 %    \begin{macrocode}
-\def\yPrintEnvName#1#2{%
+\def\PrintEnvName#1#2{%
   \strut
   \string#1\braceleft
   {\macrodescstyle#2}%
@@ -1568,12 +1568,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintMacros}
+% \begin{macro}{\PrintMacros}
 % Prints macros described using \cs{DescribeMacros}.
 % The actual content was stored inside \cs{descbox}.
 % If it is wider than the line width it is centered.
 %    \begin{macrocode}
-\def\yPrintMacros{%
+\def\PrintMacros{%
   \par\vspace\beforedescskip
   \noindent\hspace*{\descindent}%
   \ifdim\wd\descbox>\linewidth
@@ -1586,18 +1586,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintLength}
+% \begin{macro}{\PrintLength}
 % Prints lengths registers described using one or multiple \cs{DescribeLength}.
 %    \begin{macrocode}
-\let\yPrintLength\yPrintMacros
+\let\PrintLength\PrintMacros
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintEnv}
+% \begin{macro}{\PrintEnv}
 % Prints \env{DescribeEnv} environments.
 % The actual content was stored inside \cs{descbox}.
 %    \begin{macrocode}
-\def\yPrintEnv{%
+\def\PrintEnv{%
   \par\vspace\beforedescskip
   \noindent\hspace*{\descindent}%
   \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
@@ -1606,12 +1606,12 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\yPrintSubEnv}
+% \begin{macro}{\PrintSubEnv}
 % Prints sub environments, i.e.\ \env{DescribeEnv} environments
 % inside the body of another \env{DescribeEnv}.
 % The actual content was stored inside \cs{descbox}.
 %    \begin{macrocode}
-\def\yPrintSubEnv{%
+\def\PrintSubEnv{%
   \hbox{\hbox{\usebox{\descbox}}}%
 }
 %    \end{macrocode}

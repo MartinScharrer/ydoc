@@ -1,20 +1,20 @@
 # $Id$
 
 PACKAGE     = ydoc
-PACKAGE_STY = ydoc-desc.sty ydoc-expl.sty ydoc-code.sty
-PACKAGE_DTX = ydoc-desc.dtx ydoc-expl.dtx ydoc-code.dtx
+PACKAGE_STY = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty
+PACKAGE_DTX = ydoc.dtx
 PACKAGE_SCR =
 PACKAGE_DOC = $(PACKAGE_DTX:.dtx=.pdf)
 PACKAGE_SRC = ${PACKAGE_DTX} ${PACKAGE}.ins Makefile
 PACKFILES   = ${PACKAGE_SRC} ${PACKAGE_DOC} README
 
-TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.fdb_latexmk *.tmp *.cpr
+TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.fdb_latexmk *.tmp *.cpr *.cod
 INSGENERATED = ${PACKAGE_STY}
 GENERATED = ${INSGENERATED} ${PACKAGE}.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
 ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
 TDSZIPFILE = ${PACKAGE}-${ZIPVERSION}.tds.zip
 
-TESTDIR = tests
+TESTDIR = .
 TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
 TESTARGS = -output-directory ${TESTDIR}
 

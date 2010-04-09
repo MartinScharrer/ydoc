@@ -71,7 +71,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{1075}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -393,7 +393,7 @@
 %    \end{macrocode}
 %
 % \subsubsection{General Macros}
-%    \begin{macrocode}
+%
 % \begin{macro}{\ydocwrite}
 %    \begin{macrocode}
 \@ifundefined{ydocwrite}{%
@@ -495,7 +495,7 @@
   \llap{%
     \stepcounter{linenumber}%
     {\footnotesize\color{gray}\thelinenumber~}%
-  }
+  }%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -526,11 +526,57 @@
   \immediate\openout\ydocwrite=\ydocfname\relax
   \immediate\write\ydocwrite{\themacrocode}%
   \immediate\closeout\ydocwrite
+  \ydoc@countbslashes
   \ydoclistingssettings
   \let\input\@input
   \lstinputlisting{\ydocfname}%
   \endgroup
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@countbslashes}
+% Reads the macro code into a temp box. The backslashes are defined to increase a counter.
+%    \begin{macrocode}
+\newcount\ydoc@bslashcnt
+\def\ydoc@countbslashes{%
+  \begingroup
+    \let\firstlinemacro\empty
+    \let\lastlinemacro\empty
+    \let\newlinemacro\empty
+    \let\spacemacro\empty
+    \def\bslashmacro{\global\advance\ydoc@bslashcnt by\@ne}%
+    \setbox\@tempboxa\hbox{\themacrocode}%
+  \endgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\CheckSum}
+%    \begin{macrocode}
+\def\CheckSum#1{%
+  \gdef\ydoc@checksum{#1}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@checkchecksum}
+%    \begin{macrocode}
+\def\ydoc@checkchecksum{%
+  \ifnum\ydoc@checksum=\ydoc@bslashcnt
+    \message{^^J}%
+    \message{*******************^^J}%
+    \message{* Checksum passed *^^J}%
+    \message{*******************^^J}%
+  \else
+    \message{^^J}%
+    \message{****************************^^J}%
+    \message{* Checksum wrong (\ydoc@checksum<>\the\ydoc@bslashcnt) ^^J}%
+    \message{****************************^^J}%
+    \GenericError{Checksum wrong}{}{}{}%
+  \fi
+}
+\AtEndDocument{\ydoc@checkchecksum}
 %    \end{macrocode}
 % \end{macro}
 %

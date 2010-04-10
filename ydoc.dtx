@@ -36,7 +36,7 @@
 %<doc>     [ydoc-doc]
 %<*driver|class|package|code|desc|expl|doc>
     {$Id$}
-    [v0.1alpha]
+    [v0.2alpha]
 %</driver|class|package|code|desc|expl|doc>
 %<class>   [ydoc class: document LaTeX class and packages]
 %<package> [ydoc package: document LaTeX class and packages]
@@ -65,6 +65,7 @@
   \caption
 }
 
+\hypersetup{colorlinks=true,linkcolor=green}
 \begin{document}
   \DocInput{ydoc.dtx}
   \PrintChanges
@@ -73,7 +74,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1151}
+% \CheckSum{1241}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -394,6 +395,11 @@
 %
 % \subsection{Macros and Environments to document Implementations}
 %
+%    \begin{macrocode}
+\RequirePackage{hyperref}
+\hypersetup{colorlinks=true,pdfborder=0 0 0,pdfborderstyle={}}
+%    \end{macrocode}
+%
 % \subsubsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
@@ -586,7 +592,7 @@
 % \begin{macro}{\macro@impl@argline}[2]{argument number}{argument description}
 %    \begin{macrocode}
 \def\macro@impl@argline#1#2{%
-  \par{\texttt{\##1}:~#2}%
+  \par{\texttt{\##1}:~#2\strut}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -608,7 +614,7 @@
 % \begin{environment}{macro}[1]{implemented macro}
 %    \begin{macrocode}
 \def\macro#1{%
-  \PrintMacroImplName{#1}%
+  \PrintMacroImpl{#1}%
   \@ifnextchar[%]
     {\macro@impl@args}%
     {}%
@@ -629,12 +635,33 @@
 %    \end{macrocode}
 % \end{environment}
 %
+% \begin{macro}{\PrintMacroImpl}[1]{macro (token)}
+%    \begin{macrocode}
+\def\PrintMacroImpl#1{%
+  \par\bigskip\noindent
+  \hbox{%
+    \edef\name{\expandafter\@gobble\string#1}%
+    \global\@namedef{href@impl@\name}{}%
+    \immediate\write\@mainaux{%
+      \global\noexpand\@namedef{href@impl@\name}{}%
+    }%
+    \raisebox{4ex}[4ex]{\hypertarget{impl:\name}{}}%
+    \hspace*{\descindent}\fbox{%
+      \hspace*{\descsep}%
+      \@ifundefined{href@desc@\name}{}{\hyperlink{desc:\name}}%
+      {\PrintMacroImplName{#1}}%
+      \hspace*{\descsep}%
+    }%
+  }%
+  \par\medskip\noindent
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\PrintMacroImplName}[1]{macro (token)}
 %    \begin{macrocode}
 \def\PrintMacroImplName#1{%
-  \par\bigskip\noindent
-  \hbox{\hspace*{\descindent}\fbox{{\implstyle{\string#1}}}}%
-  \par\medskip\noindent
+  \implstyle{\string#1\strut}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -813,9 +840,18 @@
 % \end{macro}
 %
 % \begin{macro}{\GetFileInfo}
+% Current implementation taken from \pkg{doc} package. Grouping added.
 %    \begin{macrocode}
 \providecommand*\GetFileInfo[1]{%
-  \PackageWarning{ydoc}{Get File Info not implemented yet!}{}{}%
+  \begingroup
+  \def\filename{#1}%
+  \def\@tempb##1 ##2 ##3\relax##4\relax{%
+    \endgroup
+    \def\filedate{##1}%
+    \def\fileversion{##2}%
+    \def\fileinfo{##3}}%
+  \edef\@tempa{\csname ver@#1\endcsname}%
+  \expandafter\@tempb\@tempa\relax? ? \relax\relax
 }
 %    \end{macrocode}
 % \end{macro}
@@ -859,6 +895,11 @@
 %<*desc>
 % \fi
 % \subsection{Description Macros and Environments}
+%
+%    \begin{macrocode}
+\RequirePackage{hyperref}
+\hypersetup{colorlinks=true,pdfborder=0 0 0,pdfborderstyle={}}
+%    \end{macrocode}
 %
 % \subsubsection{Color and style definitions}
 %    \begin{macrocode}
@@ -998,18 +1039,25 @@
 % \begin{macro}{\pkg}
 % \begin{macro}{\cls}
 % \begin{macro}{\env}
-% \begin{macro}{\cs}
 % \begin{macro}{\opt}
 %    \begin{macrocode}
-\def\pkg{\texttt}
-\def\cls{\texttt}
-\def\env{\texttt}
-\def\cs#1{\texttt{\textbackslash #1}}
-\def\opt{\textsf}
+\RequirePackage{etoolbox}
+\newrobustcmd*\pkg{\texttt}
+\newrobustcmd*\cls{\texttt}
+\newrobustcmd*\env{\texttt}
+\newrobustcmd*\opt{\textsf}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
 % \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\cs}
+% \begin{macro}{\cmd}
+%    \begin{macrocode}
+\newrobustcmd*\cs[1]{\texttt{\textbackslash #1}}
+\newrobustcmd*\cmd[1]{\texttt{{\escapechar=92\string#1}}}
+%    \end{macrocode}
 % \end{macro}
 % \end{macro}
 %
@@ -1343,8 +1391,15 @@
 %    \begin{macrocode}
 \def\Describe@Macro#1{%
   \endgroup
+  \edef\name{\expandafter\@gobble\string#1}%
+  \global\@namedef{href@desc@\name}{}%
+  \immediate\write\@mainaux{%
+    \global\noexpand\@namedef{href@desc@\name}{}%
+  }%
+  \hbox{\hypertarget{desc:\name}{}}%
   \hbox\y@bgroup
-  \PrintMacroName{#1}%
+  \@ifundefined{href@impl@\name}{}{\hyperlink{impl:\name}}%
+  {\PrintMacroName{#1}}%
   \macroargsstyle
   \read@Macro@arg
 }
@@ -1390,9 +1445,10 @@
 %    \begin{macrocode}
 \newcommand*\MacroArgs{%
   \begingroup
-  \let\end@Macro@args\endgroup
+  \def\end@Macro@args{\endgroup\xspace}%
   \read@Macro@arg
 }
+\RequirePackage{xspace}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1617,7 +1673,7 @@
 \def\PrintEnvName#1#2{%
   \strut
   \string#1\braceleft
-  {\macrodescstyle#2}%
+  {\macrodescstyle#2\strut}%
   \braceright
 }
 %    \end{macrocode}

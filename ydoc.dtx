@@ -21,27 +21,29 @@
 % \fi
 %
 % \iffalse
-%<*driver|class|package|code|desc|expl>
+%<*driver|class|package|code|desc|expl|doc>
 \RequirePackage{svn-prov}[2010/04/03]
-%</driver|class|package|code|desc|expl>
+%</driver|class|package|code|desc|expl|doc>
 %<*driver>
 \ProvidesFileSVN[ydoc.dtx]
 %</driver>
-%<package|code|desc|expl>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<package|code|desc|expl|doc>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 %<class>\ProvidesClassSVN
-%<package|code|desc|expl>\ProvidesPackageSVN
+%<package|code|desc|expl|doc>\ProvidesPackageSVN
 %<code>    [ydoc-code]
 %<desc>    [ydoc-desc]
 %<expl>    [ydoc-expl]
-%<*driver|class|package|code|desc|expl>
+%<doc>     [ydoc-doc]
+%<*driver|class|package|code|desc|expl|doc>
     {$Id$}
     [v0.1alpha]
-%</driver|class|package|code|desc|expl>
+%</driver|class|package|code|desc|expl|doc>
 %<class>   [ydoc class: document LaTeX class and packages]
 %<package> [ydoc package: document LaTeX class and packages]
 %<code>    [ydoc package to document macro code]
 %<desc>    [ydoc package to describe macros, environments, options etc.]
 %<expl>    [ydoc package to insert live examples of LaTeX code]
+%<doc>     [ydoc package to provide 'doc' macros]
 %
 %<*driver>
 \DefineFileInfoSVN
@@ -71,7 +73,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1150}
+% \CheckSum{1151}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -138,9 +140,10 @@
 %
 % \subsection{\pkg{ydoc} Files}
 % The \pkg{ydoc} bundle consists (at the moment, subject to change) of the \cls{ydoc} class and the packages \pkg{ydoc}, \pkg{ydoc-code},
-% \pkg{ydoc-desc} and \pkg{ydoc-expl}. The \cls{ydoc} class and package allow the user the freedom to use the functionality with other classes if wanted.
-% The class will load the package. The \pkg{ydoc} package loads the packages \pkg{ydoc-code}, \pkg{ydoc-desc} and \pkg{ydoc-expl}, which
-% provide the functionality to document \LaTeX\ code implementation, describe the user-level macro and include live code examples, respectively.
+% \pkg{ydoc-desc}, \pkg{ydoc-expl} and \pkg{ydoc-doc}. The \cls{ydoc} class and package allow the user the freedom to use the functionality with other classes if wanted.
+% The class will load the package. The \pkg{ydoc} package loads the packages \pkg{ydoc-code}, \pkg{ydoc-desc}, \pkg{ydoc-expl} and \pkg{ydoc-doc}, which
+% provide the functionality to document \LaTeX\ code implementation, describe the user-level macro, include live code examples and provide replacements for the
+% macros of the \pkg{doc} package, respectively.
 % This packages can be loaded on their own in other kind of \LaTeX\ documents if required.
 %
 % \subsection{Similar Packages}
@@ -373,10 +376,9 @@
 \RequirePackage{ydoc-code}
 \RequirePackage{ydoc-expl}
 \RequirePackage{ydoc-desc}
+\RequirePackage{ydoc-doc}
 
-\RequirePackage{shortvrb}
 \RequirePackage{newverbs}
-\MakeShortVerb{\|}
 \MakeSpecialShortVerb{\qverb}{\"}
 \AtBeginDocument{\catcode`\^^A=14\relax}
 %    \end{macrocode}
@@ -530,7 +532,7 @@
   \immediate\openout\ydocwrite=\ydocfname\relax
   \immediate\write\ydocwrite{\themacrocode}%
   \immediate\closeout\ydocwrite
-  \ydoc@countbslashes
+  \@nameuse{ydoc@countbslashes}%
   \ydoclistingssettings
   \let\input\@input
   \lstinputlisting{\ydocfname}%
@@ -538,6 +540,143 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%
+% \begin{macro}{\ydoclistingssettings}
+%    \begin{macrocode}
+\def\ydoclistingssettings{%
+  \lstset{%
+    language=[latex]tex,basicstyle=\ttfamily,
+    numbers=left,numberstyle=\tiny\color{gray},firstnumber=last,
+    breaklines,prebreak={\mbox{\tiny$\swarrow$}}%
+  }%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@impl@args}[1]{number of macro arguments}
+%    \begin{macrocode}
+\def\macro@impl@args[#1]{%
+  \begingroup
+  \parindent=10pt\relax
+  \let\macro@impl@argcnt\@tempcnta
+  \let\macro@impl@curarg\@tempcntb
+  \macro@impl@argcnt=#1\relax
+  \macro@impl@curarg=0\relax
+  \ifnum\macro@impl@curarg<\macro@impl@argcnt\relax
+    \expandafter\macro@impl@arg
+  \else
+    \expandafter\macro@impl@endargs
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@impl@endargs}
+%    \begin{macrocode}
+\def\macro@impl@endargs{%
+  \endgroup
+  \unskip\par\noindent\ignorespaces
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@impl@argline}[2]{argument number}{argument description}
+%    \begin{macrocode}
+\def\macro@impl@argline#1#2{%
+  \par{\texttt{\##1}:~#2}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macro@impl@arg}[1]{argument description}
+%    \begin{macrocode}
+\def\macro@impl@arg#1{%
+  \advance\macro@impl@curarg by\@ne\relax
+  \macro@impl@argline{\the\macro@impl@curarg}{#1}%
+  \ifnum\macro@impl@curarg<\macro@impl@argcnt\relax
+    \expandafter\macro@impl@arg
+  \else
+    \expandafter\macro@impl@endargs
+  \fi
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{macro}[1]{implemented macro}
+%    \begin{macrocode}
+\def\macro#1{%
+  \PrintMacroImplName{#1}%
+  \@ifnextchar[%]
+    {\macro@impl@args}%
+    {}%
+}
+\def\endmacro{}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{environment}{environment}[1]{environment name}
+%    \begin{macrocode}
+\def\environment#1{%
+  \PrintEnvImplName{#1}%
+  \@ifnextchar[%]
+    {\macro@impl@args}%
+    {}%
+}
+\def\endenvironment{}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{macro}{\PrintMacroImplName}[1]{macro (token)}
+%    \begin{macrocode}
+\def\PrintMacroImplName#1{%
+  \par\bigskip\noindent
+  \hbox{\hspace*{\descindent}\fbox{{\implstyle{\string#1}}}}%
+  \par\medskip\noindent
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintEnvImplName}[1]{environment name}
+% test
+%    \begin{macrocode}
+\def\PrintEnvImplName#1{%
+  \par\bigskip\noindent
+  \hbox{\hspace*{\descindent}\fbox{{\implstyle{#1}}}}%
+  \par\medskip
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\implstyle}
+%    \begin{macrocode}
+\def\implstyle{\ttfamily\bfseries\color{macroimpl}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\bslash}
+% Defines an expandable backslash with catcode 12: `\texttt{\bslash}$_{12}$'.
+% The |\@firstofone| trick is used to read the |\gdef\bslash| code before changing the catcode.
+%    \begin{macrocode}
+{%
+\@firstofone{%
+  \catcode`\\=12
+  \gdef\bslash
+}{\}
+}%}
+%    \end{macrocode}
+% \end{macro}
+%
+% \iffalse
+%</code>
+% \fi
+%
+%
+% \subsection{Provide \pkg{doc} macros}
+%
+% \iffalse
+%<*doc>
+% \fi
 %
 % \begin{macro}{\ydoc@countbslashes}
 % Reads the macro code into a temp box. The backslashes are defined to increase a counter.
@@ -705,138 +844,18 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\ydoclistingssettings}
 %    \begin{macrocode}
-\def\ydoclistingssettings{%
-  \lstset{%
-    language=[latex]tex,basicstyle=\ttfamily,
-    numbers=left,numberstyle=\tiny\color{gray},firstnumber=last,
-    breaklines,prebreak={\mbox{\tiny$\swarrow$}}%
-  }%
-}
+\RequirePackage{shortvrb}
+\MakeShortVerb{\|}
 %    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\macro@impl@args}[1]{number of macro arguments}
-%    \begin{macrocode}
-\def\macro@impl@args[#1]{%
-  \begingroup
-  \parindent=10pt\relax
-  \let\macro@impl@argcnt\@tempcnta
-  \let\macro@impl@curarg\@tempcntb
-  \macro@impl@argcnt=#1\relax
-  \macro@impl@curarg=0\relax
-  \ifnum\macro@impl@curarg<\macro@impl@argcnt\relax
-    \expandafter\macro@impl@arg
-  \else
-    \expandafter\macro@impl@endargs
-  \fi
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\macro@impl@endargs}
-%    \begin{macrocode}
-\def\macro@impl@endargs{%
-  \endgroup
-  \unskip\par\noindent\ignorespaces
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\macro@impl@argline}[2]{argument number}{argument description}
-%    \begin{macrocode}
-\def\macro@impl@argline#1#2{%
-  \par{\texttt{\##1}:~#2}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\macro@impl@arg}[1]{argument description}
-%    \begin{macrocode}
-\def\macro@impl@arg#1{%
-  \advance\macro@impl@curarg by\@ne\relax
-  \macro@impl@argline{\the\macro@impl@curarg}{#1}%
-  \ifnum\macro@impl@curarg<\macro@impl@argcnt\relax
-    \expandafter\macro@impl@arg
-  \else
-    \expandafter\macro@impl@endargs
-  \fi
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{environment}{macro}[1]{implemented macro}
-%    \begin{macrocode}
-\def\macro#1{%
-  \PrintMacroImplName{#1}%
-  \@ifnextchar[%]
-    {\macro@impl@args}%
-    {}%
-}
-\def\endmacro{}
-%    \end{macrocode}
-% \end{environment}
-%
-% \begin{environment}{environment}[1]{environment name}
-%    \begin{macrocode}
-\def\environment#1{%
-  \PrintEnvImplName{#1}%
-  \@ifnextchar[%]
-    {\macro@impl@args}%
-    {}%
-}
-\def\endenvironment{}
-%    \end{macrocode}
-% \end{environment}
-%
-% \begin{macro}{\PrintMacroImplName}[1]{macro (token)}
-%    \begin{macrocode}
-\def\PrintMacroImplName#1{%
-  \par\bigskip\noindent
-  \hbox{\hspace*{\descindent}\fbox{{\implstyle{\string#1}}}}%
-  \par\medskip\noindent
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\PrintEnvImplName}[1]{environment name}
-% test
-%    \begin{macrocode}
-\def\PrintEnvImplName#1{%
-  \par\bigskip\noindent
-  \hbox{\hspace*{\descindent}\fbox{{\implstyle{#1}}}}%
-  \par\medskip
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\implstyle}
-%    \begin{macrocode}
-\def\implstyle{\ttfamily\bfseries\color{macroimpl}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\bslash}
-% Defines an expandable backslash with catcode 12: `\texttt{\bslash}$_{12}$'.
-% The |\@firstofone| trick is used to read the |\gdef\bslash| code before changing the catcode.
-%    \begin{macrocode}
-{%
-\@firstofone{%
-  \catcode`\\=12
-  \gdef\bslash
-}{\}
-}%}
-%    \end{macrocode}
-% \end{macro}
 %
 % \iffalse
-%</code>
+%</doc>
 % \fi
+%
 % \iffalse
 %<*desc>
 % \fi
-%
 % \subsection{Description Macros and Environments}
 %
 % \subsubsection{Color and style definitions}

@@ -35,7 +35,7 @@
 %<expl>    [ydoc-expl]
 %<*driver|class|package|code|desc|expl>
     {$Id$}
-    [v0.1]
+    [v0.1alpha]
 %</driver|class|package|code|desc|expl>
 %<class>   [ydoc class: document LaTeX class and packages]
 %<package> [ydoc package: document LaTeX class and packages]
@@ -90,7 +90,7 @@
 %   Right brace   \}     Tilde         \~}
 %
 %
-% \changes{v0.1}{2010/04/09}{Initial version}
+% \changes{v0.1alpha}{2010/04/09}{First released alpha version}
 %
 % \DoNotIndex{\newcommand,\newenvironment}
 %
@@ -360,10 +360,6 @@
 \LoadClassWithOptions{article}
 %%\RequirePackage{doc}
 \RequirePackage{ydoc}
-\RequirePackage{shortvrb}
-\RequirePackage{newverbs}
-\MakeShortVerb{\|}
-\MakeSpecialShortVerb{\qverb}{\"}
 %    \end{macrocode}
 % \iffalse
 %</class>
@@ -377,6 +373,12 @@
 \RequirePackage{ydoc-code}
 \RequirePackage{ydoc-expl}
 \RequirePackage{ydoc-desc}
+
+\RequirePackage{shortvrb}
+\RequirePackage{newverbs}
+\MakeShortVerb{\|}
+\MakeSpecialShortVerb{\qverb}{\"}
+\AtBeginDocument{\catcode`\^^A=14\relax}
 %    \end{macrocode}
 % \iffalse
 %</package>
@@ -607,7 +609,7 @@
 %
 % \begin{macro}{\CharacterTable}
 %    \begin{macrocode}
-\def\CharacterTable#1{%
+\providecommand*\CharacterTable[1]{%
   \PackageWarning{ydoc}{Ignoring Character Table - not implemented yet!}{}{}%
 }
 %    \end{macrocode}
@@ -615,7 +617,7 @@
 %
 % \begin{macro}{\DoNotIndex}
 %    \begin{macrocode}
-\def\DoNotIndex#1{%
+\providecommand*\DoNotIndex[1]{%
   \PackageWarning{ydoc}{Ignoring DoNotIndex - not implemented yet!}{}{}%
 }
 %    \end{macrocode}
@@ -623,15 +625,23 @@
 %
 % \begin{macro}{\changes}
 %    \begin{macrocode}
-\def\changes#1#2#3{%
+\providecommand*\changes[3]{%
   \PackageWarning{ydoc}{Ignoring changes - not implemented yet!}{}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\RecordChanges}
+%    \begin{macrocode}
+\providecommand*\RecordChanges{%
+  \PackageWarning{ydoc}{List of changes not implemented yet!}{}{}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\PrintChanges}
 %    \begin{macrocode}
-\def\PrintChanges{%
+\providecommand*\PrintChanges{%
   \PackageWarning{ydoc}{List of changes not implemented yet!}{}{}%
 }
 %    \end{macrocode}
@@ -639,8 +649,32 @@
 %
 % \begin{macro}{\PrintIndex}
 %    \begin{macrocode}
-\def\PrintIndex{%
+\providecommand*\PrintIndex{%
   \PackageWarning{ydoc}{Code index not implemented yet!}{}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\CodelineIndex}
+%    \begin{macrocode}
+\providecommand*\CodelineIndex{%
+  \PackageWarning{ydoc}{Code line index not implemented yet!}{}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\EnableCrossrefs}
+%    \begin{macrocode}
+\providecommand*\EnableCrossrefs{%
+  \PackageWarning{ydoc}{Cross references not implemented yet!}{}{}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\GetFileInfo}
+%    \begin{macrocode}
+\providecommand*\GetFileInfo[1]{%
+  \PackageWarning{ydoc}{Get File Info not implemented yet!}{}{}%
 }
 %    \end{macrocode}
 % \end{macro}

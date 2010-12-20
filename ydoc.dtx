@@ -36,7 +36,7 @@
 %<doc>     [ydoc-doc]
 %<*driver|class|package|code|desc|expl|doc>
     {$Id$}
-    [v0.2alpha]
+    [v0.3alpha]
 %</driver|class|package|code|desc|expl|doc>
 %<class>   [ydoc class: document LaTeX class and packages]
 %<package> [ydoc package: document LaTeX class and packages]
@@ -74,7 +74,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1239}
+% \CheckSum{1237}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -840,13 +840,11 @@
 % \end{macro}
 %
 % \begin{macro}{\GetFileInfo}
-% Current implementation taken from \pkg{doc} package. Grouping added.
+% Current implementation taken from \pkg{doc} package.
 %    \begin{macrocode}
 \providecommand*\GetFileInfo[1]{%
-  \begingroup
   \def\filename{#1}%
   \def\@tempb##1 ##2 ##3\relax##4\relax{%
-    \endgroup
     \def\filedate{##1}%
     \def\fileversion{##2}%
     \def\fileinfo{##3}}%

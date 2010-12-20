@@ -1,7 +1,7 @@
 # $Id$
 
 PACKAGE     = ydoc
-PACKAGE_STY = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty
+PACKAGE_STY = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty
 PACKAGE_DTX = ydoc.dtx
 PACKAGE_DOC = $(PACKAGE_DTX:.dtx=.pdf)
 PACKAGE_SRC = ${PACKAGE_DTX} ${PACKAGE}.ins Makefile

@@ -83,6 +83,9 @@ ${PACKAGE}%.zip: ${PACKFILES}
 
 release: fullclean package doc example tests ${ZIPFILE}
 
+ctanify: ${PACKAGE_STY} ${PACKAGE_DTX} ${PACKAGE_DOC} ${PACKAGE_SRC} README
+	ctanify $^
+
 ###############################################################################
 
 # Make sure TeX finds the input files in TESTDIR

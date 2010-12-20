@@ -3,7 +3,6 @@
 PACKAGE     = ydoc
 PACKAGE_STY = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty
 PACKAGE_DTX = ydoc.dtx
-PACKAGE_SCR =
 PACKAGE_DOC = $(PACKAGE_DTX:.dtx=.pdf)
 PACKAGE_SRC = ${PACKAGE_DTX} ${PACKAGE}.ins Makefile
 PACKFILES   = ${PACKAGE_SRC} ${PACKAGE_DOC} README
@@ -41,7 +40,7 @@ new: fullclean all
 
 doc: ${PACKAGE_DOC}
 
-package: ${PACKAGE_STY} ${PACKAGE_SCR}
+package: ${PACKAGE_STY}
 
 %.pdf: %.dtx
 	${LATEX} $*.dtx
@@ -117,11 +116,9 @@ tds: .tds
 	${MKDIR} tds/tex/ tds/tex/latex/ tds/tex/latex/${PACKAGE}/
 	${MKDIR} tds/doc/ tds/doc/latex/ tds/doc/latex/${PACKAGE}/
 	${MKDIR} tds/source/ tds/source/latex/ tds/source/latex/${PACKAGE}/
-	test -n "${PACKAGE_SCR}" && ${MKDIR} tds/scripts/ tds/scripts/${PACKAGE}/
 	${CP} ${PACKAGE_STY} tds/tex/latex/${PACKAGE}/
 	${CP} ${PACKAGE_DOC} tds/doc/latex/${PACKAGE}/
 	${CP} ${PACKAGE_SRC} tds/source/latex/${PACKAGE}/
-	test -n "${PACKAGE_SCR}" && ${CP} ${PACKAGE_SCR} tds/scripts/${PACKAGE}/
 	@touch $@
 
 tdszip: ${TDSZIPFILE}

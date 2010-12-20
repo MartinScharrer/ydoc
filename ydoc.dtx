@@ -1396,10 +1396,9 @@
   \immediate\write\@mainaux{%
     \global\noexpand\@namedef{href@desc@\name}{}%
   }%
-  \hbox{\hypertarget{desc:\name}{}}%
   \hbox\y@bgroup
   \@ifundefined{href@impl@\name}{}{\hyperlink{impl:\name}}%
-  {\PrintMacroName{#1}}%
+  {\hypertarget{desc:\name}{\PrintMacroName{#1}}}%
   \macroargsstyle
   \read@Macro@arg
 }

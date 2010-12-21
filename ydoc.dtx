@@ -467,7 +467,7 @@
 \catcode`\ =\active
 }*
 |gdef|macro@code#1^^M%    \end{macrocode}(*
-|endgroup|expandafter|macro@@code|expandafter(|ydoc@removeline#1|noexpand|lastlinemacro^^M)*
+|endgroup|expandafter|macro@@code|expandafter(|ydoc@removeline#1|noexpand|lastlinemacro)*
 )*
 |gdef|ydoc@removeline#1^^M(|noexpand|firstlinemacro)*
 |gdef|ydoc@defspecialmacros(*
@@ -500,7 +500,7 @@
 \def\newlinemacro{\\\null}
 \def\spacemacro{\ }
 \def\bslashmacro{\char92}
-\def\lastlinemacro#1{}
+\def\lastlinemacro{}
 \def\firstlinemacro{\linenumberbox}
 \def\newlinemacro{\\\linenumberbox}
 \newcounter{linenumber}

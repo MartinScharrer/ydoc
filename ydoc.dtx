@@ -74,7 +74,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1238}
+% \CheckSum{1241}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -229,9 +229,13 @@
 % follow. Macros which are not part of the syntax but normal arguments should be written as
 % |<\textbackslash name>| (yielding \MacroArgs<\textbackslash name>) instead. 
 %
-% \subsubsection*{Example:}
+% \subsubsection*{Examples:}
 % |\Macro\@for<\textbackslash var> ':=' <list> \AlsoMacro\do {<code>}|\\
-%  \Macro\@for<\textbackslash var> ':=' <list> \AlsoMacro\do {<code>}\\
+%  \Macro\@for<\textbackslash var> ':=' <list> \AlsoMacro\do {<code>}
+%  \par\medskip\noindent
+% |\Macro\pgfkeys{<key1>'='<value1>','<key2>'/.code='{<code>}}|\\
+%  \Macro\pgfkeys{<key1>'='<value1>','<key2>'/.code='{<code>}}\\
+%
 %
 % \begin{DescribeEnv}{DescribeMacros}
 %   \Macro\Macro<\textbackslash name><arguments>\\
@@ -274,14 +278,14 @@
 %   Description                &  Syntax       &  Result              & Macro$^{a}$ \\
 %  \midrule
 %   Meta text                  &  |<text>|     & \MacroArgs<text>     & |\meta| \\
-%   Mandatory Argument         &  |{<text>}|   & \MacroArgs{<text>}   & |\marg| \\
-%   ---, without meta text     &  |{text}|     & \MacroArgs{text}     & \\
-%   Optional Argument          &  |[<text>]|   & \MacroArgs[<text>]   & |\oarg| \\
-%   ---, without meta text     &  |[text]|     & \MacroArgs[text]     & \\
-%   Picture Argument           &  |(<text>)|   & \MacroArgs(<text>)   & |\parg| \\
-%   ---, without meta text     &  |(text)|     & \MacroArgs(text)     & \\
-%   Beamer Overlay Argument    &  |<<text>>|   & \MacroArgs<<text>>   & |\aarg| \\
-%   ---, without meta text     &  |'<'text'>'| & \MacroArgs'<'text'>' \\
+%   Mandatory Argument         &  |{text}|     & \MacroArgs{text}     & \\
+%   ---, with meta text        &  |{<text>}|   & \MacroArgs{<text>}   & |\marg| \\
+%   Optional Argument          &  |[text]|     & \MacroArgs[text]     & \\
+%   ---, with meta text        &  |[<text>]|   & \MacroArgs[<text>]   & |\oarg| \\
+%   Picture Argument           &  |(text)|     & \MacroArgs(text)     & \\
+%   ---, with meta text        &  |(<text>)|   & \MacroArgs(<text>)   & |\parg| \\
+%   Beamer Overlay Argument    &  |<<text>>|   & \MacroArgs<<text>>   \\
+%   ---, with meta text        &  |<<<text> >>| & \MacroArgs<<<text> >>   & |\aarg| \\
 %   Star                       &  |*|          & \MacroArgs*          \\
 %  \midrule
 %   Verbatim content           &  |'$&^%_#$\'| & \MacroArgs'$&^%_#$\' \\
@@ -292,7 +296,8 @@
 %  \midrule
 %   Second macro (e.g.\ endmarker) &  |\AlsoMacro\macro| & \MacroArgs\AlsoMacro\macro \\
 %  \bottomrule
-%   \multicolumn{4}{l}{{\Large\strut}$^{a}$) As alternative to be used inside normal text.}
+%   \multicolumn{4}{l}{{\Large\strut}$^{a}$) As alternative to be used inside normal text.} \\
+%   \multicolumn{4}{l}{Note that `|text|' can itself be further macro argument code.}
 % \end{tabular}
 % \end{table}
 %
@@ -925,28 +930,6 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@meta}
-% Checks if |#1| is surrounded by angles |< >|.
-% If so it calls \cs{is@meta} which removes the angles and calls \cs{meta}.
-%    \begin{macrocode}
-\def\@meta#1{%
-  \@ifnextchar<%
-    {\is@meta}%
-    {}%
-  #1%
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\is@meta}
-% Only removes the |< >| ands calls \cs{meta}.
-%    \begin{macrocode}
-\def\is@meta<#1>{%
-  \meta{#1}%
-}
-%    \end{macrocode}
-% \end{macro}
-%
 % \begin{macro}{\marg}
 % Calls \cs{marg} with angles added to force meta format.
 %    \begin{macrocode}
@@ -976,12 +959,13 @@
 % \end{macro}
 %
 % \begin{macro}{\@marg}
-% Sets style and adds braces. Text is formatted with \cs{@meta} which might add meta format.
+% Sets style and adds braces.
+% The text is formatted as separate set of macro arguments.
 %    \begin{macrocode}
 \def\@marg#1{%
   {\margstyle{%
     {\ttfamily\braceleft}%
-    \@meta{#1}%
+    {\def\end@Macro@args{}\read@Macro@arg#1}%
     {\ttfamily\braceright}%
   }}%
 }
@@ -989,12 +973,13 @@
 % \end{macro}
 %
 % \begin{macro}{\@oarg}
-% Sets style and adds brackets. Text is formatted with \cs{@meta} which might add meta format.
+% Sets style and adds brackets.
+% The text is formatted as separate set of macro arguments.
 %    \begin{macrocode}
 \def\@oarg#1{%
   {\oargstyle{%
     {\ttfamily[}%
-    \@meta{#1}%
+    {\def\end@Macro@args{}\read@Macro@arg#1}%
     {\ttfamily]}%
   }}%
 }
@@ -1002,12 +987,12 @@
 % \end{macro}
 %
 % \begin{macro}{\@parg}
-% Sets style and adds parentheses. Text is formatted with \cs{@meta} which might add meta format.
+% Sets style and adds parentheses.
 %    \begin{macrocode}
 \def\@parg#1{%
   {\pargstyle{%
     {\ttfamily(}%
-    \@meta{#1}%
+    {\def\end@Macro@args{}\read@Macro@arg#1}%
     {\ttfamily)}%
   }}%
 }
@@ -1015,12 +1000,12 @@
 % \end{macro}
 %
 % \begin{macro}{\@aarg}
-% Sets style and adds angles. Text is formatted with \cs{@meta} which might add meta format.
+% Sets style and adds angles.
 %    \begin{macrocode}
 \def\@aarg#1{%
   {\aargstyle{%
     {\ttfamily<}%
-    \@meta{#1}%
+    {\def\end@Macro@args{}\read@Macro@arg#1}%
     {\ttfamily>}%
   }}%
 }
@@ -1264,7 +1249,7 @@
 % \begin{macro}{\read@Macro@aarg}
 %    \begin{macrocode}
 \def\read@Macro@aarg<#1>>{%
-  \aarg{#1}\read@Macro@arg
+  \@aarg{#1}\read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1443,6 +1428,7 @@
 \newcommand*\MacroArgs{%
   \begingroup
   \def\end@Macro@args{\endgroup\xspace}%
+  \macroargsstyle
   \read@Macro@arg
 }
 \RequirePackage{xspace}

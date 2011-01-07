@@ -74,7 +74,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1240}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -734,7 +734,7 @@
 \def\CheckSum#1{%
   \gdef\ydoc@checksum{#1}%
 }
-\let\ydoc@checksum\z@
+\let\ydoc@checksum\m@ne
 %    \end{macrocode}
 % \end{macro}
 %
@@ -865,8 +865,16 @@
   \ifnum\ydoc@checksum=\m@ne
     \message{^^J}%
     \message{**********************^^J}%
-    \message{* No Checksum found! *^^J}%
+    \message{* No checksum found! *^^J}%
     \message{**********************^^J}%
+    \GenericWarning{No checksum found}{Correct checksum is \the\ydoc@bslashcnt^^J}{}{}%
+  \else
+  \ifnum\ydoc@checksum=\z@
+    \message{^^J}%
+    \message{*********************^^J}%
+    \message{* Checksum disabled *^^J}%
+    \message{*********************^^J}%
+    \GenericWarning{Checksum disabled}{Correct checksum is \the\ydoc@bslashcnt^^J}{}{}%
   \else
   \ifnum\ydoc@checksum=\ydoc@bslashcnt
     \message{^^J}%
@@ -878,7 +886,8 @@
     \message{****************************^^J}%
     \message{* Checksum wrong (\ydoc@checksum<>\the\ydoc@bslashcnt) ^^J}%
     \message{****************************^^J}%
-    \GenericError{Checksum wrong}{}{}{}%
+    \GenericError{Checksum wrong}{Correct checksum is \the\ydoc@bslashcnt^^J}{}{}%
+  \fi
   \fi
   \fi
 }

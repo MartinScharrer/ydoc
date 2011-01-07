@@ -74,7 +74,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1241}
+% \CheckSum{1240}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -277,15 +277,15 @@
 %  \toprule
 %   Description                &  Syntax       &  Result              & Macro$^{a}$ \\
 %  \midrule
-%   Meta text                  &  |<text>|     & \MacroArgs<text>     & |\meta| \\
-%   Mandatory Argument         &  |{text}|     & \MacroArgs{text}     & \\
-%   ---, with meta text        &  |{<text>}|   & \MacroArgs{<text>}   & |\marg| \\
-%   Optional Argument          &  |[text]|     & \MacroArgs[text]     & \\
-%   ---, with meta text        &  |[<text>]|   & \MacroArgs[<text>]   & |\oarg| \\
-%   Picture Argument           &  |(text)|     & \MacroArgs(text)     & \\
-%   ---, with meta text        &  |(<text>)|   & \MacroArgs(<text>)   & |\parg| \\
-%   Beamer Overlay Argument    &  |<<text>>|   & \MacroArgs<<text>>   \\
-%   ---, with meta text        &  |<<<text> >>| & \MacroArgs<<<text> >>   & |\aarg| \\
+%   Meta text                  &  |<text>|     & \MacroArgs<text>     & \Macro\meta{<text>} \\
+%   Mandatory Argument         &  |{args}|     & \MacroArgs{args}     & \\
+%   ---, with meta text        &  |{<text>}|   & \MacroArgs{<text>}   & \Macro\marg{<text>} \\
+%   Optional Argument          &  |[args]|     & \MacroArgs[args]     & \\
+%   ---, with meta text        &  |[<text>]|   & \MacroArgs[<text>]   & \Macro\oarg{<text>} \\
+%   Picture Argument           &  |(args)|     & \MacroArgs(args)     & \\
+%   ---, with meta text        &  |(<text>)|   & \MacroArgs(<text>)   & \Macro\parg{<text>} \\
+%   Beamer Overlay Argument    &  |<<args>>|   & \MacroArgs<<args>>   \\
+%   ---, with meta text        &  |<< <text> >>| & \MacroArgs<<<text> >>   & \Macro\aarg{<text>} \\
 %   Star                       &  |*|          & \MacroArgs*          \\
 %  \midrule
 %   Verbatim content           &  |'$&^%_#$\'| & \MacroArgs'$&^%_#$\' \\
@@ -297,7 +297,7 @@
 %   Second macro (e.g.\ endmarker) &  |\AlsoMacro\macro| & \MacroArgs\AlsoMacro\macro \\
 %  \bottomrule
 %   \multicolumn{4}{l}{{\Large\strut}$^{a}$) As alternative to be used inside normal text.} \\
-%   \multicolumn{4}{l}{Note that `|text|' can itself be further macro argument code.}
+%   \multicolumn{4}{l}{Note that `|args|' can itself be further macro arguments except true verbatim.}
 % \end{tabular}
 % \end{table}
 %

@@ -74,7 +74,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{0}
+% \CheckSum{1459}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -1863,7 +1863,7 @@
 %
 % \begin{macro}{\exampleprintsettings}
 %    \begin{macrocode}
-\def\exampleprintsettings{frame=lines}%
+\def\exampleprintsettings{numbers=left,numberstyle=\tiny\color{gray}\sffamily,numbersep=5pt}%
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1880,22 +1880,55 @@
     \expandafter\expandafter\expandafter[%
     \expandafter\exampleprintsettings\expandafter,\thisexampleprintsettings]%
     {\ydoc@exafile}%
-  \color@endgroup}%
+  \unskip\color@endgroup}%
   \setbox\exampleresultbox\hbox{\color@setgroup
     \@@input\ydoc@exafile\relax
-  \color@endgroup}%
+  \unskip\color@endgroup}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\PrintExample}
 %    \begin{macrocode}
+%<*DISABLED>
 \RequirePackage{showexpl}
 \def\PrintExample{%
   \begingroup
   \lstset{basicstyle=\ttfamily}%
   \MakePercentComment
   \LTXinputExample[varwidth]{\ydoc@exafile}%
+  \endgroup
+}
+%</DISABLED>
+%    \end{macrocode}
+% \end{macro}
+%
+%
+%
+% \begin{macro}{\PrintExample}
+%    \begin{macrocode}
+\def\PrintExample{%
+  \begingroup
+  \BoxExample
+  \@tempdima=\textwidth
+  \advance\@tempdima by -\wd\examplecodebox\relax
+  \advance\@tempdima by -\wd\exampleresultbox\relax
+  \advance\@tempdima by -15pt\relax
+  \ifdim\@tempdima>\bigskipamount
+    \hbox to \textwidth{%
+     \null\hss
+     \minipage[c]{\wd\exampleresultbox}\fbox{\usebox\exampleresultbox}\endminipage
+     \hfill\hfill\hskip\bigskipamount\hskip15pt\hfill\hfill
+     \minipage[c]{\wd\examplecodebox}\usebox\examplecodebox\endminipage
+     \hss\null
+     }%
+  \else
+    \vbox{%
+        \centerline{\fbox{\usebox\exampleresultbox}}%
+        \vspace{\bigskipamount}%
+        \centerline{\usebox\examplecodebox}%
+    }%
+  \fi
   \endgroup
 }
 %    \end{macrocode}
@@ -1917,7 +1950,11 @@
 {%
   \lst@EndWriteFile
   \egroup
+  \begingroup
+  \MakePercentComment
+  \catcode`\^^M=5\relax
   \PrintExample
+  \endgroup
 }
 %    \end{macrocode}
 % \end{environment}

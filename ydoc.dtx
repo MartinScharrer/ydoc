@@ -1275,8 +1275,24 @@
 %
 % \begin{macro}{\read@Macro@marg}
 %    \begin{macrocode}
-\def\read@Macro@marg#1{%
-  \@marg{#1}\read@Macro@arg
+\def\read@Macro@marg{%
+    \begingroup
+    \afterassignment\read@Macro@marg@
+    \let\@let@token=%
+}
+\def\read@Macro@marg@{%
+    \setbox\@tempboxa\hbox\bgroup
+        \color@setgroup\bgroup
+        \aftergroup\color@endgroup
+        \aftergroup\egroup
+        \aftergroup\read@Macro@marg@@
+        \let\end@Macro@args\empty%
+        \read@Macro@arg
+}
+\def\read@Macro@marg@@{%
+  \@marg{\usebox\@tempboxa}%
+  \endgroup
+  \read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}

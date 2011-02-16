@@ -227,7 +227,8 @@
 % This macro can only be used inside the \meta{macro arguments} of the above macros and typesets an additional macro as part
 % of the syntax of the described macro. The additional macro is normally an end- or other marker of some kind. Further macro arguments may
 % follow. Macros which are not part of the syntax but normal arguments should be written as
-% |<\textbackslash name>| (yielding \MacroArgs<\textbackslash name>) instead. 
+% |<\textbackslash name>| (yielding \MacroArgs<\textbackslash name>) instead.
+% The `\verb+|+' character is an abbreviation of \Macro\AlsoMacro, but only at places where this can appear.
 %
 % \subsubsection*{Examples:}
 % |\Macro\@for<\textbackslash var> ':=' <list> \AlsoMacro\do {<code>}|\\
@@ -236,6 +237,22 @@
 % |\Macro\pgfkeys{<key1>'='<value1>','<key2>'/.code='{<code>}}|\\
 %  \Macro\pgfkeys{<key1>'='<value1>','<key2>'/.code='{<code>}}\\
 %
+% \DescribeMacro\MakeShortMacroArgs*{<char>}
+% This macro is similar to \Macro\MakeShortVerb from the \pkg{shortvrb} package.
+% It can be used to globally define one character to act like \Macro\MacroArgs till the same character is discovered again.
+% Special characters must be escaped with an backslash for the definition.
+% One additional benefit beside the shorter size is that the argument list is automatically terminated.
+% For example |\MakeShortMacroArgs{\"}| will make `|"<arg>{<arg>}"|' act like `|\MacroArgs<arg>{<arg>}\relax|'.
+% One side-effect is that should the argument list be terminated, e.g. by an unknown element or macro, then the rest of the
+% text till the end-character is typeset as normal, but inside a group.
+%
+% The starred version will define the character equal to \Macro\Macro instead.
+%
+% \DescribeMacro\DeleteShortMacroArgs{<char>}
+% Globally removes the special meaning from \meta{char} given to him by \Macro\MakeShortMacroArgs.
+%
+% Note that special characters like |`| are
+% best defined |\AtBeginDocument| and deleted again |\AtEndDocument| to avoid issues if they are written to the |aux| file by some package.
 %
 % \begin{DescribeEnv}{DescribeMacros}
 %   \Macro\Macro<\textbackslash name><arguments>\\
@@ -295,6 +312,7 @@
 %   Space (explicit macro)     &  |\space|     & \\
 %  \midrule
 %   Second macro (e.g.\ endmarker) &  |\AlsoMacro\macro| & \MacroArgs\AlsoMacro\macro \\
+%   \hfill short version:        &  \verb+|\macro+     & \MacroArgs|\macro \\
 %  \bottomrule
 %   \multicolumn{4}{l}{{\Large\strut}$^{a}$) As alternative to be used inside normal text.} \\
 %   \multicolumn{4}{l}{Note that `|args|' can itself be further macro arguments except true verbatim.}

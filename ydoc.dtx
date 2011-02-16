@@ -74,7 +74,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1488}
+% \CheckSum{1535}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -955,6 +955,11 @@
 \hypersetup{colorlinks=true,pdfborder=0 0 0,pdfborderstyle={}}
 %    \end{macrocode}
 %
+% The short verbatim code is required for the similar macros provided here.
+%    \begin{macrocode}
+\RequirePackage{shortvrb}
+%    \end{macrocode}
+%
 % \subsubsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
@@ -1450,8 +1455,50 @@
   \hbox\y@bgroup
   \@ifundefined{href@impl@\name}{}{\hyperlink{impl:\name}}%
   {\hypertarget{desc:\name}{\PrintMacroName{#1}}}%
+  \ydoc@macrocatcodes
   \macroargsstyle
   \read@Macro@arg
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@macrocatcodes}
+% Sets the catcodes inside for |read@Macro@arg| material.
+%    \begin{macrocode}
+\def\ydoc@macrocatcodes{%
+  \ydoc@short@AlsoMacro
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\MakeShortMacroArgs}
+% Defines the given character as short version for |\MacroArgs|.
+% It is first define to be a short verbatim character to take
+% advantage of the house-keeping (save \& restore of the original
+% catcode and definition) of |shortvrb|.
+%
+% The starred version define the character to act like |\Macro| instead.
+%    \begin{macrocode}
+\newcommand*\MakeShortMacroArgs{%
+  \@ifstar
+    {\@MakeShortMacroArgs\Macro}%
+    {\@MakeShortMacroArgs\MacroArgs}%
+}
+\def\@MakeShortMacroArgs#1#2{%
+  \MakeShortVerb{#2}
+  \catcode`#2\active
+  \begingroup
+  \catcode`\~\active
+  \lccode`\~`#2\relax
+  \lowercase{\endgroup\gdef~{\bgroup\let~\egroup#1}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DeleteShortMacroArgs}
+%    \begin{macrocode}
+\newcommand*\DeleteShortMacroArgs[1]{%
+  \DeleteShortVerb{#1}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1489,6 +1536,19 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\ydoc@short@AlsoMacro}
+% Makes |&| an alias for |\AlsoMacro|.
+%    \begin{macrocode}
+\begingroup
+\catcode`\|\active
+\gdef\ydoc@short@AlsoMacro{%
+  \catcode`\|\active
+  \let|\AlsoMacro
+}
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\MacroArgs}
 % Uses the normal macro argument reading mechanism from \cs{DescribeMacro}.
 % Instead of a box a simple group is added.
@@ -1496,6 +1556,7 @@
 \newcommand*\MacroArgs{%
   \begingroup
   \def\end@Macro@args{\endgroup\xspace}%
+  \ydoc@macrocatcodes
   \macroargsstyle
   \read@Macro@arg
 }
@@ -1636,6 +1697,7 @@
   \let\PrintEnv\PrintSubEnv
   \hbox\y@bgroup
   \PrintEnvName{\begin}{\DescribeEnv@name}%
+  \ydoc@macrocatcodes
   \macroargsstyle
   \read@Macro@arg
 }

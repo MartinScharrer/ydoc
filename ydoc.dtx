@@ -1472,7 +1472,10 @@
   }%
   \hbox\y@bgroup
   \@ifundefined{href@impl@\name}{}{\hyperlink{impl:\name}}%
-  {\hypertarget{desc:\name}{\PrintMacroName{#1}}}%
+  {%
+  \hbox{\vbox to 0pt{\vss\hbox{\raisebox{4ex}{\hypertarget{desc:\name}{}}}}%
+  \PrintMacroName{#1}}%
+  }%
   \ydoc@macrocatcodes
   \macroargsstyle
   \read@Macro@arg
@@ -1785,7 +1788,7 @@
   {\macrodescstyle{\strut
    \texttt{\char92}%
    \escapechar\m@ne
-   \string#1}}%
+   \string#1\strut}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1823,7 +1826,9 @@
   \else
     \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
   \fi
-  \par\vspace\afterdescskip
+  \par
+  \vspace\afterdescskip
+  \par\noindent
 }
 %    \end{macrocode}
 % \end{macro}
@@ -1843,7 +1848,9 @@
   \par\vspace\beforedescskip
   \noindent\hspace*{\descindent}%
   \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
-  \par\vspace\afterdescskip
+  \par
+  \vspace\afterdescskip
+  \par\noindent
 }
 %    \end{macrocode}
 % \end{macro}

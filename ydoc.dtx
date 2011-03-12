@@ -997,9 +997,11 @@
 % Prints \meta{meta text}.
 %    \begin{macrocode}
 \def\meta#1{%
+  {\metastyle{%
   \ensuremath\langle
-  {\metastyle{#1\/}}%
+    #1\/%
   \ensuremath\rangle
+  }}%
 }
 %    \end{macrocode}
 % \end{macro}

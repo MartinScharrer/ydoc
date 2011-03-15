@@ -17,8 +17,9 @@ TESTDIR = .
 TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
 TESTARGS = -output-directory ${TESTDIR}
 
-LATEX_OPTIONS = -interaction=batchmode
+LATEX_OPTIONS = -interaction=batchmode -halt-on-error
 LATEX = pdflatex ${LATEX_OPTIONS}
+PDFLATEX = pdflatex ${LATEX_OPTIONS}
 
 TEXMFDIR = ${HOME}/texmf
 
@@ -40,19 +41,47 @@ new: fullclean all
 
 doc: ${PACKAGE_DOC}
 
-package: ${PACKAGE_STY}
+package: unpack
 
 %.pdf: %.dtx
-	${LATEX} $*.dtx
+	${LATEX} $*.dtx || rm $*.aux
 	-makeindex -s gind.ist -o $*.ind $*.idx
 	-makeindex -s gglo.ist -o $*.gls $*.glo
-	${LATEX} $*.dtx
-	${LATEX} $*.dtx
+	${LATEX} $*.dtx || rm $*.aux
+	${LATEX} $*.dtx || rm $*.aux
+
+pdfopt: doc
+	@-pdfopt ydoc.pdf .temp.pdf && mv .temp.pdf ydoc.pdf
+
+ydoc.pdf: ydoc.dtx
+	${PDFLATEX} $< || rm ${PACKAGE}.aux
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || rm ${PACKAGE}.aux
+	-makeindex -s gind.ist -o "$@" "$<"
+	-makeindex -s gglo.ist -o "$@" "$<"
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || rm ${PACKAGE}.aux
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || rm ${PACKAGE}.aux
+
 
 ${PACKAGE}.pdf: ${PACKAGE}.sty
 
-${INSGENERATED}: ${PACKAGE_DTX} ${PACKAGE}.ins 
-	yes | latex ${PACKAGE}.ins
+unpack: ${INSGENERATED}
+
+${INSGENERATED}: ydoc.dtx
+	${PDFLATEX} -interaction=nonstopmode '\def\endinstall{\endgroup\enddocument}\input{ydoc.dtx}' || rm ${PACKAGE}.aux
+
+# 'doc' and 'ydoc.pdf' call itself until everything is stable
+doc: ydoc.pdf
+	@${MAKE} --no-print-directory ydoc.pdf
+
+once: ydoc.dtx
+	pdflatex $< || rm ${PACKAGE}.aux
+	-readacro ydoc.pdf
+
+twice: ydoc.dtx
+	${PDFLATEX} $< || rm ${PACKAGE}.aux
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || rm ${PACKAGE}.aux
+	-readacro ydoc.pdf
+
 
 clean:
 	rm -f ${TEXAUX} $(addprefix ${TESTDIR}/, ${TEXAUX})
@@ -139,4 +168,12 @@ uninstall:
 	test -d "${TEXMFDIR}" && ${RM} -rv "${TEXMFDIR}/tex/latex/${PACKAGE}" \
 	"${TEXMFDIR}/doc/latex/${PACKAGE}" "${TEXMFDIR}/source/latex/${PACKAGE}" \
 	"${TEXMFDIR}/scripts/${PACKAGE}" && texhash ${TEXMFDIR}
+
+dtx: ydoc.dtx
+
+ydoc.dtx:  ydoc.ins  ydoc_doc.dtx  ydoc_cls.dtx  ydoc_sty.dtx  ydoc_code_sty.dtx  ydoc_doc_sty.dtx  ydoc_desc_sty.dtx  ydoc_expl_sty.dtx
+	@echo Creating $@
+	@cat $^ | perl -ne 'if (/^(\s*\\DocInput)/) { if (!$$n++) { print "$${1}{ydoc.dtx}\n"; } } else { print }' > $@
+	@echo '% \Finale' >> $@
+	@echo '% \endinput' >> $@
 

@@ -2,6 +2,7 @@
 
 PACKAGE     = ydoc
 PACKAGE_STY = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg
+PACKAGE_SUBDTX=ydoc.ins  ydoc_doc.dtx  ydoc_cls.dtx  ydoc_sty.dtx  ydoc_cfg.dtx  ydoc_code_sty.dtx  ydoc_doc_sty.dtx  ydoc_desc_sty.dtx  ydoc_expl_sty.dtx
 PACKAGE_DTX = ydoc.dtx
 PACKAGE_DOC = $(PACKAGE_DTX:.dtx=.pdf)
 PACKAGE_SRC = ${PACKAGE_DTX} ${PACKAGE}.ins Makefile
@@ -171,7 +172,7 @@ uninstall:
 
 dtx: ydoc.dtx
 
-ydoc.dtx:  ydoc.ins  ydoc_doc.dtx  ydoc_cls.dtx  ydoc_sty.dtx  ydoc_code_sty.dtx  ydoc_doc_sty.dtx  ydoc_desc_sty.dtx  ydoc_expl_sty.dtx
+ydoc.dtx: ${PACKAGE_SUBDTX}
 	@echo Creating $@
 	@cat $^ | perl -ne 'if (/^(\s*\\DocInput)/) { if (!$$n++) { print "$${1}{ydoc.dtx}\n"; } } else { print }' > $@
 	@echo '% \Finale' >> $@

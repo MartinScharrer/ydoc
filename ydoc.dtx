@@ -1,4 +1,83 @@
 % \iffalse
+%<*dtx>
+\begingroup
+\expandafter\ifx\csname install\endcsname\relax\fi
+\expandafter\ifx\csname endinstall\endcsname\relax\fi
+\install
+%</dtx>
+%<*install>
+\input docstrip.tex
+\preamble
+
+Copyright (c) 2010-2011 by Martin Scharrer <martin@scharrer-online.de>
+----------------------------------------------------------------------
+
+This work may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+
+  http://www.latex-project.org/lppl.txt
+
+and version 1.3c or later is part of all distributions of LaTeX
+version 2008/05/04 or later.
+
+This work has the LPPL maintenance status `maintained'.
+
+The Current Maintainer of this work is Martin Scharrer.
+
+This work consists of the files ydoc.dtx, ydoc.ins
+and the derived files ydoc.cls, ydoc.sty, ydoc-code.sty, ydoc-desc.sty,
+ydoc-expl.sty and ydoc-doc.sty,
+
+\endpreamble
+\keepsilent
+\askforoverwritefalse
+
+\generate{%
+  \file{ydoc.cls}     {\from{ydoc.dtx}{class}}%
+  \file{ydoc.sty}     {\from{ydoc.dtx}{package}}%
+  \file{ydoc.cfg}     {\from{ydoc.dtx}{cfg}}%
+  \file{ydoc-code.sty}{\from{ydoc.dtx}{code}}%
+  \file{ydoc-desc.sty}{\from{ydoc.dtx}{desc}}%
+  \file{ydoc-expl.sty}{\from{ydoc.dtx}{expl}}%
+  \file{ydoc-doc.sty} {\from{ydoc.dtx}{doc}}%
+}
+
+\begingroup
+\expandafter\obeyspaces
+\csname AtEndDocument\endcsname{%
+\ifx\Msg\undefined\let\Msg\typeout\fi
+\Msg{*************************************************************}%
+\Msg{*                                                           *}%
+\Msg{* To finish the installation you have to move the following *}%
+\Msg{* file into a directory searched by TeX:                    *}%
+\Msg{*                                                           *}%
+\Msg{*     ydoc.cls                                              *}%
+\Msg{*     ydoc.sty                                              *}%
+\Msg{*     ydoc-code.sty                                         *}%
+\Msg{*     ydoc-desc.sty                                         *}%
+\Msg{*     ydoc-expl.sty                                         *}%
+\Msg{*     ydoc-doc.sty                                          *}%
+\Msg{*                                                           *}%
+\Msg{* To produce the documentation run the file standalone.dtx  *}%
+\Msg{* through LaTeX.                                            *}%
+\Msg{*                                                           *}%
+\Msg{* Happy TeXing!                                             *}%
+\Msg{*                                                           *}%
+\Msg{*************************************************************}%
+}%
+\endgroup
+
+%<install>\endbatchfile
+%</install>
+%<*dtx>
+\endinstall
+\endgroup
+%</dtx>
+% \fi
+%% vim: ft=tex
+% \iffalse
 %% Copyright (c) 2010-2011 by Martin Scharrer <martin@scharrer-online.de>
 %% WWW: http://latex.scharrer-online.de/
 %%
@@ -386,6 +465,7 @@
 % \fi
 % \subsection{Class File}
 %    \begin{macrocode}
+\PassOptionsToClass{a4paper}{article}
 \LoadClassWithOptions{article}
 %%\RequirePackage{doc}
 \RequirePackage{ydoc}
@@ -407,9 +487,67 @@
 \RequirePackage{newverbs}
 \MakeSpecialShortVerb{\qverb}{\"}
 \AtBeginDocument{\catcode`\^^A=14\relax}
+
+\input{ydoc.cfg}
 %    \end{macrocode}
 % \iffalse
 %</package>
+% \fi
+%
+%
+% \iffalse
+%<*cfg>
+% \fi
+% \subsection{Config File}
+%
+% Use 'Linux Libertine' font as main font if installed.
+% Define "\/" to some fixed italic corrections
+% as long there is none defined by the font.
+%    \begin{macrocode}
+\usepackage[T1]{fontenc}
+\IfFileExists{libertine.sty}{%
+    \usepackage{libertine}
+    \begingroup
+    \setbox0\hbox{\it g\/}
+    \setbox1\hbox{\it g}
+    \ifnum\wd0>\wd1\else
+        \gdef\/{\kern 0.8864pt}
+    \fi
+    \endgroup
+}{}
+%    \end{macrocode}
+%
+% Only use 'lmodern' for the 'tt' font if installed.
+%    \begin{macrocode}
+\IfFileExists{lmodern.sty}{%
+    %\usepackage{lmodern}
+    \renewcommand{\ttdefault}{lmtt}
+}{}
+%    \end{macrocode}
+%
+%
+%    \begin{macrocode}
+\urlstyle{sf}
+%    \end{macrocode}
+%
+% Use micro-typesetting if pdftex is used:
+%    \begin{macrocode}
+\usepackage{ifpdf}
+\ifpdf
+\usepackage{microtype}
+\fi
+%    \end{macrocode}
+%    \begin{macrocode}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{multicol}
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\reversemarginpar
+%    \end{macrocode}
+% \iffalse
+%</cfg>
 % \fi
 %
 % \iffalse
@@ -579,9 +717,11 @@
   \lstset{%
     language=[latex]tex,basicstyle=\ttfamily,
     numbers=left,numberstyle=\tiny\color{gray},firstnumber=last,
-    breaklines,prebreak={\mbox{\tiny$\swarrow$}}%
+    breaklines,prebreak={\mbox{\tiny$\swarrow$}},
+    commentstyle=\color{black!60},
   }%
 }
+\ydoclistingssettings
 %    \end{macrocode}
 % \end{macro}
 %
@@ -723,12 +863,10 @@
 %</code>
 % \fi
 %
-%
-% \subsection{Provide \pkg{doc} macros}
-%
 % \iffalse
 %<*doc>
 % \fi
+% \subsection{Provide \pkg{doc} macros}
 %
 % \begin{macro}{\ydoc@countbslashes}
 % Reads the macro code into a temp box. The backslashes are defined to increase a counter.
@@ -975,10 +1113,6 @@
 \def\Needspace{\@ifstar\@gobble\@gobble}
 }
 %    \end{macrocode}
-%    \begin{macrocode}
-\RequirePackage{hyperref}
-\hypersetup{colorlinks=true,pdfborder=0 0 0,pdfborderstyle={}}
-%    \end{macrocode}
 %
 % The short verbatim code is required for the similar macros provided here.
 %    \begin{macrocode}
@@ -988,15 +1122,43 @@
 % \subsubsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
-\definecolor{macrodesc}{rgb}{0.0,0.0,0.8}
-\definecolor{macroimpl}{rgb}{0.0,0.0,0.4}
-\definecolor{meta}{rgb}{0.0,0.4,0.4}
+\definecolor{macrodesc}{rgb}{0,0.2,0.6}
+\definecolor{macroimpl}{rgb}{0,0.1,0.3}
+\definecolor{meta}{rgb}{0,0.25,0.75}
 \definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
 \definecolor{optioncolor}{rgb}{0.3.0.2,0}
 \colorlet{optional}{black!65!white}
 \colorlet{metaoptional}{optional!50!meta}
+\providecolor{urlcolor}{named}{blue}
+\providecolor{linkcolor}{named}{blue}
+\providecolor{pagecolor}{named}{blue}
+\providecolor{filecolor}{named}{blue}
+\providecolor{citecolor}{named}{blue}
+\providecolor{anchorcolor}{named}{blue}
+\providecolor{menucolor}{named}{blue}
+\providecolor{runcolor}{named}{blue}
+
+\definecolor{opt}{rgb}{0.5,0.16666,0}
+\definecolor{pkg}{rgb}{0.3666,0.1333,0}
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\RequirePackage{hyperref}
+\hypersetup{%
+    colorlinks=true,
+    pdfborder=0 0 0,
+    pdfborderstyle={},
+    urlcolor=urlcolor,
+    linkcolor=linkcolor,
+    pagecolor=pagecolor,
+    filecolor=filecolor,
+    citecolor=citecolor,
+    anchorcolor=anchorcolor,
+    menucolor=menucolor,
+    runcolor=runcolor,
+}
+
+%    \end{macrocode}
 %
 % \subsubsection{Text Formatting Macros}
 %
@@ -1104,15 +1266,38 @@
 %
 % \begin{macro}{\pkg}
 % \begin{macro}{\cls}
+% \begin{macro}{\lib}
 % \begin{macro}{\env}
 % \begin{macro}{\opt}
+% \begin{macro}{\file}
 %    \begin{macrocode}
 \RequirePackage{etoolbox}
-\newrobustcmd*\pkg{\texttt}
-\newrobustcmd*\cls{\texttt}
-\newrobustcmd*\env{\texttt}
-\newrobustcmd*\opt{\textsf}
+\newrobustcmd*\pkg[1]{{\pkgstyle{#1}}}
+\newrobustcmd*\cls[1]{{\clsstyle{#1}}}
+\newrobustcmd*\lib[1]{{\libstyle{#1}}}
+\newrobustcmd*\env[1]{{\envstyle{#1}}}
+
+\newrobustcmd*\opt{\@ifstar\ys@opt\y@opt}
+\def\y@opt#1{{\optstyle{#1}}}
+\def\ys@opt#1{{\optstyle{#1}}\optpar{#1}}
+\newrobustcmd*\optpar[1]{\marginpar{\hbox to \marginparwidth{\hss\y@opt{#1}}}}
+
+\newrobustcmd*\file[1]{{\filestyle{#1}}}
+\newcommand*\pkgstyle[1]{\texttt{\textcolor{pkg}{#1}}}
+\newcommand*\clsstyle[1]{\texttt{\textcolor{cls}{#1}}}
+\newcommand*\libstyle[1]{\texttt{\textcolor{lib}{#1}}}
+\newcommand*\envstyle[1]{\texttt{\textcolor{env}{#1}}}
+\newcommand*\optstyle[1]{\textsf{\textcolor{opt}{#1}}}
+\newcommand*\filestyle[1]{\texttt{\textcolor{file}{#1}}}
+\colorlet{pkg}{black}
+\colorlet{cls}{black}
+\colorlet{lib}{black}
+\colorlet{env}{black}
+\colorlet{opt}{black}
+\colorlet{file}{black}
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
 % \end{macro}
 % \end{macro}
 % \end{macro}
@@ -1175,7 +1360,7 @@
 % \begin{macro}{\oargstyle}
 % Style for \cs{oarg}. A special color is set to show the `optional' status.
 %    \begin{macrocode}
-\def\oargstyle{\color{optional}\colorlet{meta}{metaoptional}}
+\def\oargstyle{\blendcolors*{!60!white}\color{black!75}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -2101,4 +2286,4 @@
 %</expl>
 % \fi
 % \Finale
-\endinput
+% \endinput

@@ -10,10 +10,6 @@
 \def\Needspace{\@ifstar\@gobble\@gobble}
 }
 %    \end{macrocode}
-%    \begin{macrocode}
-\RequirePackage{hyperref}
-\hypersetup{colorlinks=true,pdfborder=0 0 0,pdfborderstyle={}}
-%    \end{macrocode}
 %
 % The short verbatim code is required for the similar macros provided here.
 %    \begin{macrocode}
@@ -23,15 +19,43 @@
 % \subsubsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
-\definecolor{macrodesc}{rgb}{0.0,0.0,0.8}
-\definecolor{macroimpl}{rgb}{0.0,0.0,0.4}
-\definecolor{meta}{rgb}{0.0,0.4,0.4}
+\definecolor{macrodesc}{rgb}{0,0.2,0.6}
+\definecolor{macroimpl}{rgb}{0,0.1,0.3}
+\definecolor{meta}{rgb}{0,0.25,0.75}
 \definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
 \definecolor{optioncolor}{rgb}{0.3.0.2,0}
 \colorlet{optional}{black!65!white}
 \colorlet{metaoptional}{optional!50!meta}
+\providecolor{urlcolor}{named}{blue}
+\providecolor{linkcolor}{named}{blue}
+\providecolor{pagecolor}{named}{blue}
+\providecolor{filecolor}{named}{blue}
+\providecolor{citecolor}{named}{blue}
+\providecolor{anchorcolor}{named}{blue}
+\providecolor{menucolor}{named}{blue}
+\providecolor{runcolor}{named}{blue}
+
+\definecolor{opt}{rgb}{0.5,0.16666,0}
+\definecolor{pkg}{rgb}{0.3666,0.1333,0}
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\RequirePackage{hyperref}
+\hypersetup{%
+    colorlinks=true,
+    pdfborder=0 0 0,
+    pdfborderstyle={},
+    urlcolor=urlcolor,
+    linkcolor=linkcolor,
+    pagecolor=pagecolor,
+    filecolor=filecolor,
+    citecolor=citecolor,
+    anchorcolor=anchorcolor,
+    menucolor=menucolor,
+    runcolor=runcolor,
+}
+
+%    \end{macrocode}
 %
 % \subsubsection{Text Formatting Macros}
 %
@@ -139,15 +163,38 @@
 %
 % \begin{macro}{\pkg}
 % \begin{macro}{\cls}
+% \begin{macro}{\lib}
 % \begin{macro}{\env}
 % \begin{macro}{\opt}
+% \begin{macro}{\file}
 %    \begin{macrocode}
 \RequirePackage{etoolbox}
-\newrobustcmd*\pkg{\texttt}
-\newrobustcmd*\cls{\texttt}
-\newrobustcmd*\env{\texttt}
-\newrobustcmd*\opt{\textsf}
+\newrobustcmd*\pkg[1]{{\pkgstyle{#1}}}
+\newrobustcmd*\cls[1]{{\clsstyle{#1}}}
+\newrobustcmd*\lib[1]{{\libstyle{#1}}}
+\newrobustcmd*\env[1]{{\envstyle{#1}}}
+
+\newrobustcmd*\opt{\@ifstar\ys@opt\y@opt}
+\def\y@opt#1{{\optstyle{#1}}}
+\def\ys@opt#1{{\optstyle{#1}}\optpar{#1}}
+\newrobustcmd*\optpar[1]{\marginpar{\hbox to \marginparwidth{\hss\y@opt{#1}}}}
+
+\newrobustcmd*\file[1]{{\filestyle{#1}}}
+\newcommand*\pkgstyle[1]{\texttt{\textcolor{pkg}{#1}}}
+\newcommand*\clsstyle[1]{\texttt{\textcolor{cls}{#1}}}
+\newcommand*\libstyle[1]{\texttt{\textcolor{lib}{#1}}}
+\newcommand*\envstyle[1]{\texttt{\textcolor{env}{#1}}}
+\newcommand*\optstyle[1]{\textsf{\textcolor{opt}{#1}}}
+\newcommand*\filestyle[1]{\texttt{\textcolor{file}{#1}}}
+\colorlet{pkg}{black}
+\colorlet{cls}{black}
+\colorlet{lib}{black}
+\colorlet{env}{black}
+\colorlet{opt}{black}
+\colorlet{file}{black}
 %    \end{macrocode}
+% \end{macro}
+% \end{macro}
 % \end{macro}
 % \end{macro}
 % \end{macro}
@@ -210,7 +257,7 @@
 % \begin{macro}{\oargstyle}
 % Style for \cs{oarg}. A special color is set to show the `optional' status.
 %    \begin{macrocode}
-\def\oargstyle{\color{optional}\colorlet{meta}{metaoptional}}
+\def\oargstyle{\blendcolors*{!60!white}\color{black!75}}
 %    \end{macrocode}
 % \end{macro}
 %

@@ -68,7 +68,18 @@ ${PACKAGE}.pdf: ${PACKAGE}.sty
 unpack: ${INSGENERATED}
 
 ${INSGENERATED}: ydoc.dtx
+	${RM} ${INSGENERATED}
 	${PDFLATEX} -interaction=nonstopmode '\def\endinstall{\endgroup\csname @enddocumenthook\endcsname\csname @@end\endcsname}\input{ydoc.dtx}' || ${RM} ${PACKAGE}.aux
+
+symlinks:
+	${RM} ${INSGENERATED}
+	ln -s  ydoc_cls.dtx  ydoc.cls
+	ln -s  ydoc_sty.dtx  ydoc.sty
+	ln -s  ydoc_cfg.dtx  ydoc.cfg
+	ln -s  ydoc_code_sty.dtx  ydoc-code.sty
+	ln -s  ydoc_doc_sty.dtx   ydoc-doc.sty
+	ln -s  ydoc_desc_sty.dtx  ydoc-desc.sty
+	ln -s  ydoc_expl_sty.dtx  ydoc-expl.sty
 
 # 'doc' and 'ydoc.pdf' call itself until everything is stable
 doc: ydoc.pdf

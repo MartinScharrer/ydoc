@@ -343,9 +343,11 @@
    \ifx\@let@token\space9\else
    \ifx\@let@token~9\else
    \ifx\@let@token]\empty10\else
+   \ifx\@let@token)\empty11\else
+   \ifx\@let@token>\empty12\else
    \ifx\@let@token\AlsoMacro100\else
    \ifx\@let@token\DescribeMacro101\fi
-   \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
+   \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
   \relax
    \unskip
    \expandafter\end@Macro@args%0
@@ -359,6 +361,8 @@
    \or\expandafter\read@Macro@rmspace%8
    \or\expandafter\read@Macro@addtoken%9
    \or\expandafter\read@Macro@oarg@end%10
+   \or\expandafter\read@Macro@parg@end%11
+   \or\expandafter\read@Macro@aarg@end%12
   \else%10-
   \fi
 }
@@ -435,16 +439,42 @@
 %
 % \begin{macro}{\read@Macro@parg}
 %    \begin{macrocode}
-\def\read@Macro@parg(#1){%
-  \@parg{#1}\read@Macro@arg
+\def\read@Macro@parg({%
+    \begingroup
+    \setbox\@tempboxa\hbox\bgroup
+        \color@setgroup
+        \let\end@Macro@args\read@Macro@parg@end
+        \pargstyle{}%
+        \read@Macro@arg
+}
+\def\read@Macro@parg@end#1){%
+    #1%
+    \color@endgroup
+    \egroup
+    \@parg{\usebox\@tempboxa}%
+    \endgroup
+    \read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}
 %
 % \begin{macro}{\read@Macro@aarg}
 %    \begin{macrocode}
-\def\read@Macro@aarg<#1>>{%
-  \@aarg{#1}\read@Macro@arg
+\def\read@Macro@aarg<{%
+    \begingroup
+    \setbox\@tempboxa\hbox\bgroup
+        \color@setgroup
+        \let\end@Macro@args\read@Macro@aarg@end
+        \aargstyle{}%
+        \read@Macro@arg
+}
+\def\read@Macro@aarg@end#1>>{%
+    #1%
+    \color@endgroup
+    \egroup
+    \@aarg{\usebox\@tempboxa}%
+    \endgroup
+    \read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}

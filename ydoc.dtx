@@ -74,7 +74,7 @@
 %</driver>
 % \fi
 %
-% \CheckSum{1545}
+% \CheckSum{0}
 %
 % \CharacterTable
 %  {Upper-case    \A\B\C\D\E\F\G\H\I\J\K\L\M\N\O\P\Q\R\S\T\U\V\W\X\Y\Z
@@ -969,6 +969,13 @@
 % \subsection{Description Macros and Environments}
 %
 %    \begin{macrocode}
+\IfFileExists{needspace.sty}{%
+\RequirePackage{needspace}
+}{%
+\def\Needspace{\@ifstar\@gobble\@gobble}
+}
+%    \end{macrocode}
+%    \begin{macrocode}
 \RequirePackage{hyperref}
 \hypersetup{colorlinks=true,pdfborder=0 0 0,pdfborderstyle={}}
 %    \end{macrocode}
@@ -1822,7 +1829,8 @@
 %    \begin{macrocode}
 \def\PrintMacros{%
   \par\vspace\beforedescskip
-  \noindent\hspace*{\descindent}%
+  \Needspace*{\dimexpr\ht\descbox+\dp\descbox+2\fboxsep+2\baselineskip\relax}%
+  \par\noindent\hspace*{\descindent}%
   \ifdim\wd\descbox>\linewidth
     \makebox[\linewidth][c]{\fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}}
   \else
@@ -1848,7 +1856,8 @@
 %    \begin{macrocode}
 \def\PrintEnv{%
   \par\vspace\beforedescskip
-  \noindent\hspace*{\descindent}%
+  \Needspace*{\dimexpr\ht\descbox+\dp\descbox+2\fboxsep+2\baselineskip\relax}%
+  \par\noindent\hspace*{\descindent}%
   \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
   \par
   \vspace\afterdescskip

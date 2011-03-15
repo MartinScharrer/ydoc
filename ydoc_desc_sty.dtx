@@ -910,10 +910,15 @@
 \def\PrintMacros{%
   \par\vspace\beforedescskip
   \Needspace*{\dimexpr\ht\descbox+\dp\descbox+2\fboxsep+2\baselineskip\relax}%
-  \par\noindent\hspace*{\descindent}%
-  \ifdim\wd\descbox>\linewidth
-    \makebox[\linewidth][c]{\fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}}
+  \par\noindent
+  \begingroup
+  \@tempdimc=\dimexpr\linewidth-2\descindent-2\descsep-2\fboxsep\relax
+  \ifdim\wd\descbox>\@tempdimc
+    \makebox[\@tempdimc][c]{\fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}}
+    \endgroup
   \else
+    \endgroup
+    \hspace*{\descindent}%
     \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
   \fi
   \par

@@ -1,7 +1,7 @@
 # $Id$
 
 PACKAGE     = ydoc
-PACKAGE_STY = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty
+PACKAGE_STY = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg
 PACKAGE_DTX = ydoc.dtx
 PACKAGE_DOC = $(PACKAGE_DTX:.dtx=.pdf)
 PACKAGE_SRC = ${PACKAGE_DTX} ${PACKAGE}.ins Makefile
@@ -44,22 +44,22 @@ doc: ${PACKAGE_DOC}
 package: unpack
 
 %.pdf: %.dtx
-	${LATEX} $*.dtx || rm $*.aux
+	${LATEX} $*.dtx || ${RM} $*.aux
 	-makeindex -s gind.ist -o $*.ind $*.idx
 	-makeindex -s gglo.ist -o $*.gls $*.glo
-	${LATEX} $*.dtx || rm $*.aux
-	${LATEX} $*.dtx || rm $*.aux
+	${LATEX} $*.dtx || ${RM} $*.aux
+	${LATEX} $*.dtx || ${RM} $*.aux
 
 pdfopt: doc
 	@-pdfopt ydoc.pdf .temp.pdf && mv .temp.pdf ydoc.pdf
 
 ydoc.pdf: ydoc.dtx
-	${PDFLATEX} $< || rm ${PACKAGE}.aux
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || rm ${PACKAGE}.aux
+	${PDFLATEX} $< || ${RM} ${PACKAGE}.aux
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || ${RM} ${PACKAGE}.aux
 	-makeindex -s gind.ist -o "$@" "$<"
 	-makeindex -s gglo.ist -o "$@" "$<"
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || rm ${PACKAGE}.aux
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || rm ${PACKAGE}.aux
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || ${RM} ${PACKAGE}.aux
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || ${RM} ${PACKAGE}.aux
 
 
 ${PACKAGE}.pdf: ${PACKAGE}.sty
@@ -67,29 +67,29 @@ ${PACKAGE}.pdf: ${PACKAGE}.sty
 unpack: ${INSGENERATED}
 
 ${INSGENERATED}: ydoc.dtx
-	${PDFLATEX} -interaction=nonstopmode '\def\endinstall{\endgroup\enddocument}\input{ydoc.dtx}' || rm ${PACKAGE}.aux
+	${PDFLATEX} -interaction=nonstopmode '\def\endinstall{\endgroup\csname @enddocumenthook\endcsname\csname @@end\endcsname}\input{ydoc.dtx}' || ${RM} ${PACKAGE}.aux
 
 # 'doc' and 'ydoc.pdf' call itself until everything is stable
 doc: ydoc.pdf
 	@${MAKE} --no-print-directory ydoc.pdf
 
 once: ydoc.dtx
-	pdflatex $< || rm ${PACKAGE}.aux
+	pdflatex $< || ${RM} ${PACKAGE}.aux
 	-readacro ydoc.pdf
 
 twice: ydoc.dtx
-	${PDFLATEX} $< || rm ${PACKAGE}.aux
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || rm ${PACKAGE}.aux
+	${PDFLATEX} $< || ${RM} ${PACKAGE}.aux
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || ${RM} ${PACKAGE}.aux
 	-readacro ydoc.pdf
 
 
 clean:
-	rm -f ${TEXAUX} $(addprefix ${TESTDIR}/, ${TEXAUX})
+	${RM} -f ${TEXAUX} $(addprefix ${TESTDIR}/, ${TEXAUX})
 
 fullclean: clean
-	rm -f ${GENERATED} *~ *.backup
-	rm -f ${PACKAGE}*.zip
-	rm -rf tds/
+	${RM} -f ${GENERATED} *~ *.backup
+	${RM} -f ${PACKAGE}*.zip
+	${RM} -rf tds/
 
 ###############################################################################
 

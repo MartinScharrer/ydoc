@@ -71,81 +71,53 @@
 % \end{macro}
 %
 % \begin{macro}{\marg}
-% Calls \cs{marg} with angles added to force meta format.
-%    \begin{macrocode}
-\def\marg#1{\@marg{<#1>}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\oarg}
-% Calls \cs{oarg} with angles added to force meta format.
-%    \begin{macrocode}
-\def\oarg#1{\@oarg{<#1>}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\parg}
-% Calls \cs{parg} with angles added to force meta format.
-%    \begin{macrocode}
-\def\parg#1{\@parg{<#1>}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\aarg}
-% Calls \cs{aarg} with angles added to force meta format.
-%    \begin{macrocode}
-\def\aarg#1{\@aarg{<#1>}}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\@marg}
 % Sets style and adds braces.
 % The text is formatted as separate set of macro arguments.
 %    \begin{macrocode}
-\def\@marg#1{%
+\def\marg#1{%
   {\margstyle{%
     {\ttfamily\braceleft}%
-    {\def\end@Macro@args{}\read@Macro@arg#1}%
+    \meta{#1}%
     {\ttfamily\braceright}%
   }}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@oarg}
+% \begin{macro}{\oarg}
 % Sets style and adds brackets.
 % The text is formatted as separate set of macro arguments.
 %    \begin{macrocode}
-\def\@oarg#1{%
+\def\oarg#1{%
   {\oargstyle{%
     {\ttfamily[}%
-    {\def\end@Macro@args{}\read@Macro@arg#1}%
+    \meta{#1}%
     {\ttfamily]}%
   }}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@parg}
+% \begin{macro}{\parg}
 % Sets style and adds parentheses.
 %    \begin{macrocode}
-\def\@parg#1{%
+\def\parg#1{%
   {\pargstyle{%
     {\ttfamily(}%
-    {\def\end@Macro@args{}\read@Macro@arg#1}%
+    \meta{#1}%
     {\ttfamily)}%
   }}%
 }
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\@aarg}
+% \begin{macro}{\aarg}
 % Sets style and adds angles.
 %    \begin{macrocode}
-\def\@aarg#1{%
+\def\aarg#1{%
   {\aargstyle{%
     {\ttfamily<}%
-    {\def\end@Macro@args{}\read@Macro@arg#1}%
+    \meta{#1}%
     {\ttfamily>}%
   }}%
 }
@@ -395,23 +367,21 @@
 %    \begin{macrocode}
 \def\read@Macro@marg{%
     \begingroup
-    \afterassignment\read@Macro@marg@
-    \let\@let@token=%
+        \afterassignment\read@Macro@marg@
+        \let\@let@token=%
 }
 \def\read@Macro@marg@{%
-    \setbox\@tempboxa\hbox\bgroup
-        \color@setgroup\bgroup
+        \bgroup
         \margstyle{}%
-        \aftergroup\color@endgroup
-        \aftergroup\egroup
-        \aftergroup\read@Macro@marg@@
         \let\end@Macro@args\empty%
+        {\ttfamily\braceleft}%
+        \aftergroup\read@Macro@marg@@
         \read@Macro@arg
 }
 \def\read@Macro@marg@@{%
-  \@marg{\usebox\@tempboxa}%
-  \endgroup
-  \read@Macro@arg
+        {\ttfamily\braceright}%
+    \endgroup
+    \read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}
@@ -420,17 +390,14 @@
 %    \begin{macrocode}
 \def\read@Macro@oarg[{%
     \begingroup
-    \setbox\@tempboxa\hbox\bgroup
-        \color@setgroup
         \let\end@Macro@args\read@Macro@oarg@end
         \oargstyle{}%
+        {\ttfamily[}%]
         \read@Macro@arg
 }
 \def\read@Macro@oarg@end#1]{%
-    #1%
-    \color@endgroup
-    \egroup
-    \@oarg{\usebox\@tempboxa}%
+        #1%
+        {\ttfamily]}%
     \endgroup
     \read@Macro@arg
 }
@@ -441,17 +408,14 @@
 %    \begin{macrocode}
 \def\read@Macro@parg({%
     \begingroup
-    \setbox\@tempboxa\hbox\bgroup
-        \color@setgroup
         \let\end@Macro@args\read@Macro@parg@end
         \pargstyle{}%
+        {\ttfamily(}%)
         \read@Macro@arg
 }
 \def\read@Macro@parg@end#1){%
-    #1%
-    \color@endgroup
-    \egroup
-    \@parg{\usebox\@tempboxa}%
+        #1%
+        {\ttfamily)}%
     \endgroup
     \read@Macro@arg
 }
@@ -462,17 +426,14 @@
 %    \begin{macrocode}
 \def\read@Macro@aarg<{%
     \begingroup
-    \setbox\@tempboxa\hbox\bgroup
-        \color@setgroup
         \let\end@Macro@args\read@Macro@aarg@end
         \aargstyle{}%
+        {\ttfamily<}%
         \read@Macro@arg
 }
 \def\read@Macro@aarg@end#1>>{%
-    #1%
-    \color@endgroup
-    \egroup
-    \@aarg{\usebox\@tempboxa}%
+        #1%
+        {\ttfamily>}%
     \endgroup
     \read@Macro@arg
 }

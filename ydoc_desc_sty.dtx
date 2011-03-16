@@ -1077,11 +1077,17 @@
 %    \begin{macrocode}
 \newenvironment{codequote}{%
     \def\\{\newline\relax\MacroArgs}%
-    \quote\MacroArgs
-}{%
-    \ifhmode\unskip\else\vskip-\lastskip\fi
-    \endquote
-}
+    \par\smallskip\bgroup\leftskip=\leftmargin\rightskip=\rightmargin\noindent\MacroArgs}
+    {\par\egroup\smallskip\noindent\ignorespacesafterend}
+%    \end{macrocode}
+% \end{environment}
+%
+% \begin{environment}{macroquote}
+%    \begin{macrocode}
+\newenvironment{macroquote}{%
+    \def\\{\newline\relax\Macro}%
+    \par\smallskip\bgroup\leftskip=\leftmargin\rightskip=\rightmargin\noindent\Macro}
+    {\par\egroup\smallskip\noindent\ignorespacesafterend}
 %    \end{macrocode}
 % \end{environment}
 %

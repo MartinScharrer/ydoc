@@ -1,6 +1,3 @@
-
- * Add code quoting environment and macro
-   e.g `{codequote}` and `\codeline`.
  * Add macro for boxing the code description instead of using `\fbox` directly to allow customisation.
  * Put the `descbox` with the boxing command into a new box and use this one for width and height measurements.
  * Change `\ifcase` of parser to use macro names instead (e.g. \csname ydoc@token@\meaning\@let@token\endcsname)

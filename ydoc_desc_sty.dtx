@@ -411,17 +411,21 @@
 %    \begin{macrocode}
 \def\read@Macro@oarg[{%
     \begingroup
+        \let\read@Macro@oarg@end\read@Macro@oarg@@end
         \let\end@Macro@args\read@Macro@oarg@end
         \oargstyle{}%
         {\ttfamily[}%]
         \read@Macro@arg
 }
-\def\read@Macro@oarg@end#1]{%
+\def\read@Macro@oarg@@end#1]{%
         #1%
         {\ttfamily]}%
     \endgroup
     \read@Macro@arg
 }
+\def\read@Macro@oarg@end{\end@Macro@args}
+\let\read@Macro@aarg@end\read@Macro@oarg@end
+\let\read@Macro@parg@end\read@Macro@oarg@end
 %    \end{macrocode}
 % \end{macro}
 %
@@ -429,12 +433,13 @@
 %    \begin{macrocode}
 \def\read@Macro@parg({%
     \begingroup
+        \let\read@Macro@parg@end\read@Macro@parg@@end
         \let\end@Macro@args\read@Macro@parg@end
         \pargstyle{}%
         {\ttfamily(}%)
         \read@Macro@arg
 }
-\def\read@Macro@parg@end#1){%
+\def\read@Macro@parg@@end#1){%
         #1%
         {\ttfamily)}%
     \endgroup
@@ -447,12 +452,13 @@
 %    \begin{macrocode}
 \def\read@Macro@aarg<{%
     \begingroup
+        \let\read@Macro@aarg@end\read@Macro@aarg@@end
         \let\end@Macro@args\read@Macro@aarg@end
         \aargstyle{}%
         {\ttfamily<}%
         \read@Macro@arg
 }
-\def\read@Macro@aarg@end#1>>{%
+\def\read@Macro@aarg@@end#1>>{%
         #1%
         {\ttfamily>}%
     \endgroup

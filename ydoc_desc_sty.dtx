@@ -1051,6 +1051,40 @@
 % \end{macro}
 % \end{macro}
 %
+% \begin{macro}{\codeline}
+%    \begin{macrocode}
+\newcommand*{\codeline}[1][c]{%
+    \codelinebefore
+    \hbox to \hsize\bgroup\ifx l#1\else\hss\fi
+    \let\xspace\relax
+    \hbox\bgroup
+    \aftergroup\codeline@end
+    \aftergroup#1%
+    \afterassignment\MacroArgs
+    \let\@let@token=%
+}
+\def\codeline@end#1{%
+    \ifx r#1\else\hss\fi
+    \egroup
+    \codelineafter
+}
+\newcommand*\codelinebefore{\par\smallskip\noindent}
+\newcommand*\codelineafter {\par\smallskip\noindent}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{environment}{codequote}
+%    \begin{macrocode}
+\newenvironment{codequote}{%
+    \def\\{\newline\relax\MacroArgs}%
+    \quote\MacroArgs
+}{%
+    \ifhmode\unskip\else\vskip-\lastskip\fi
+    \endquote
+}
+%    \end{macrocode}
+% \end{environment}
+%
 % \iffalse
 %</desc>
 % \fi

@@ -944,21 +944,23 @@
 %    \begin{macrocode}
 \def\PrintMacros{%
   \par\vspace\beforedescskip
-  \Needspace*{\dimexpr\ht\descbox+\dp\descbox+2\fboxsep+2\baselineskip\relax}%
-  \par\noindent
   \begingroup
-  \@tempdimc=\dimexpr\linewidth-2\descindent-2\descsep-2\fboxsep\relax
-  \ifdim\wd\descbox>\@tempdimc
-    \makebox[\@tempdimc][c]{\fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}}
-    \endgroup
+  \sbox\@tempboxa{\descframe{\usebox{\descbox}}}%
+  \Needspace*{\dimexpr\ht\@tempboxa+2\baselineskip\relax}%
+  \par\noindent
+  \ifdim\wd\@tempboxa>\dimexpr\linewidth-2\descindent\relax
+    \makebox[\linewidth][c]{\usebox\@tempboxa}%
   \else
-    \endgroup
     \hspace*{\descindent}%
-    \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
+    \usebox\@tempboxa
   \fi
+  \endgroup
   \par
   \vspace\afterdescskip
   \par\noindent
+}
+\def\descframe#1{%
+    \fbox{\hspace*{\descsep}#1\hspace*{\descsep}}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -974,15 +976,7 @@
 % Prints \env{DescribeEnv} environments.
 % The actual content was stored inside \cs{descbox}.
 %    \begin{macrocode}
-\def\PrintEnv{%
-  \par\vspace\beforedescskip
-  \Needspace*{\dimexpr\ht\descbox+\dp\descbox+2\fboxsep+2\baselineskip\relax}%
-  \par\noindent\hspace*{\descindent}%
-  \fbox{\hspace*{\descsep}\usebox{\descbox}\hspace*{\descsep}}%
-  \par
-  \vspace\afterdescskip
-  \par\noindent
-}
+\let\PrintEnv\PrintMacros
 %    \end{macrocode}
 % \end{macro}
 %

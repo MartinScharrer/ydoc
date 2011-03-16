@@ -224,10 +224,31 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\Optional}
+% \begin{macro}{\optional}
+% \begin{macro}{\optionalstyle}
+%    \begin{macrocode}
+\def\Optional{\optionalon\optional}
+\def\optional{\optionalstyle}
+\def\optionalstyle{\blendcolors*{!60!white}\color{black!75}}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\optionalon}
+% \begin{macro}{\optionaloff}
+%    \begin{macrocode}
+\def\optionalon{\def\optional{\optionalstyle}}
+\def\optionaloff{\let\optional\relax}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
 % \begin{macro}{\oargstyle}
 % Style for \cs{oarg}. A special color is set to show the `optional' status.
 %    \begin{macrocode}
-\def\oargstyle{\blendcolors*{!60!white}\color{black!75}}
+\def\oargstyle{\optional}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -550,6 +571,7 @@
 \def\DescribeMacro{%
   \DescribeMacros
   \let\DescribeMacros\y@egroup
+  \optionalon
   \def\after@Macro@args{\endDescribeMacros}%
   \begingroup\makeatletter
   \Describe@Macro

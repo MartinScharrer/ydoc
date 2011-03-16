@@ -16,6 +16,11 @@
 \RequirePackage{shortvrb}
 %    \end{macrocode}
 %
+% The \pkg{etoolbox} package is used mainly for |\newrobustcmd|.
+%    \begin{macrocode}
+\RequirePackage{etoolbox}
+%    \end{macrocode}
+%
 % \subsubsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
@@ -60,7 +65,7 @@
 % \begin{macro}{\meta}
 % Prints \meta{meta text}.
 %    \begin{macrocode}
-\def\meta#1{%
+\newrobustcmd*\meta[1]{%
   {\metastyle{%
   \ensuremath\langle
     #1\/%
@@ -74,7 +79,7 @@
 % Sets style and adds braces.
 % The text is formatted as separate set of macro arguments.
 %    \begin{macrocode}
-\def\marg#1{%
+\newrobustcmd*{\marg}[1]{%
   {\margstyle{%
     {\ttfamily\braceleft}%
     \meta{#1}%
@@ -88,7 +93,7 @@
 % Sets style and adds brackets.
 % The text is formatted as separate set of macro arguments.
 %    \begin{macrocode}
-\def\oarg#1{%
+\newrobustcmd*{\oarg}[1]{%
   {\oargstyle{%
     {\ttfamily[}%
     \meta{#1}%
@@ -101,7 +106,7 @@
 % \begin{macro}{\parg}
 % Sets style and adds parentheses.
 %    \begin{macrocode}
-\def\parg#1{%
+\newrobustcmd*{\parg}[1]{%
   {\pargstyle{%
     {\ttfamily(}%
     \meta{#1}%
@@ -114,7 +119,7 @@
 % \begin{macro}{\aarg}
 % Sets style and adds angles.
 %    \begin{macrocode}
-\def\aarg#1{%
+\newrobustcmd*{\aarg}[1]{%
   {\aargstyle{%
     {\ttfamily<}%
     \meta{#1}%
@@ -127,7 +132,7 @@
 % \begin{macro}{\sarg}
 % Prints star with given style.
 %    \begin{macrocode}
-\def\sarg{{\sargstyle{*}}}
+\newrobustcmd*{\sarg}{{\sargstyle{*}}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -138,7 +143,6 @@
 % \begin{macro}{\opt}
 % \begin{macro}{\file}
 %    \begin{macrocode}
-\RequirePackage{etoolbox}
 \newrobustcmd*\pkg[1]{{\pkgstyle{#1}}}
 \newrobustcmd*\cls[1]{{\clsstyle{#1}}}
 \newrobustcmd*\lib[1]{{\libstyle{#1}}}

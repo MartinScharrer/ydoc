@@ -81,6 +81,20 @@ symlinks:
 	ln -s  ydoc_desc_sty.dtx  ydoc-desc.sty
 	ln -s  ydoc_expl_sty.dtx  ydoc-expl.sty
 
+
+TEXMFSRCDIR=${TEXMFDIR}/tex/latex/${PACKAGE}/
+
+installsymlinks:
+	${MKDIR} "${TEXMFDIR}/tex/" "${TEXMFDIR}/tex/latex/" "${TEXMFDIR}/tex/latex/${PACKAGE}/"
+	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc_cls.dtx       ydoc.cls
+	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc_sty.dtx       ydoc.sty
+	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc_cfg.dtx       ydoc.cfg
+	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc_code_sty.dtx  ydoc-code.sty
+	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc_doc_sty.dtx   ydoc-doc.sty
+	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc_desc_sty.dtx  ydoc-desc.sty
+	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc_expl_sty.dtx  ydoc-expl.sty
+	texhash ${TEXMFDIR}
+
 # 'doc' and 'ydoc.pdf' call itself until everything is stable
 doc: ydoc.pdf
 	@${MAKE} --no-print-directory ydoc.pdf
@@ -173,7 +187,7 @@ ${TDSZIPFILE}: .tds
 
 ###############################################################################
 
-install: .tds
+install: .tds uninstall
 	test -d "${TEXMFDIR}" && ${CP} -a tds/* "${TEXMFDIR}/" && texhash ${TEXMFDIR}
 
 uninstall:

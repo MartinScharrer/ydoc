@@ -411,7 +411,7 @@
         \read@Macro@arg
 }
 \define@Macro@handler{]}{%
-    \read@Macro@oarg@@end
+    \read@Macro@oarg@end
 }
 \def\read@Macro@oarg@@end#1]{%
         #1%
@@ -436,7 +436,7 @@
         \read@Macro@arg
 }
 \define@Macro@handler{)}{%
-    \read@Macro@parg@@end
+    \read@Macro@parg@end
 }
 \def\read@Macro@parg@@end#1){%
         #1%
@@ -456,6 +456,9 @@
         \aargstyle{}%
         {\ttfamily<}%
         \read@Macro@arg
+}
+\define@Macro@handler{>}{%
+    \read@Macro@aarg@end
 }
 \def\read@Macro@aarg@@end#1>>{%
         #1%

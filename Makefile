@@ -1,78 +1,78 @@
 # $Id$
 
 PACKAGE     = ydoc
-PACKAGE_STY = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg
-PACKAGE_SUBDTX=ydoc.ins  ydoc_doc.dtx  ydoc_cls.dtx  ydoc_sty.dtx  ydoc_cfg.dtx  ydoc_code_sty.dtx  ydoc_doc_sty.dtx  ydoc_desc_sty.dtx  ydoc_expl_sty.dtx
-PACKAGE_DTX = ydoc.dtx
-PACKAGE_DOC = $(PACKAGE_DTX:.dtx=.pdf)
-PACKAGE_SRC = ${PACKAGE_DTX} ${PACKAGE}.ins Makefile
-PACKFILES   = ${PACKAGE_SRC} ${PACKAGE_DOC} README
+LATEXFILES  = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg
+DTXFILES    = ydoc_doc.dtx  ydoc_cls.dtx  ydoc_sty.dtx  ydoc_cfg.dtx  ydoc_code_sty.dtx  ydoc_doc_sty.dtx  ydoc_desc_sty.dtx  ydoc_expl_sty.dtx
+SOURCEFILES = ydoc.ins  ${DTXFILES}
+DOCFILES    = ydoc.pdf  README
+
+PACKFILES   = ${SOURCEFILES} ${DOCFILES} Makefile
 
 TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.fdb_latexmk *.tmp *.cpr *.cod
-INSGENERATED = ${PACKAGE_STY}
-GENERATED = ${INSGENERATED} ${PACKAGE}.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf
+INSGENERATED = ${LATEXFILES}
+GENERATED = ${INSGENERATED} ${PACKAGE}.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf ydoc.dtx
 ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
 TDSZIPFILE = ${PACKAGE}-${ZIPVERSION}.tds.zip
 
-TESTDIR = .
-TESTS = $(patsubst %.tex,%,$(subst ${TESTDIR}/,,$(wildcard ${TESTDIR}/test?.tex ${TESTDIR}/test??.tex))) # look for all test*.tex file names and remove the '.tex' 
-TESTARGS = -output-directory ${TESTDIR}
-
 LATEX_OPTIONS = -interaction=batchmode -halt-on-error
-LATEX = pdflatex ${LATEX_OPTIONS}
 PDFLATEX = pdflatex ${LATEX_OPTIONS}
 
 TEXMFDIR = ${HOME}/texmf
-
-RED   = \033[01;31m
-GREEN = \033[01;32m
-WHITE = \033[00m
 
 CP = cp -v
 MV = mv -v
 RMDIR = rm -rf
 MKDIR = mkdir -p
 
-.PHONY: all doc package clean fullclean example testclean ${TESTS} tds ${CHECK_LOG}
+.PHONY: all new unpack .tds tds pdfopt doc package clean fullclean
 
 ###############################################################################
 
-all: package doc example
+all: unpack doc
 new: fullclean all
 
-doc: ${PACKAGE_DOC}
+doc: ${DOCFILES}
 
 package: unpack
 
-%.pdf: %.dtx
-	${LATEX} $*.dtx || ${RM} $*.aux
-	-makeindex -s gind.ist -o $*.ind $*.idx
-	-makeindex -s gglo.ist -o $*.gls $*.glo
-	${LATEX} $*.dtx || ${RM} $*.aux
-	${LATEX} $*.dtx || ${RM} $*.aux
-
-pdfopt: doc
+pdfopt: ydoc.pdf
 	@-pdfopt ydoc.pdf .temp.pdf && mv .temp.pdf ydoc.pdf
 
-ydoc.pdf: ydoc.dtx
-	${PDFLATEX} $< || ${RM} ${PACKAGE}.aux
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || ${RM} ${PACKAGE}.aux
+ydoc.pdf: ydoc.dtx unpack
+	${PDFLATEX} -draftmode $< || (${RM} ${PACKAGE}.aux; false)
+	${PDFLATEX} -draftmode '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
 	-makeindex -s gind.ist -o "$@" "$<"
 	-makeindex -s gglo.ist -o "$@" "$<"
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || ${RM} ${PACKAGE}.aux
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || ${RM} ${PACKAGE}.aux
+	${PDFLATEX} -draftmode '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
 
+once: ydoc.dtx
+	${PDFLATEX} -interaction=stopmode $< || (${RM} ${PACKAGE}.aux; false)
+	-readacro ydoc.pdf
 
-${PACKAGE}.pdf: ${PACKAGE}.sty
+twice: ydoc.dtx
+	${PDFLATEX} -draftmode $< || (${RM} ${PACKAGE}.aux; false)
+	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
+	-readacro ydoc.pdf
+
+dtx: ydoc.dtx
+
+ydoc.dtx: ydoc.ins ${DTXFILES}
+	@${RM} $@
+	@echo Creating $@
+	@cat $^ | perl -ne 'if (/^(\s*\\DocInput)/) { if (!$$n++) { print "$${1}{ydoc.dtx}\n"; } } else { print }' > $@
+	@echo '% \Finale' >> $@
+	@echo '% \endinput' >> $@
 
 unpack: ${INSGENERATED}
 
 ${INSGENERATED}: ydoc.dtx
 	${RM} ${INSGENERATED}
-	${PDFLATEX} -interaction=nonstopmode '\def\endinstall{\endgroup\csname @enddocumenthook\endcsname\csname @@end\endcsname}\input{ydoc.dtx}' || ${RM} ${PACKAGE}.aux
+	${PDFLATEX} -draftmode -interaction=nonstopmode '\def\endinstall{\endgroup\csname @enddocumenthook\endcsname\csname @@end\endcsname}\input{ydoc.dtx}' || (${RM} ${PACKAGE}.aux; false)
 
 symlinks:
-	${RM} ${INSGENERATED}
+	${RM} ${INSGENERATED} ydoc.dtx
+	ln -s  ydoc_doc.dtx  ydoc.dtx
 	ln -s  ydoc_cls.dtx  ydoc.cls
 	ln -s  ydoc_sty.dtx  ydoc.sty
 	ln -s  ydoc_cfg.dtx  ydoc.cfg
@@ -95,27 +95,13 @@ installsymlinks:
 	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc_expl_sty.dtx  ydoc-expl.sty
 	texhash ${TEXMFDIR}
 
-# 'doc' and 'ydoc.pdf' call itself until everything is stable
-doc: ydoc.pdf
-	@${MAKE} --no-print-directory ydoc.pdf
-
-once: ydoc.dtx
-	pdflatex $< || ${RM} ${PACKAGE}.aux
-	-readacro ydoc.pdf
-
-twice: ydoc.dtx
-	${PDFLATEX} $< || ${RM} ${PACKAGE}.aux
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || ${RM} ${PACKAGE}.aux
-	-readacro ydoc.pdf
-
 
 clean:
-	${RM} -f ${TEXAUX} $(addprefix ${TESTDIR}/, ${TEXAUX})
+	${RM} ${INSGENERATED} ${TEXAUX}
 
 fullclean: clean
-	${RM} -f ${GENERATED} *~ *.backup
-	${RM} -f ${PACKAGE}*.zip
-	${RM} -rf tds/
+	${RM} ${GENERATED} *~ *.backup ${PACKAGE}*.zip
+	${RM} -rf tds .tds
 
 ###############################################################################
 
@@ -136,32 +122,10 @@ ${PACKAGE}%.zip: ${PACKFILES}
 	@echo
 	@echo "ZIP file $@ created!"
 
-release: fullclean package doc example tests ${ZIPFILE}
+release: fullclean package doc tests ${ZIPFILE}
 
 ctanify: ${PACKAGE_STY} ${PACKAGE_DTX} ${PACKAGE_DOC} ${PACKAGE_SRC} README
 	ctanify $^
-
-###############################################################################
-
-# Make sure TeX finds the input files in TESTDIR
-tests ${TESTS}: export TEXINPUTS:=${TEXINPUTS}:${TESTDIR}
-tests ${TESTS}: LATEX_OPTIONS=
-
-testclean:
-	@${RM} $(foreach ext, aux log out pdf svn svx, tests/test*.${ext})
-
-tests: package testclean
-	@echo "Running tests: ${TESTS}:"
-	@${MAKE} -e -i --no-print-directory ${TESTS} \
-		TESTARGS="-interaction=batchmode -output-directory=${TESTDIR}"\
-		TESTPLOPT="-q"\
-		> /dev/null
-
-${TESTS}: % : ${TESTDIR}/%.tex package testclean
-	@-${LATEX} -interaction=nonstopmode ${TESTARGS} $< 1>/dev/null 2>/dev/null
-	@if (${LATEX} ${TESTARGS} $<); \
-		then /bin/echo -e "${GREEN}$@ succeeded${WHITE}" >&2; \
-		else /bin/echo -e "${RED}$@ failed!!!!!!${WHITE}" >&2; fi
 
 ###############################################################################
 
@@ -194,12 +158,4 @@ uninstall:
 	test -d "${TEXMFDIR}" && ${RM} -rv "${TEXMFDIR}/tex/latex/${PACKAGE}" \
 	"${TEXMFDIR}/doc/latex/${PACKAGE}" "${TEXMFDIR}/source/latex/${PACKAGE}" \
 	"${TEXMFDIR}/scripts/${PACKAGE}" && texhash ${TEXMFDIR}
-
-dtx: ydoc.dtx
-
-ydoc.dtx: ${PACKAGE_SUBDTX}
-	@echo Creating $@
-	@cat $^ | perl -ne 'if (/^(\s*\\DocInput)/) { if (!$$n++) { print "$${1}{ydoc.dtx}\n"; } } else { print }' > $@
-	@echo '% \Finale' >> $@
-	@echo '% \endinput' >> $@
 

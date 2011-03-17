@@ -328,40 +328,17 @@
 % the appropriate read macro or the end macro otherwise. 
 %    \begin{macrocode}
 \def\handle@Macro@arg{%
-  \ifcase0%
-   \ifx\@let@token\bgroup1\else
-   \ifx\@let@token[\empty2\else
-   \ifx\@let@token(\empty3\else
-   \ifx\@let@token<\empty4\else
-   \ifx\@let@token*\empty5\else
-   \ifx\@let@token'\empty6\else
-   \ifx\@let@token!\empty7\else
-   \ifx\@let@token\@sptoken8\else
-   \ifx\@let@token\space9\else
-   \ifx\@let@token~9\else
-   \ifx\@let@token]\empty10\else
-   \ifx\@let@token)\empty11\else
-   \ifx\@let@token>\empty12\else
-   \ifx\@let@token\AlsoMacro100\else
-   \ifx\@let@token\DescribeMacro101\fi
-   \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi
-  \relax
-   \unskip
-   \expandafter\end@Macro@args%0
-   \or\expandafter\read@Macro@marg%1
-   \or\expandafter\read@Macro@oarg%2
-   \or\expandafter\read@Macro@parg%3
-   \or\expandafter\read@Macro@angle%4
-   \or\expandafter\read@Macro@sarg%5
-   \or\expandafter\read@Macro@verb%6
-   \or\expandafter\read@Macro@cmds%7
-   \or\expandafter\read@Macro@rmspace%8
-   \or\expandafter\read@Macro@addtoken%9
-   \or\expandafter\read@Macro@oarg@end%10
-   \or\expandafter\read@Macro@parg@end%11
-   \or\expandafter\read@Macro@aarg@end%12
-  \else%10-
+  \expandafter\let\expandafter\handler\csname handle@Macro@token@\meaning\@let@token\endcsname
+  \ifx\handler\relax
+    \def\handler{\ifhmode\unskip\fi\end@Macro@args}%
   \fi
+%<*DEBUG>
+%  \typeout{TOKEN: \meaning\@let@token}%
+%</DEBUG>
+  \handler
+}
+\def\define@Macro@handler#1{%
+    \@namedef{handle@Macro@token@\meaning#1}%
 }
 %    \end{macrocode}
 % \end{macro}
@@ -390,7 +367,7 @@
 %
 % \begin{macro}{\read@Macro@marg}
 %    \begin{macrocode}
-\def\read@Macro@marg{%
+\define@Macro@handler{\bgroup}{%
     \begingroup
         \afterassignment\read@Macro@marg@
         \let\@let@token=%
@@ -413,13 +390,16 @@
 %
 % \begin{macro}{\read@Macro@oarg}
 %    \begin{macrocode}
-\def\read@Macro@oarg[{%
+\define@Macro@handler{[}[{%
     \begingroup
         \let\read@Macro@oarg@end\read@Macro@oarg@@end
         \let\end@Macro@args\read@Macro@oarg@end
         \oargstyle{}%
         {\ttfamily[}%]
         \read@Macro@arg
+}
+\define@Macro@handler{]}{%
+    \read@Macro@oarg@@end
 }
 \def\read@Macro@oarg@@end#1]{%
         #1%
@@ -435,13 +415,16 @@
 %
 % \begin{macro}{\read@Macro@parg}
 %    \begin{macrocode}
-\def\read@Macro@parg({%
+\define@Macro@handler{(}({%
     \begingroup
         \let\read@Macro@parg@end\read@Macro@parg@@end
         \let\end@Macro@args\read@Macro@parg@end
         \pargstyle{}%
         {\ttfamily(}%)
         \read@Macro@arg
+}
+\define@Macro@handler{)}{%
+    \read@Macro@parg@@end
 }
 \def\read@Macro@parg@@end#1){%
         #1%
@@ -473,7 +456,7 @@
 %
 % \begin{macro}{\read@Macro@angle}
 %    \begin{macrocode}
-\def\read@Macro@angle<{%
+\define@Macro@handler{<}<{%
   \futurelet\@let@token\read@Macro@angle@
 }
 %    \end{macrocode}
@@ -501,7 +484,7 @@
 %
 % \begin{macro}{\read@Macro@sarg}
 %    \begin{macrocode}
-\def\read@Macro@sarg#1{%
+\define@Macro@handler**{%
   \sarg\read@Macro@arg
 }
 %    \end{macrocode}
@@ -510,7 +493,7 @@
 % \begin{macro}{\read@Macro@verb}
 % Sets up verbatim mode calls second macro.
 %    \begin{macrocode}
-\def\read@Macro@verb{%
+\define@Macro@handler{'}{%
   \begingroup
   \let\do\@makeother
   \dospecials
@@ -539,7 +522,7 @@
 % \begin{macro}{\read@Macro@cmds}
 % Simply executes given code.
 %    \begin{macrocode}
-\def\read@Macro@cmds!#1!{%
+\define@Macro@handler!!#1!{%
   #1\relax
   \read@Macro@arg
 }
@@ -549,7 +532,7 @@
 % \begin{macro}{\read@Macro@rmspace}
 % Removes space. The |\@firstofone| is used to preserve the space in the macro definition.
 %    \begin{macrocode}
-\@firstofone{\def\read@Macro@rmspace} {%
+\define@Macro@handler{\@sptoken} {%
   \read@Macro@arg
 }
 %    \end{macrocode}
@@ -558,7 +541,10 @@
 % \begin{macro}{\read@Macro@addtoken}
 % Takes token over from input to output `stream'. This is used for |\space| and |~|.
 %    \begin{macrocode}
-\def\read@Macro@addtoken#1{%
+\define@Macro@handler{~}#1{%
+  #1\read@Macro@arg
+}
+\define@Macro@handler{\space}#1{%
   #1\read@Macro@arg
 }
 %    \end{macrocode}
@@ -684,6 +670,11 @@
 }
 %    \end{macrocode}
 % \end{macro}
+%
+%    \begin{macrocode}
+\define@Macro@handler\AlsoMacro{}
+\define@Macro@handler\DescribeMacro{}
+%    \end{macrocode}
 %
 % \begin{macro}{\ydoc@short@AlsoMacro}
 % Makes |&| an alias for |\AlsoMacro|.

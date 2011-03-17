@@ -21,31 +21,17 @@
 % \fi
 %
 % \iffalse
-%<*driver|class|package|code|desc|expl|doc>
+%<*driver>
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \RequirePackage{svn-prov}[2010/04/03]
-%</driver|class|package|code|desc|expl|doc>
-%<*driver>
 \ProvidesFileSVN[ydoc.dtx]
-%</driver>
-%<package|code|desc|expl|doc>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
-%<class>\ProvidesClassSVN
-%<package|code|desc|expl|doc>\ProvidesPackageSVN
-%<code>    [ydoc-code]
-%<desc>    [ydoc-desc]
-%<expl>    [ydoc-expl]
-%<doc>     [ydoc-doc]
-%<*driver|class|package|code|desc|expl|doc>
     {$Id$}
-    [v0.4alpha]
-%</driver|class|package|code|desc|expl|doc>
-%<class>   [ydoc class: document LaTeX class and packages]
-%<package> [ydoc package: document LaTeX class and packages]
-%<code>    [ydoc package to document macro code]
-%<desc>    [ydoc package to describe macros, environments, options etc.]
-%<expl>    [ydoc package to insert live examples of LaTeX code]
-%<doc>     [ydoc package to provide 'doc' macros]
-%
-%<*driver>
+%<=*VERSION>
+    [v0.4alpha]% <- Version
+%<=/VERSION>
+    [DTX file of ydoc]
+
 \DefineFileInfoSVN
 \GetFileInfoSVN*
 \documentclass{ydoc}[\filedate]

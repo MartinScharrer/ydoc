@@ -3,6 +3,17 @@
 %<*doc>
 % \fi
 % \subsection{Provide \pkg{doc} macros}
+%    \begin{macrocode}
+\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+\RequirePackage{svn-prov}[2010/04/03]
+\ProvidesPackageSVN[ydoc]
+    {$Id$}
+%<!VERSION>
+%<*DRIVER>
+    [develop]
+%</DRIVER>
+    [ydoc package to provide 'doc' macros]
+%    \end{macrocode}
 %
 % \begin{macro}{\ydoc@countbslashes}
 % Reads the macro code into a temp box. The backslashes are defined to increase a counter.

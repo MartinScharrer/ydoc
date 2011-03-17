@@ -1,0 +1,51 @@
+%&pdflatex
+\input docstrip
+
+\def\checkOption<#1{%
+  \ifcase
+    \ifx*#10\else \ifx/#11\else
+    \ifx+#12\else \ifx-#13\else
+    \ifx<#14\else
+    \ifx=#15\else
+    \ifx @#16\else
+    \ifx!#17\else
+    10\fi\fi\fi\fi\fi\fi\fi\fi\relax
+  \expandafter\starOption\or
+  \expandafter\slashOption\or
+  \expandafter\plusOption\or
+  \expandafter\minusOption\or
+  \expandafter\verbOption\or
+  \expandafter\varOption\or
+  \expandafter\vararrayOption\or
+  \expandafter\valueOption\else
+  \expandafter\doOption\fi
+  #1}
+
+\def\varOption =#1>#2\endLine{%
+    \expandafter\gdef\csname ydocstrip@var@#1\endcsname{#2}%
+}
+
+\def\vararrayOption @#1>#2\endLine{%
+    \expandafter\ifx\csname ydocstrip@var@#1\endcsname\relax
+        \expandafter\gdef\csname ydocstrip@var@#1\endcsname{#2}%
+    \else
+        \expandafter\gdef
+        \csname ydocstrip@var@#1\expandafter\expandafter\expandafter\endcsname
+        \expandafter\expandafter\expandafter{\csname ydocstrip@var@#1\endcsname^^J#2}%
+    \fi
+}
+
+\def\valueOption !#1>#2\endLine{%
+    \begingroup
+    \expandafter\ifx\csname ydocstrip@var@#1\endcsname\relax
+        \endgroup
+    \else
+        \endgroup
+        \def\do##1##2##3{%
+            \StreamPut##1{\csname ydocstrip@var@#1\endcsname}%
+        }%
+        \activefiles
+    \fi
+}
+
+

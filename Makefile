@@ -38,16 +38,17 @@ package: unpack
 pdfopt: ydoc.pdf
 	@-pdfopt ydoc.pdf .temp.pdf && mv .temp.pdf ydoc.pdf
 
-ydoc.pdf: ydoc.dtx unpack
+ydoc.pdf: ydoc.dtx ${INSGENERATED}
 	${PDFLATEX} -draftmode $< || (${RM} ${PACKAGE}.aux; false)
 	${PDFLATEX} -draftmode '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
 	-makeindex -s gind.ist -o "$@" "$<"
 	-makeindex -s gglo.ist -o "$@" "$<"
 	${PDFLATEX} -draftmode '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
 	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
+	-readacro ydoc.pdf
 
 once: ydoc.dtx
-	${PDFLATEX} -interaction=stopmode $< || (${RM} ${PACKAGE}.aux; false)
+	${PDFLATEX} -interaction=errorstopmode $< || (${RM} ${PACKAGE}.aux; false)
 	-readacro ydoc.pdf
 
 twice: ydoc.dtx
@@ -64,18 +65,17 @@ ydoc.dtx: ydoc.ins ${DTXFILES}
 	@echo '% \Finale' >> $@
 	@echo '% \endinput' >> $@
 
-unpack: ${INSGENERATED}
-
-${INSGENERATED}: ydoc.dtx
-	${RM} ${INSGENERATED}
-	${PDFLATEX} -draftmode -interaction=nonstopmode '\def\endinstall{\endgroup\csname @enddocumenthook\endcsname\csname @@end\endcsname}\input{ydoc.dtx}' || (${RM} ${PACKAGE}.aux; false)
+unpack:
+	${RM} ${INSGENERATED} ydoc.dtx
+	${MAKE} ydoc.dtx
+	${PDFLATEX} -draftmode -interaction=nonstopmode '\def\endinstall{\endgroup\csname @enddocumenthook\endcsname\csname @@end\endcsname}\input{ydoc.ins}' || (${RM} ${PACKAGE}.aux; false)
 
 symlinks:
 	${RM} ${INSGENERATED} ydoc.dtx
-	ln -s  ydoc_doc.dtx  ydoc.dtx
-	ln -s  ydoc_cls.dtx  ydoc.cls
-	ln -s  ydoc_sty.dtx  ydoc.sty
-	ln -s  ydoc_cfg.dtx  ydoc.cfg
+	ln -s  ydoc_doc.dtx       ydoc.dtx
+	ln -s  ydoc_cls.dtx       ydoc.cls
+	ln -s  ydoc_sty.dtx       ydoc.sty
+	ln -s  ydoc_cfg.dtx       ydoc.cfg
 	ln -s  ydoc_code_sty.dtx  ydoc-code.sty
 	ln -s  ydoc_doc_sty.dtx   ydoc-doc.sty
 	ln -s  ydoc_desc_sty.dtx  ydoc-desc.sty

@@ -1,1 +1,0 @@
- * Change `\ifcase` of parser to use macro names instead (e.g. \csname ydoc@token@\meaning\@let@token\endcsname)

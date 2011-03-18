@@ -19,7 +19,9 @@
 % and load the \pkg{ydoc} package.
 %    \begin{macrocode}
 \PassOptionsToClass{a4paper}{article}
-\LoadClassWithOptions{article}
+\DeclareOption*{\expandafter\PassOptionsToClass\expandafter{\CurrentOption}{article}}
+\ProcessOptions\relax
+\LoadClass{article}
 \RequirePackage{ydoc}
 %    \end{macrocode}
 %

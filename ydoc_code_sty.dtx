@@ -21,6 +21,14 @@
 \hypersetup{colorlinks=true,pdfborder=0 0 0,pdfborderstyle={}}
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\IfFileExists{needspace.sty}{%
+    \RequirePackage{needspace}
+}{%
+    \def\Needspace{\@ifstar\@gobble\@gobble}
+}
+%    \end{macrocode}
+%
 % \subsubsection{Color and style definitions}
 %    \begin{macrocode}
 \RequirePackage{xcolor}
@@ -262,6 +270,7 @@
 %    \begin{macrocode}
 \def\PrintMacroImpl#1{%
   \par\bigskip\noindent
+  \Needspace*{3\baselineskip}%
   \hbox{%
     \edef\name{\expandafter\@gobble\string#1}%
     \global\@namedef{href@impl@\name}{}%

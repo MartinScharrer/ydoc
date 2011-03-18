@@ -17,9 +17,9 @@
 %
 %    \begin{macrocode}
 \IfFileExists{needspace.sty}{%
-\RequirePackage{needspace}
+    \RequirePackage{needspace}
 }{%
-\def\Needspace{\@ifstar\@gobble\@gobble}
+    \def\Needspace{\@ifstar\@gobble\@gobble}
 }
 %    \end{macrocode}
 %
@@ -51,8 +51,6 @@
 \providecolor{menucolor}{named}{blue}
 \providecolor{runcolor}{named}{blue}
 
-\definecolor{opt}{rgb}{0.5,0.16666,0}
-\definecolor{pkg}{rgb}{0.3666,0.1333,0}
 %    \end{macrocode}
 %
 %    \begin{macrocode}
@@ -172,12 +170,12 @@
 \newcommand*\envstyle[1]{\texttt{\textcolor{env}{#1}}}
 \newcommand*\optstyle[1]{\textsf{\textcolor{opt}{#1}}}
 \newcommand*\filestyle[1]{\texttt{\textcolor{file}{#1}}}
-\colorlet{pkg}{black}
 \colorlet{cls}{black}
 \colorlet{lib}{black}
 \colorlet{env}{black}
-\colorlet{opt}{black}
 \colorlet{file}{black}
+\definecolor{opt}{rgb}{0.5,0.16666,0}
+\definecolor{pkg}{rgb}{0.3666,0.1333,0}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -343,10 +341,17 @@
   \expandafter\let\expandafter\handler\csname handle@Macro@token@\meaning\@let@token\endcsname
   \ifx\handler\relax
     \def\handler{\ifhmode\unskip\fi\end@Macro@args}%
-  \fi
 %<*DEBUG>
-%  \typeout{TOKEN: \meaning\@let@token}%
+    \typeout{DEBUG: Stopped at: \meaning\@let@token}%
+    \typeout{}%
+  \else
+  \ifx\@let@token\AlsoMacro
+    \typeout{DEBUG: TOKEN: \string\AlsoMacro}%
+  \else
+    \typeout{DEBUG: TOKEN: \meaning\@let@token}%
+  \fi
 %</DEBUG>
+  \fi
   \handler
 }
 \def\define@Macro@handler#1{%
@@ -357,7 +362,7 @@
 %
 % \begin{macro}{\end@Macro@args}
 % Closes box as calls hook. Might be locally redefined by some 
-% macros calling \cs{read@Macro@args}.
+% macros calling \cs{read@Macro@arg}.
 %    \begin{macrocode}
 \def\end@Macro@args{%
   \y@egroup
@@ -680,6 +685,9 @@
 }
 \def\AlsoMacro@#1{%
   \endgroup
+%<*DEBUG>
+    \typeout{DEBUG: Macro: \string#1}%
+%</DEBUG>
   \PrintMacroName{#1}%
   \read@Macro@arg
 }
@@ -713,6 +721,10 @@
   \def\end@Macro@args{\endgroup\xspace}%
   \ydoc@macrocatcodes
   \macroargsstyle
+%<*DEBUG>
+    \typeout{}%
+    \typeout{DEBUG: Start MacroArgs}%
+%</DEBUG>
   \read@Macro@arg
 }
 \RequirePackage{xspace}

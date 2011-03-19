@@ -219,7 +219,7 @@
 % \begin{macro}{\verbstyle}
 % Style for verbatim text inside macro argument list.
 %    \begin{macrocode}
-\def\verbstyle{\ttfamily}
+\def\verbstyle{\verbatim@font}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -333,6 +333,55 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\AlsoMacro}
+% Reads argument while |@| is a letter,
+% prints the macro name and reads further arguments.
+%    \begin{macrocode}
+\newcommand*\AlsoMacro{%
+  \begingroup\makeatletter
+  \AlsoMacro@
+}
+\def\AlsoMacro@#1{%
+  \endgroup
+%<*DEBUG>
+    \typeout{DEBUG: Macro: \string#1}%
+%</DEBUG>
+  \PrintMacroName{#1}%
+  \read@Macro@arg
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\ydoc@short@AlsoMacro}
+% Makes |&| an alias for |\AlsoMacro|.
+%    \begin{macrocode}
+\begingroup
+\catcode`\|\active
+\gdef\ydoc@short@AlsoMacro{%
+  \catcode`\|\active
+  \let|\AlsoMacro
+}
+\endgroup
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \begin{macro}{\ydoc@macrocatcodes}
+% Sets the catcodes inside for |read@Macro@arg| material.
+%    \begin{macrocode}
+\def\ydoc@macrocatcodes{%
+  \ydoc@short@AlsoMacro
+  \@makeother\'%
+  \@makeother\!%
+  \@makeother\[%
+  \@makeother\]%
+  \@makeother\(%
+  \@makeother\)%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
 % \begin{macro}{\handle@Macro@arg}
 % Checks if next token is the begin of a valid macro argument and calls
 % the appropriate read macro or the end macro otherwise. 
@@ -354,7 +403,13 @@
   \fi
   \handler
 }
-\def\define@Macro@handler#1{%
+\def\define@Macro@handler{%
+    \begingroup
+    \ydoc@macrocatcodes
+    \define@Macro@handler@
+}
+\def\define@Macro@handler@#1{%
+    \endgroup
     \@namedef{handle@Macro@token@\meaning#1}%
 }
 %    \end{macrocode}
@@ -513,10 +568,12 @@
 % \begin{macro}{\read@Macro@verb}
 % Sets up verbatim mode calls second macro.
 %    \begin{macrocode}
-\define@Macro@handler{'}{%
+\define@Macro@handler{'}'{%
   \begingroup
   \let\do\@makeother
   \dospecials
+  \@noligs
+  \@makeother\'%
   \obeyspaces
   \read@Macro@verb@
 }
@@ -527,15 +584,18 @@
 % Closes verbatim mode and formats text.
 % If |#1| is empty (|''|) than a single |'| is printed.
 %    \begin{macrocode}
-\def\read@Macro@verb@'#1'{%
+\begingroup
+\@makeother\'%
+\gdef\read@Macro@verb@#1'{%
   \endgroup
   \ifx\relax#1\relax
     {\verbstyle{\string'}}%
   \else
-    {\verbstyle{#1}}%
+    {\@noligs\verbstyle{#1}}%
   \fi
   \read@Macro@arg
 }
+\endgroup
 %    \end{macrocode}
 % \end{macro}
 %
@@ -563,6 +623,11 @@
 %    \begin{macrocode}
 \define@Macro@handler{~}#1{%
   #1\read@Macro@arg
+}
+\AtBeginDocument{%
+\define@Macro@handler{~}#1{%
+  #1\read@Macro@arg
+}
 }
 \define@Macro@handler{\space}#1{%
   #1\read@Macro@arg
@@ -595,6 +660,22 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% \begin{macro}{\DescribeScript}
+%    \begin{macrocode}
+\def\DescribeScript#1{%
+  \DescribeMacros
+  \let\DescribeMacros\y@egroup
+  \optionalon
+  \def\after@Macro@args{\endDescribeMacros}%
+  \hbox\y@bgroup
+  \texttt{#1}%
+  \ydoc@macrocatcodes
+  \macroargsstyle
+  \read@Macro@arg~%
+}
+%    \end{macrocode}
+% \end{macro}
+%
 % \begin{macro}{\Describe@Macro}
 %    \begin{macrocode}
 \def\Describe@Macro#1{%
@@ -613,15 +694,6 @@
   \ydoc@macrocatcodes
   \macroargsstyle
   \read@Macro@arg
-}
-%    \end{macrocode}
-% \end{macro}
-%
-% \begin{macro}{\ydoc@macrocatcodes}
-% Sets the catcodes inside for |read@Macro@arg| material.
-%    \begin{macrocode}
-\def\ydoc@macrocatcodes{%
-  \ydoc@short@AlsoMacro
 }
 %    \end{macrocode}
 % \end{macro}
@@ -675,42 +747,10 @@
 %    \end{macrocode}
 % \end{macro}
 %
-% \begin{macro}{\AlsoMacro}
-% Reads argument while |@| is a letter,
-% prints the macro name and reads further arguments.
-%    \begin{macrocode}
-\newcommand*\AlsoMacro{%
-  \begingroup\makeatletter
-  \AlsoMacro@
-}
-\def\AlsoMacro@#1{%
-  \endgroup
-%<*DEBUG>
-    \typeout{DEBUG: Macro: \string#1}%
-%</DEBUG>
-  \PrintMacroName{#1}%
-  \read@Macro@arg
-}
-%    \end{macrocode}
-% \end{macro}
-%
 %    \begin{macrocode}
 \define@Macro@handler\AlsoMacro{}
 \define@Macro@handler\DescribeMacro{}
 %    \end{macrocode}
-%
-% \begin{macro}{\ydoc@short@AlsoMacro}
-% Makes |&| an alias for |\AlsoMacro|.
-%    \begin{macrocode}
-\begingroup
-\catcode`\|\active
-\gdef\ydoc@short@AlsoMacro{%
-  \catcode`\|\active
-  \let|\AlsoMacro
-}
-\endgroup
-%    \end{macrocode}
-% \end{macro}
 %
 % \begin{macro}{\MacroArgs}
 % Uses the normal macro argument reading mechanism from \cs{DescribeMacro}.

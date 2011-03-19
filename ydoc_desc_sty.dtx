@@ -174,8 +174,8 @@
 \colorlet{lib}{black}
 \colorlet{env}{black}
 \colorlet{file}{black}
+\colorlet{pkg}{black}
 \definecolor{opt}{rgb}{0.5,0.16666,0}
-\definecolor{pkg}{rgb}{0.3666,0.1333,0}
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -242,8 +242,7 @@
 % \begin{macro}{\optional}
 % \begin{macro}{\optionalstyle}
 %    \begin{macrocode}
-\def\Optional{\optionalon\optional}
-\def\optional{\optionalstyle}
+\protected\def\Optional{\optionalon\optional}
 \def\optionalstyle{\blendcolors*{!60!white}\color{black!75}}
 %    \end{macrocode}
 % \end{macro}
@@ -253,8 +252,9 @@
 % \begin{macro}{\optionalon}
 % \begin{macro}{\optionaloff}
 %    \begin{macrocode}
-\def\optionalon{\def\optional{\optionalstyle}}
+\def\optionalon{\protected\def\optional{\optionalstyle}}
 \def\optionaloff{\let\optional\relax}
+\optionalon
 %    \end{macrocode}
 % \end{macro}
 % \end{macro}
@@ -342,13 +342,13 @@
   \ifx\handler\relax
     \def\handler{\ifhmode\unskip\fi\end@Macro@args}%
 %<*DEBUG>
-    \typeout{DEBUG: Stopped at: \meaning\@let@token}%
+    \typeout{DEBUG: Stopped at: \expandafter\meaning\csname @let@token\endcsname}%
     \typeout{}%
   \else
-  \ifx\@let@token\AlsoMacro
+  \expandafter\ifx\csname @let@token\endcsname\AlsoMacro
     \typeout{DEBUG: TOKEN: \string\AlsoMacro}%
   \else
-    \typeout{DEBUG: TOKEN: \meaning\@let@token}%
+    \typeout{DEBUG: TOKEN: \expandafter\meaning\csname @let@token\endcsname}%
   \fi
 %</DEBUG>
   \fi

@@ -244,6 +244,81 @@
 \AtBeginDocument{\MakeShortVerb{\|}}
 %    \end{macrocode}
 %
+%    \begin{macrocode}
+\RequirePackage{url}
+
+\def\package{\def\@package}
+\package{\jobname}
+
+\def\ctanlocation{\def\@ctanlocation##1}
+\ctanlocation{http://www.ctan.org/pkg/#1}
+
+\date{Version \fileversion\space -- \filedate}
+
+\def\@homepage{%
+    \begingroup
+    \tracingall
+    \edef\@tempa{%
+        \endgroup
+        \noexpand\url
+        {\@ctanlocation{\@package}}%
+    }%
+    \@tempa
+}
+
+\protected\def\homepage{\urldef\@homepage\url}
+\protected\def\email{\hyper@normalise\email@}
+\def\email@#1{\def\@plainemail{#1}\def\@email{\hyper@linkurl{\Hurl{#1}}{mailto:#1}}}
+
+\let\@plainemail\empty
+\title{The \texorpdfstring{\pkgtitle{\@package}}{\@package} Package}
+
+\protected\def\pkgtitle#1{%
+    \texorpdfstring{\textsf{#1}}{#1}%
+}
+
+\def\@maketitle{%
+    \newpage
+    \null\vskip 2em
+    \begin{center}%
+        \let\footnote\thanks
+        {\LARGE \@title \par }\vskip 1.5em%
+        {\large \lineskip .5em%
+        \begin{tabular}[t]{c}%
+            \@author
+        \end{tabular}%
+        \par}%
+        {\large \lineskip .5em%
+        \begin{tabular}[t]{c}%
+            \@email
+        \end{tabular}%
+        \par}%
+        \vskip 1em
+        {\large \lineskip .5em%
+        \begin{tabular}[t]{c}%
+            \@homepage
+        \end{tabular}%
+        \par}%
+        \vskip 1em
+        {\large \@date }%
+    \end{center}%
+    \par\vskip 1.5em
+    \aftergroup\ydocpdfsettings
+}
+\ifpdf
+\def\ydocpdfsettings{%
+    \hypersetup{%
+        pdfauthor   = {\@author\space<\@plainemail>},
+        pdftitle    = {\@title},
+        pdfsubject  = {Documentation of LaTeX package \@package},
+        pdfkeywords = {\@package, LaTeX, TeX}
+    }%
+}
+\else
+\let\ydocpdfsettings\empty
+\fi
+%    \end{macrocode}
+%
 % \iffalse
 %</doc>
 % \fi

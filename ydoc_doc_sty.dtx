@@ -305,6 +305,7 @@
     \par\vskip 1.5em
     \aftergroup\ydocpdfsettings
 }
+
 \ifpdf
 \def\ydocpdfsettings{%
     \hypersetup{%
@@ -317,6 +318,13 @@
 \else
 \let\ydocpdfsettings\empty
 \fi
+
+\let\orig@maketitle\maketitle
+\def\maketitle{%
+    \ydocpdfsettings
+    \orig@maketitle
+    \let\orig@maketitle\relax
+}
 %    \end{macrocode}
 %
 % \iffalse

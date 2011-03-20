@@ -1,18 +1,18 @@
 # $Id$
 
-PACKAGE     = ydoc
-LATEXFILES  = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg
-DTXFILES    = ydoc_doc.dtx  ydoc_cls.dtx  ydoc_sty.dtx  ydoc_cfg.dtx  ydoc_code_sty.dtx  ydoc_doc_sty.dtx  ydoc_desc_sty.dtx  ydoc_expl_sty.dtx
-SOURCEFILES = ydoc.ins  ${DTXFILES}
-DOCFILES    = ydoc.pdf  README
+PACKAGE      = ydoc
+LATEXFILES   = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg ydocstrip.tex
+DTXFILES     = ydoc_doc.dtx  ydoc_cls.dtx  ydoc_sty.dtx  ydoc_cfg.dtx  ydoc_code_sty.dtx  ydoc_doc_sty.dtx  ydoc_desc_sty.dtx  ydoc_expl_sty.dtx
+SOURCEFILES  = ydoc.dtx ydocstrip.tex
+DOCFILES     = ydoc.pdf  README
 
-PACKFILES   = ${SOURCEFILES} ${DOCFILES} Makefile
+PACKFILES    = ${SOURCEFILES} ${DOCFILES}
 
-TEXAUX = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.fdb_latexmk *.tmp *.cpr *.cod
-INSGENERATED = ${LATEXFILES}
-GENERATED = ${INSGENERATED} ${PACKAGE}.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf ydoc.dtx
-ZIPFILE = ${PACKAGE}-${ZIPVERSION}.zip
-TDSZIPFILE = ${PACKAGE}-${ZIPVERSION}.tds.zip
+INSGENERATED = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg
+TEXAUX       = *.aux *.log *.glo *.ind *.idx *.out *.svn *.svx *.svt *.toc *.ilg *.gls *.hd *.exa *.exb *.fdb_latexmk *.tmp *.cpr *.cod
+GENERATED    = ${INSGENERATED} ${PACKAGE}.pdf ${PACKAGE}.zip ${PACKAGE}.tar.gz ${TESTDIR}/test*.pdf ydoc.dtx
+ZIPFILE      = ${PACKAGE}.zip
+TDSZIPFILE   = ${PACKAGE}.tds.zip
 
 LATEX_OPTIONS = -interaction=batchmode -halt-on-error
 PDFLATEX = pdflatex ${LATEX_OPTIONS}
@@ -28,51 +28,60 @@ MKDIR = mkdir -p
 
 ###############################################################################
 
-all: unpack doc
+all: doc
 new: fullclean all
 
 doc: ${DOCFILES}
 
 package: unpack
 
-pdfopt: ydoc.pdf
-	@-pdfopt ydoc.pdf .temp.pdf && mv .temp.pdf ydoc.pdf
+###############################################################################
 
-ydoc.pdf: ydoc.dtx ${INSGENERATED}
-	${PDFLATEX} -draftmode $< || (${RM} ${PACKAGE}.aux; false)
+pdfopt: ${PACKAGE}.pdf
+	@-pdfopt ${PACKAGE}.pdf .temp.pdf && mv .temp.pdf ${PACKAGE}.pdf
+
+
+pdf: ${PACKAGE}.pdf
+
+${PACKAGE}.pdf: ${DTXFILES} | ${INSGENERATED}
 	${PDFLATEX} -draftmode '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
 	-makeindex -s gind.ist -o "$@" "$<"
 	-makeindex -s gglo.ist -o "$@" "$<"
 	${PDFLATEX} -draftmode '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
-	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
-	-readacro ydoc.pdf
+	${PDFLATEX} -jobname "${PACKAGE}" '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
 
-once: ydoc.dtx
+once: ${PACKAGE}.dtx
 	${PDFLATEX} -interaction=errorstopmode $< || (${RM} ${PACKAGE}.aux; false)
-	-readacro ydoc.pdf
+	-readacro ${PACKAGE}.pdf
 
-twice: ydoc.dtx
+twice: ${PACKAGE}.dtx
 	${PDFLATEX} -draftmode $< || (${RM} ${PACKAGE}.aux; false)
 	${PDFLATEX} '\let\install\iffalse\let\endinstall\fi\input{$<}' || (${RM} ${PACKAGE}.aux; false)
-	-readacro ydoc.pdf
+	-readacro ${PACKAGE}.pdf
 
-dtx: ydoc.dtx
+dtx: ${PACKAGE}.dtx
 
-ydoc.dtx: ydoc.ins ${DTXFILES}
+${PACKAGE}.dtx: ${PACKAGE}.ins ${DTXFILES}
 	@${RM} $@
 	@echo Creating $@
-	@cat $^ | perl -ne 'if (/^(\s*\\DocInput)/) { if (!$$n++) { print "$${1}{ydoc.dtx}\n"; } } else { print }' > $@
+	@cat $^ | perl -ne 'if (/^(\s*\\DocInput)/) { if (!$$n++) { print "$${1}{${PACKAGE}.dtx}\n"; } } else { print }' > $@
 	@echo '% \Finale' >> $@
 	@echo '% \endinput' >> $@
 
 unpack:
-	${RM} ${INSGENERATED} ydoc.dtx
-	${MAKE} ydoc.dtx
-	${PDFLATEX} -draftmode -interaction=nonstopmode '\def\endinstall{\endgroup\csname @enddocumenthook\endcsname\csname @@end\endcsname}\input{ydoc.ins}' || (${RM} ${PACKAGE}.aux; false)
+	${RM} ${INSGENERATED} ${PACKAGE}.dtx
+	${MAKE} --no-print-directory ${PACKAGE}.dtx
+	${PDFLATEX} -draftmode -interaction=nonstopmode '\def\endinstall{\endgroup\csname @enddocumenthook\endcsname\csname @@end\endcsname}\input{${PACKAGE}.ins}' || (${RM} ${PACKAGE}.aux; false)
+	@touch --reference=ydoc_cls.dtx       ydoc.cls
+	@touch --reference=ydoc_sty.dtx       ydoc.sty
+	@touch --reference=ydoc_cfg.dtx       ydoc.cfg
+	@touch --reference=ydoc_code_sty.dtx  ydoc-code.sty
+	@touch --reference=ydoc_doc_sty.dtx   ydoc-doc.sty
+	@touch --reference=ydoc_desc_sty.dtx  ydoc-desc.sty
+	@touch --reference=ydoc_expl_sty.dtx  ydoc-expl.sty
 
 symlinks:
-	${RM} ${INSGENERATED} ydoc.dtx
-	ln -s  ydoc_doc.dtx       ydoc.dtx
+	${RM} ${INSGENERATED}
 	ln -s  ydoc_cls.dtx       ydoc.cls
 	ln -s  ydoc_sty.dtx       ydoc.sty
 	ln -s  ydoc_cfg.dtx       ydoc.cfg
@@ -80,6 +89,34 @@ symlinks:
 	ln -s  ydoc_doc_sty.dtx   ydoc-doc.sty
 	ln -s  ydoc_desc_sty.dtx  ydoc-desc.sty
 	ln -s  ydoc_expl_sty.dtx  ydoc-expl.sty
+	@touch -h --reference=ydoc_cls.dtx       ydoc.cls
+	@touch -h --reference=ydoc_sty.dtx       ydoc.sty
+	@touch -h --reference=ydoc_cfg.dtx       ydoc.cfg
+	@touch -h --reference=ydoc_code_sty.dtx  ydoc-code.sty
+	@touch -h --reference=ydoc_doc_sty.dtx   ydoc-doc.sty
+	@touch -h --reference=ydoc_desc_sty.dtx  ydoc-desc.sty
+	@touch -h --reference=ydoc_expl_sty.dtx  ydoc-expl.sty
+
+ydoc.cls: ydoc_cls.dtx
+	${MAKE} --no-print-directory unpack
+
+ydoc.sty: ydoc_sty.dtx
+	${MAKE} --no-print-directory unpack
+
+ydoc.cfg: ydoc_cfg.dtx
+	${MAKE} --no-print-directory unpack
+
+ydoc-code.sty: ydoc_code_sty.dtx
+	${MAKE} --no-print-directory unpack
+
+ydoc-doc.sty: ydoc_doc_sty.dtx
+	${MAKE} --no-print-directory unpack
+
+ydoc-desc.sty: ydoc_desc_sty.dtx
+	${MAKE} --no-print-directory unpack
+
+ydoc-expl.sty: ydoc_expl_sty.dtx
+	${MAKE} --no-print-directory unpack
 
 
 TEXMFSRCDIR=${TEXMFDIR}/tex/latex/${PACKAGE}/
@@ -105,16 +142,9 @@ fullclean: clean
 
 ###############################################################################
 
-zip: ${PACKFILES}
-	@${MAKE} --no-print-directory ${ZIPFILE}
+zip: ${PACKAGE}.zip
 
-zip: ZIPVERSION=$(shell grep "Package: ${PACKAGE} " ${PACKAGE}.log | \
-	sed -e "s/.*Package: ${PACKAGE} ....\/..\/..\s\+\(v\S\+\).*/\1/")
-
-tdszip: ZIPVERSION=$(shell grep "Package: ${PACKAGE} " ${PACKAGE}.log | \
-	sed -e "s/.*Package: ${PACKAGE} ....\/..\/..\s\+\(v\S\+\).*/\1/")
-
-${PACKAGE}%.zip: ${PACKFILES}
+${PACKAGE}.zip: ${PACKFILES} | unpack
 	@test -n "${IGNORE_CHECKSUM}" || grep -L '\* Checksum passed \*' ${PACKAGE_DTX:.dtx=.log} | wc -l | grep -q '^0$$'
 	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
 	${RM} $@
@@ -124,8 +154,11 @@ ${PACKAGE}%.zip: ${PACKFILES}
 
 release: fullclean package doc tests ${ZIPFILE}
 
-ctanify: ${PACKAGE_STY} ${PACKAGE_DTX} ${PACKAGE_DOC} ${PACKAGE_SRC} README
-	ctanify $^
+ctanify: ${PACKFILES} ${PACKAGE}.tds.zip
+	${RM} adjustbox.zip
+	zip adjustbox.zip $^
+	unzip -t adjustbox.zip
+	unzip -t adjustbox.tds.zip
 
 ###############################################################################
 

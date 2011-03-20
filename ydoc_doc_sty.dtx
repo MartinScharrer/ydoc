@@ -270,6 +270,8 @@
 \protected\def\email{\hyper@normalise\email@}
 \def\email@#1{\def\@plainemail{#1}\def\@email{\hyper@linkurl{\Hurl{#1}}{mailto:#1}}}
 
+\let\@email\empty
+
 \let\@plainemail\empty
 \title{The \texorpdfstring{\pkgtitle{\@package}}{\@package} Package}
 
@@ -288,11 +290,13 @@
             \@author
         \end{tabular}%
         \par}%
-        {\large \lineskip .5em%
-        \begin{tabular}[t]{c}%
-            \@email
-        \end{tabular}%
-        \par}%
+        \ifx\@plainemail\empty\else
+            {\large \lineskip .5em%
+            \begin{tabular}[t]{c}%
+                \@email
+            \end{tabular}%
+            \par}%
+        \fi
         \vskip 1em
         {\large \lineskip .5em%
         \begin{tabular}[t]{c}%

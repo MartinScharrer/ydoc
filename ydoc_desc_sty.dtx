@@ -591,7 +591,9 @@
   \ifx\relax#1\relax
     {\verbstyle{\string'}}%
   \else
-    {\@noligs\verbstyle{#1}}%
+    {%
+     \frenchspacing
+     \@noligs\verbstyle{#1}}%
   \fi
   \read@Macro@arg
 }
@@ -1111,7 +1113,10 @@
 %    \begin{macrocode}
 \newcommand*{\codeline}[1][c]{%
     \codelinebefore
-    \hbox to \hsize\bgroup\ifx l#1\else\hss\fi
+    \hbox to \hsize\bgroup
+    \ifx i#1\hspace*{\leftmargin}\else
+        \ifx l#1\else\hss\fi
+    \fi
     \let\xspace\relax
     \hbox\bgroup
     \aftergroup\codeline@end

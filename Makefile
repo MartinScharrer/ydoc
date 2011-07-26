@@ -144,8 +144,8 @@ fullclean: clean
 
 zip: ${PACKAGE}.zip
 
-${PACKAGE}.zip: ${PACKFILES} | unpack
-	@test -n "${IGNORE_CHECKSUM}" || grep -L '\* Checksum passed \*' ${PACKAGE_DTX:.dtx=.log} | wc -l | grep -q '^0$$'
+${PACKAGE}.zip: ${PACKFILES}
+	#@test -n "${IGNORE_CHECKSUM}" || grep -L '\* Checksum passed \*' ${PACKAGE_DTX:.dtx=.log} | wc -l | grep -q '^0$$'
 	-pdfopt ${PACKAGE}.pdf opt_${PACKAGE}.pdf && mv opt_${PACKAGE}.pdf ${PACKAGE}.pdf
 	${RM} $@
 	zip $@ ${PACKFILES}
@@ -164,16 +164,16 @@ ctanify: ${PACKFILES} ${PACKAGE}.tds.zip
 
 tds: .tds
 
-.tds: ${PACKAGE_STY} ${PACKAGE_DOC} ${PACKAGE_SRC}
+.tds: ${LATEXFILES} ${DOCFILES} ${SOURCEFILES}
 	#@grep -q '\* Checksum passed \*' ${PACKAGE}.log
 	${RMDIR} tds
 	${MKDIR} tds/
 	${MKDIR} tds/tex/ tds/tex/latex/ tds/tex/latex/${PACKAGE}/
 	${MKDIR} tds/doc/ tds/doc/latex/ tds/doc/latex/${PACKAGE}/
 	${MKDIR} tds/source/ tds/source/latex/ tds/source/latex/${PACKAGE}/
-	${CP} ${PACKAGE_STY} tds/tex/latex/${PACKAGE}/
-	${CP} ${PACKAGE_DOC} tds/doc/latex/${PACKAGE}/
-	${CP} ${PACKAGE_SRC} tds/source/latex/${PACKAGE}/
+	${CP} ${LATEXFILES}   tds/tex/latex/${PACKAGE}/
+	${CP} ${DOCFILES}     tds/doc/latex/${PACKAGE}/
+	${CP} ${SOURCEFILES}  tds/source/latex/${PACKAGE}/
 	@touch $@
 
 tdszip: ${TDSZIPFILE}

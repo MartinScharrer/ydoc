@@ -6,7 +6,7 @@
 %
 %    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
-\ProvidesPackage[ydoc-code][%
+\ProvidesPackage{ydoc-code}[%
 %<!DATE>
 %<!VERSION>
 %<*DRIVER>
@@ -274,6 +274,20 @@
     {}%
 }
 \def\endenvironment{}
+%    \end{macrocode}
+% \end{environment}
+%
+%
+% \begin{environment}{style}[1]{style name}
+%    \begin{macrocode}
+\def\style#1{%
+  \PrintStyleImplName{#1}%
+  \@ifnextchar[%]
+    {\macro@impl@args}%
+    {}%
+}
+\def\endstyle{}
+\def\PrintStyleImplName{\PrintEnvImplName}
 %    \end{macrocode}
 % \end{environment}
 %

@@ -51,11 +51,17 @@
 \def\ydoc@exafile{\jobname.exa}
 %    \end{macrocode}
 %
-% \begin{macro}{\exampleprintsettings}
+% \begin{style}{examplecode}
 %    \begin{macrocode}
-\def\exampleprintsettings{numbers=left,numberstyle=\tiny\color{gray}\sffamily,numbersep=5pt}%
+\lstdefinestyle{examplecode}{numbers=left,firstnumber=1,numberstyle=\tiny\color{gray}\sffamily,numbersep=5pt}%
 %    \end{macrocode}
-% \end{macro}
+% \end{style}
+%
+% \begin{style}{exampleextract}
+%    \begin{macrocode}
+\lstdefinestyle{exampleextract}{gobble=4}%
+%    \end{macrocode}
+% \end{style}
 %
 %    \begin{macrocode}
 \newbox\examplecodebox
@@ -66,9 +72,7 @@
 %    \begin{macrocode}
 \def\BoxExample{%
   \setbox\examplecodebox\hbox{\color@setgroup
-    \expandafter\expandafter\expandafter\lstinputlisting
-    \expandafter\expandafter\expandafter[%
-    \expandafter\exampleprintsettings\expandafter,\thisexampleprintsettings]%
+    \lstinputlisting[style=examplecode,style=thisexampleprint]%
     {\ydoc@exafile}%
   \unskip\color@endgroup}%
   \setbox\exampleresultbox\hbox{\color@setgroup
@@ -84,7 +88,7 @@
 \RequirePackage{showexpl}
 \def\PrintExample{%
   \begingroup
-  \lstset{basicstyle=\ttfamily}%
+  \lstset{style=examplecode}%
   \MakePercentComment
   \LTXinputExample[varwidth]{\ydoc@exafile}%
   \endgroup
@@ -124,16 +128,11 @@
 %    \end{macrocode}
 % \end{macro}
 %
-%
-%    \begin{macrocode}
-\def\examplecodesettings{gobble=4}
-%    \end{macrocode}
-%
 % \begin{environment}{examplecode}
 %    \begin{macrocode}
 \lstnewenvironment{examplecode}[1][]{%
-  \def\thisexampleprintsettings{#1}%
-  \expandafter\lstset\expandafter{\examplecodesettings,#1}%
+  \lstdefinestyle{thisexampleprint}{#1}%
+  \lstset{style=exampleextract,#1}%
   \setbox\@tempboxa\hbox\bgroup
   \lst@BeginWriteFile{\ydoc@exafile}%
 }

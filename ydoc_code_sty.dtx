@@ -254,6 +254,18 @@
 %    \end{macrocode}
 % \end{environment}
 %
+% \begin{environment}{key}[2]{key family}{key name}
+%    \begin{macrocode}
+\def\key#1#2{%
+  \PrintMacroImpl{KV@#1@#2}%
+  \@ifnextchar[%]
+    {\macro@impl@args}%
+    {}%
+}
+\def\endkey{}
+%    \end{macrocode}
+% \end{environment}
+%
 % \begin{environment}{environment}[1]{environment name}
 %    \begin{macrocode}
 \def\environment#1{%

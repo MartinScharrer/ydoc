@@ -193,6 +193,11 @@
 % \end{macro}
 % \end{macro}
 %
+% \begin{macro}{\Key}
+\newrobustcmd*\Key[1]{\texttt{#1}}
+%    \end{macrocode}
+% \end{macro}
+%
 % \subsubsection{Text Formatting Styles}
 %
 % \begin{macro}{\macrodescstyle}
@@ -674,6 +679,22 @@
   \ydoc@macrocatcodes
   \macroargsstyle
   \read@Macro@arg~%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DescribeKey}
+%    \begin{macrocode}
+\def\DescribeKey#1{%
+  \DescribeMacros
+  \let\DescribeMacros\y@egroup
+  \optionalon
+  \def\after@Macro@args{\endDescribeMacros}%
+  \hbox\y@bgroup
+  \texttt{#1}%
+  \ydoc@macrocatcodes
+  \macroargsstyle
+  \read@Macro@arg
 }
 %    \end{macrocode}
 % \end{macro}

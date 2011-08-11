@@ -684,16 +684,13 @@
 %
 % \begin{macro}{\DescribeKey}
 %    \begin{macrocode}
-\def\DescribeKey#1{%
-  \DescribeMacros
-  \let\DescribeMacros\y@egroup
+\def\DescribeKey{%
+  \DescribeKeys
+  \let\DescribeKeys\y@egroup
   \optionalon
-  \def\after@Macro@args{\endDescribeMacros}%
-  \hbox\y@bgroup
-  \texttt{#1}%
-  \ydoc@macrocatcodes
-  \macroargsstyle
-  \read@Macro@arg
+  \def\after@Macro@args{\endDescribeKeys}%
+  \begingroup\makeatletter
+  \Describe@Macro
 }
 %    \end{macrocode}
 % \end{macro}
@@ -811,6 +808,29 @@
   \PrintMacros
   \endgroup
 }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\DescribeKeys}
+%    \begin{macrocode}
+\def\DescribeKeys{%
+  \begingroup
+  \let\PrintMacroName\PrintKeyName
+  \let\Key\@Macro
+  \parindent=0pt\relax
+  \setbox\descbox\vbox\y@bgroup
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\endDescribeKeys}
+%    \begin{macrocode}
+\def\endDescribeKeys{%
+  \y@egroup
+  \PrintKeys
+  \endgroup
+}
+\def\PrintKeys{\PrintMacros}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -997,6 +1017,16 @@
    \texttt{\char92}%
    \escapechar\m@ne
    \string#1\strut}}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\PrintKeyName}
+% Formats macro name. The backslash is forced to |tt| font.
+%    \begin{macrocode}
+\def\PrintKeyName#1{%
+  {\macrodescstyle{\strut
+   #1\strut}}%
 }
 %    \end{macrocode}
 % \end{macro}

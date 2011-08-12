@@ -10,6 +10,38 @@ This is an alpha release. It should not be used yet for other packages.
 INSTALL
 ~~~~~~~
 
-Compile the 'ydoc.dtx' file multiple times using LaTeX (preferable 'pdflatex') to extract
-the files and compile the documentation. Copy alls *.cls *.sty *.cfg files to ${TEXMF}/tex/latex/ydoc/.
+This package might be part of your LaTeX distribution (TeX Live, MikTeX, ...) and then is installable using
+the distributions package manager (TeX Live: 'tlmgr install ydoc').
+However, it is also manually installable using the following ways:
+
+1) TDS ZIP FILE
+A TDS ZIP file includes all files in a installable format and using the required directory structure.
+Simply unzip the TDS ZIP file over your TEXMF tree.
+
+The TDS ZIP file can be downloaded from CTAN:
+http://mirrors.ctan.org/install/macros/latex/contrib/ydoc.tds.zip
+
+
+2) DTX FILE
+The 'ydoc.dtx' file includes all required files, which can be extracted by compiling it using TeX (not LaTeX):
+
+    tex ydoc.dtx
+
+To build the documentation compile the same file using LaTeX (preferable 'pdflatex') multiple times:
+
+    pdflatex ydoc.dtx
+    pdflatex ydoc.dtx
+    pdflatex ydoc.dtx
+
+Copy all files to their correct location of your local TEXMF tree.
+For example under Linux a personal TEXMF is normally located at '~/texmf' ('$HOME/texmf').
+The files can be installed using the following Linux commands. For 
+
+    mkdir -p  ${TEXMF}/tex/latex/ydoc/
+    cp   ydoc.cls  ydoc*.sty  ydoc.cfg  ydocstrip.tex   ${TEXMF}/tex/latex/ydoc/
+
+Update the tree database file (might be not required for modern versions and personal TEXMF trees):
+
+    texhash ${TEXMF}
+
 

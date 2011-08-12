@@ -12,9 +12,7 @@
 %<=/VERSION>
     DTX file of ydoc]
 
-\DefineFileInfoSVN
-\GetFileInfoSVN*
-\documentclass{ydoc}[\filedate]
+\documentclass{ydoc}[2011/08/11]
 
 \newdimen\tempskip
 
@@ -25,14 +23,9 @@
   \caption
 }
 
-\OnlyDescription
+%\OnlyDescription
 \begin{document}
-  \DocInput{ydoc_doc.dtx}
-  \DocInput{ydoc_cls.dtx}
-  \DocInput{ydoc_code_sty.dtx}
-  \DocInput{ydoc_desc_sty.dtx}
-  \DocInput{ydoc_doc_sty.dtx}
-  \DocInput{ydoc_expl_sty.dtx}
+  \DocInput{ydoc.dtx}
   \PrintChanges
   \PrintIndex
 \end{document}
@@ -347,3 +340,55 @@
 % \clearpage
 % \section{Implementation}
 %
+%
+% \iffalse
+%<*ydoc.cls>
+% \fi
+% \iffalse
+%</ydoc.cls>
+% \fi
+%
+% \iffalse
+%<*ydoc.sty>
+% \fi
+% \iffalse
+%</ydoc.sty>
+% \fi
+%
+% \iffalse
+%<*ydoc.cfg>
+% \fi
+% \iffalse
+%</ydoc.cfg>
+% \fi
+%
+% \iffalse
+%<*ydoc-code.sty>
+% \fi
+% \iffalse
+%</ydoc-code.sty>
+% \fi
+%
+% \iffalse
+%<*ydoc-doc.sty>
+% \fi
+% \iffalse
+%</ydoc-doc.sty>
+% \fi
+%
+% \iffalse
+%<*ydoc-desc.sty>
+% \fi
+% \iffalse
+%</ydoc-desc.sty>
+% \fi
+%
+% \iffalse
+%<*ydoc-expl.sty>
+% \fi
+% \iffalse
+%</ydoc-expl.sty>
+% \fi
+%
+% \Finale
+% \endinput

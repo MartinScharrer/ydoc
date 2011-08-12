@@ -1,6 +1,3 @@
-% \iffalse
-%<*class>
-% \fi
 % \subsection{Class File}
 %
 %    \begin{macrocode}
@@ -23,7 +20,3 @@
 \LoadClass{article}
 \RequirePackage{ydoc}
 %    \end{macrocode}
-%
-% \iffalse
-%</class>
-% \fi

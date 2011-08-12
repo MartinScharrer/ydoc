@@ -1,5 +1,13 @@
-%&pdflatex
+%
+% \iffalse
+\expandafter\ifx\csname ydocstripversion\endcsname\relax\else
+    \noindent
+\fi
+
+\chardef\ydocstripversion=1
+
 \input docstrip
+
 
 \def\checkOption<#1{%
   \ifcase
@@ -67,4 +75,4 @@
     \endgroup
 }
 
-
+% \fi

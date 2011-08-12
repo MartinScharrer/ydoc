@@ -1,7 +1,29 @@
+% \iffalse
+%<*driver>
+\expandafter\ifx\csname NeedsTeXFormat\endcsname\relax\else
+\begingroup
+\long\def\skip#1\NeedsTeXFormat{\endgroup\NeedsTeXFormat}
+\expandafter\skip
+\fi
+%</driver>
+% \fi
+%
+% \iffalse
+%<*ydocstrip.tex>
+% \fi
+% \iffalse
+%</ydocstrip.tex>
+% \fi
+%
+% \iffalse
+%<*ydoc.ins>
+% \fi
+% \iffalse
+%</ydoc.ins>
+% \fi
 %
 % \iffalse
 %<*driver>
-%    \begin{macrocode}
 \NeedsTeXFormat{LaTeX2e}[1999/12/01]
 \ProvidesFile{ydoc.dtx}[%
 %<=*DATE>
@@ -12,6 +34,7 @@
 %<=/VERSION>
     DTX file of ydoc]
 
+\message{^^JRun this DTX file using 'tex' to extract all files!^^J}
 \documentclass{ydoc}[2011/08/11]
 
 \newdimen\tempskip

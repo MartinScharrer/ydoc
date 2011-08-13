@@ -354,7 +354,7 @@
 \def\AlsoMacro@#1{%
   \endgroup
 %<*DEBUG>
-    \typeout{DEBUG: Macro: \string#1}%
+   %\typeout{DEBUG: Macro: \string#1}%
 %</DEBUG>
   \PrintMacroName{#1}%
   \read@Macro@arg
@@ -401,14 +401,14 @@
   \ifx\handler\relax
     \def\handler{\ifhmode\unskip\fi\end@Macro@args}%
 %<*DEBUG>
-    \typeout{DEBUG: Stopped at: \expandafter\meaning\csname @let@token\endcsname}%
-    \typeout{}%
-  \else
-  \expandafter\ifx\csname @let@token\endcsname\AlsoMacro
-    \typeout{DEBUG: TOKEN: \string\AlsoMacro}%
-  \else
-    \typeout{DEBUG: TOKEN: \expandafter\meaning\csname @let@token\endcsname}%
-  \fi
+ %  \typeout{DEBUG: Stopped at: \expandafter\meaning\csname @let@token\endcsname}%
+ %  \typeout{}%
+ %\else
+ %\expandafter\ifx\csname @let@token\endcsname\AlsoMacro
+ %  \typeout{DEBUG: TOKEN: \string\AlsoMacro}%
+ %\else
+ %  \typeout{DEBUG: TOKEN: \expandafter\meaning\csname @let@token\endcsname}%
+ %\fi
 %</DEBUG>
   \fi
   \handler
@@ -788,8 +788,8 @@
   \ydoc@macrocatcodes
   \macroargsstyle
 %<*DEBUG>
-    \typeout{}%
-    \typeout{DEBUG: Start MacroArgs}%
+   %\typeout{}%
+   %\typeout{DEBUG: Start MacroArgs}%
 %</DEBUG>
   \read@Macro@arg
 }

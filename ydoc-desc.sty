@@ -33,6 +33,7 @@
 %    \begin{macrocode}
 \RequirePackage{xcolor}
 \definecolor{macrodesc}{rgb}{0,0.2,0.6}
+\definecolor{keydesc}{rgb}{0,0.4,0.9}
 \definecolor{macroimpl}{rgb}{0,0.1,0.3}
 \definecolor{meta}{rgb}{0,0.25,0.75}
 \definecolor{scriptcolor}{rgb}{0.2,0.6,0.2}
@@ -191,7 +192,7 @@
 %
 % \begin{macro}{\Key}
 %    \begin{macrocode}
-\newrobustcmd*\Key[1]{\texttt{#1}}
+\newrobustcmd*\Key[1]{\PrintKeyName{#1}\MacroArgs}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -201,6 +202,13 @@
 % Style of described macro names.
 %    \begin{macrocode}
 \def\macrodescstyle{\ttfamily\bfseries\color{macrodesc}}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\macrodescstyle}
+% Style of described macro names.
+%    \begin{macrocode}
+\def\keydescstyle{\ttfamily\bfseries\color{keydesc}}
 %    \end{macrocode}
 % \end{macro}
 %
@@ -1024,7 +1032,7 @@
 % Formats macro name. The backslash is forced to |tt| font.
 %    \begin{macrocode}
 \def\PrintKeyName#1{%
-  {\macrodescstyle{\strut
+  {\keydescstyle{\strut
    #1\strut}}%
 }
 %    \end{macrocode}

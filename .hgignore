@@ -1,0 +1,4 @@
+.hgignore
+.manual
+.build
+build

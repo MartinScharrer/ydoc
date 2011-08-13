@@ -16,6 +16,7 @@ TDSZIPFILE   = ${PACKAGE}.tds.zip
 
 LATEX_OPTIONS = -interaction=batchmode -halt-on-error
 PDFLATEX = pdflatex ${LATEX_OPTIONS}
+PDFOPT = qpdf
 
 TEXMFDIR = ${HOME}/texmf
 
@@ -104,10 +105,10 @@ ${PACKAGE}.zip: ${PACKFILES}
 release: fullclean package doc tests ${ZIPFILE}
 
 ctanify: ${PACKFILES} ${PACKAGE}.tds.zip
-	${RM} adjustbox.zip
-	zip adjustbox.zip $^
-	unzip -t adjustbox.zip
-	unzip -t adjustbox.tds.zip
+	${RM} ydoc.zip
+	zip ydoc.zip $^
+	unzip -t ydoc.zip
+	unzip -t ydoc.tds.zip
 
 ###############################################################################
 
@@ -119,4 +120,36 @@ uninstall:
 	test -d "${TEXMFDIR}" && ${RM} -rv "${TEXMFDIR}/tex/latex/${PACKAGE}" \
 	"${TEXMFDIR}/doc/latex/${PACKAGE}" "${TEXMFDIR}/source/latex/${PACKAGE}" \
 	"${TEXMFDIR}/scripts/${PACKAGE}" && texhash ${TEXMFDIR}
+
+
+
+manual: ydoc.dtx ydoc.ins
+	-mkdir .manual && cd .manual && ln -s ../*.sty .
+	perl ../dtx/dtx.pl ydoc.dtx .manual/ydoc.dtx
+	cd .manual && latexmk -pdf ydoc.dtx || rm .manual/ydoc.aux
+	mv .manual/ydoc.pdf ydoc.pdf
+
+
+build: ydoc.dtx ydoc.ins README Makefile ydoc.cfg ydoc.cls ydoc.sty ydoc-code.sty ydoc-desc.sty ydoc-expl.sty ydoc-doc.sty
+	rm -rf build/
+	mkdir build
+	perl ../dtx/dtx.pl ydoc.dtx build/ydoc.dtx
+	${CP} ydoc.ins README build/
+	cd build && tex ydoc.dtx
+	cd build && latexmk -pdf ydoc.dtx
+	cd build && ${PDFOPT} ydoc.pdf opt.pdf && mv opt.pdf ydoc.pdf
+	cd build && ctanify --pkgname ydoc ydoc.dtx -t "*.cls" -t "*.sty" -t "*.cfg" -t "*.tex" *.sty *.cls *.cfg  ydoc.cfg=tex/latex/ydoc/ ydocstrip.tex=tex/latex/ydoc/ README ydoc.pdf
+	@cd build && ${CP} ydoc.tar.gz /tmp
+
+buildonce: ydoc.dtx ydoc.ins README
+	rm -rf build/
+	mkdir build
+	perl ../dtx/dtx.pl ydoc.dtx build/ydoc.dtx
+	perl ../dtx/dtx.pl storebox.dtx build/storebox.dtx
+	${CP} ydoc.ins README build/
+	cd build && tex ydoc.dtx
+	cd build && pdflatex ydoc.dtx
+#	cd build && pdflatex storebox.dtx
+
+
 

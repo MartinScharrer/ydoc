@@ -1,9 +1,9 @@
 # $Id$
 
 PACKAGE      = ydoc
-LATEXFILES   = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg ydocstrip.tex
+LATEXFILES   = ydoc.cls ydoc.sty ydoc-desc.sty ydoc-expl.sty ydoc-code.sty ydoc-doc.sty ydoc.cfg ydocstrip.tex ydocincl.tex
 DTXFILES     = ydoc_doc.dtx  ydoc_cls.dtx  ydoc_sty.dtx  ydoc_cfg.dtx  ydoc_code_sty.dtx  ydoc_doc_sty.dtx  ydoc_desc_sty.dtx  ydoc_expl_sty.dtx
-SOURCEFILES  = ydoc.dtx ydocstrip.tex
+SOURCEFILES  = ydoc.dtx ydocstrip.tex ydocincl.tex
 DOCFILES     = ydoc.pdf  README
 
 PACKFILES    = ${SOURCEFILES} ${DOCFILES}
@@ -80,6 +80,7 @@ installsymlinks:
 	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc-desc.sty  ydoc-desc.sty
 	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydoc-expl.sty  ydoc-expl.sty
 	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydocstrip.tex  ydocstrip.tex
+	cd ${TEXMFSRCDIR} && ln -sf ${PWD}/ydocincl.tex   ydocincl.tex
 	texhash ${TEXMFDIR}
 
 
@@ -129,23 +130,21 @@ manual: ydoc.dtx ydoc.ins
 	cd .manual && latexmk -pdf ydoc.dtx || rm .manual/ydoc.aux
 	mv .manual/ydoc.pdf ydoc.pdf
 
-
-build: ydoc.dtx ydoc.ins README Makefile ydoc.cfg ydoc.cls ydoc.sty ydoc-code.sty ydoc-desc.sty ydoc-expl.sty ydoc-doc.sty
+build: ydoc.dtx ydoc.ins README Makefile ydoc.cfg ydoc.cls ydoc.sty ydoc-code.sty ydoc-desc.sty ydoc-expl.sty ydoc-doc.sty ydocstrip.tex ydocincl.tex
 	rm -rf build/
 	mkdir build
-	perl ../dtx/dtx.pl ydoc.dtx build/ydoc.dtx
+	tex '\input ydocincl\relax\includefiles{ydoc.dtx}{build/ydoc.dtx}'
 	${CP} ydoc.ins README build/
 	cd build && tex ydoc.dtx
 	cd build && latexmk -pdf ydoc.dtx
 	cd build && ${PDFOPT} ydoc.pdf opt.pdf && mv opt.pdf ydoc.pdf
-	cd build && ctanify --pkgname ydoc ydoc.dtx -t "*.cls" -t "*.sty" -t "*.cfg" -t "*.tex" *.sty *.cls *.cfg  ydoc.cfg=tex/latex/ydoc/ ydocstrip.tex=tex/latex/ydoc/ README ydoc.pdf
+	cd build && ctanify --pkgname ydoc ydoc.dtx -t "*.cls" -t "*.sty" -t "*.cfg" -t "*.tex" *.sty *.cls *.cfg  ydoc.cfg=tex/latex/ydoc/ "*.tex=tex/latex/ydoc/" README ydoc.pdf
 	@cd build && ${CP} ydoc.tar.gz /tmp
 
 buildonce: ydoc.dtx ydoc.ins README
 	rm -rf build/
 	mkdir build
-	perl ../dtx/dtx.pl ydoc.dtx build/ydoc.dtx
-	perl ../dtx/dtx.pl storebox.dtx build/storebox.dtx
+	tex '\input ydocincl\relax\includefiles{ydoc.dtx}{build/ydoc.dtx}'
 	${CP} ydoc.ins README build/
 	cd build && tex ydoc.dtx
 	cd build && pdflatex ydoc.dtx

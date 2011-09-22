@@ -1,9 +1,13 @@
 % \iffalse
 %<*driver>
-\expandafter\ifx\csname NeedsTeXFormat\endcsname\relax\else
 \begingroup
+\def\latexfmt{LaTeX2e}
+\ifx\latexfmt\fmtname
 \long\def\skip#1\NeedsTeXFormat{\endgroup\NeedsTeXFormat}
 \expandafter\skip
+\else
+\endgroup
+\let\NeedsTeXFormat\end
 \fi
 %</driver>
 % \fi

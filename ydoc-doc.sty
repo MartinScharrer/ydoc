@@ -254,12 +254,15 @@
     \begingroup
     \edef\@tempa{%
         \endgroup
+        CTAN:
         \noexpand\url
         {\@ctanlocation{\@package}}%
     }%
     \@tempa
 }
 
+\let\@repository\@empty
+\protected\def\repository{\urldef\@repository\url}
 \protected\def\homepage{\urldef\@homepage\url}
 \protected\def\email{\hyper@normalise\email@}
 \def\email@#1{\def\@plainemail{#1}\def\@email{\hyper@linkurl{\Hurl{#1}}{mailto:#1}}}
@@ -272,6 +275,7 @@
 \protected\def\pkgtitle#1{%
     \texorpdfstring{\textsf{#1}}{#1}%
 }
+
 
 \def\@maketitle{%
     \newpage
@@ -297,6 +301,14 @@
             \@homepage
         \end{tabular}%
         \par}%
+        \vskip 1em
+        \ifx\@repository\@empty\else
+            {\large \lineskip .5em%
+            \begin{tabular}[t]{c}%
+                VC: \@repository
+            \end{tabular}%
+            \par}%
+        \fi
         \vskip 1em
         {\large \@date }%
     \end{center}%

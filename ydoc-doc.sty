@@ -5,7 +5,7 @@
 %<!DATE>
 %<!VERSION>
 %<*DRIVER>
-    2011/08/11 develop
+    2099/01/01 develop
 %</DRIVER>
     ydoc package to provide 'doc' macros]
 %    \end{macrocode}
@@ -246,7 +246,7 @@
 \package{\jobname}
 
 \def\bundle{\def\@bundle}
-\def\@bundle{\@package}
+\let\@bundle\@empty
 
 
 \def\ctanlocation{\def\@ctanlocation##1}
@@ -260,7 +260,7 @@
         \endgroup
         CTAN:
         \noexpand\url
-        {\@ctanlocation{\@bundle}}%
+        {\@ctanlocation{\ifx\@bundle\@empty\@package\else\@bundle\fi}}%
     }%
     \@tempa
 }
@@ -289,8 +289,7 @@
     \begin{center}%
         \let\footnote\thanks
         {\LARGE \@title \par }\vskip 1.5em%
-        \def\@tempa{\@package}%
-        \ifx\@bundle\@tempa\else
+        \ifx\@bundle\@empty\else
         {\large \@bundlesubtitle \par }\vskip 1.5em%
         \fi
         {\large \lineskip .5em%

@@ -245,6 +245,10 @@
 \def\package{\def\@package}
 \package{\jobname}
 
+\def\bundle{\def\@bundle}
+\def\@bundle{\@package}
+
+
 \def\ctanlocation{\def\@ctanlocation##1}
 \ctanlocation{http://www.ctan.org/pkg/#1}
 
@@ -256,7 +260,7 @@
         \endgroup
         CTAN:
         \noexpand\url
-        {\@ctanlocation{\@package}}%
+        {\@ctanlocation{\@bundle}}%
     }%
     \@tempa
 }
@@ -271,10 +275,12 @@
 
 \let\@plainemail\empty
 \title{The \texorpdfstring{\pkgtitle{\@package}}{\@package} Package}
+\def\@bundlesubtitle{Part of the \texorpdfstring{\pkgtitle{\@bundle}}{\@bundle} bundle}
 
 \protected\def\pkgtitle#1{%
     \texorpdfstring{\textsf{#1}}{#1}%
 }
+
 
 
 \def\@maketitle{%
@@ -283,6 +289,10 @@
     \begin{center}%
         \let\footnote\thanks
         {\LARGE \@title \par }\vskip 1.5em%
+        \def\@tempa{\@package}%
+        \ifx\@bundle\@tempa\else
+        {\large \@bundlesubtitle \par }\vskip 1.5em%
+        \fi
         {\large \lineskip .5em%
         \begin{tabular}[t]{c}%
             \@author

@@ -12,6 +12,7 @@ MAINDTXS      = ${CONTRIBUTION}.dtx
 DTXFILES      = ${MAINDTXS}
 INSFILES      = ${CONTRIBUTION}.dtx
 LTXFILES      = ${CONTRIBUTION}.sty ydoc.cls ydoc-code.sty ydoc-desc.sty ydoc-doc.sty ydoc-expl.sty ydoc.cfg
+MAINPDFS      = ${CONTRIBUTION}.pdf
 LTXDOCFILES   = ${MAINPDFS} README
 LTXSRCFILES   = ${DTXFILES} ${INSFILES}
 PLAINFILES    = #${CONTRIBUTION}.tex

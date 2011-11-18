@@ -37,11 +37,16 @@ Copy all files to their correct location of your local TEXMF tree.
 For example under Linux a personal TEXMF is normally located at '~/texmf' ('$HOME/texmf').
 The files can be installed using the following Linux commands. For 
 
-    mkdir -p  ${TEXMF}/tex/latex/ydoc/
-    cp   ydoc.cls  ydoc*.sty  ydoc.cfg  ydocstrip.tex   ${TEXMF}/tex/latex/ydoc/
+    mkdir -p "${TEXMF}/tex/latex/ydoc/"
+    mkdir -p "${TEXMF}/source/latex/ydoc/"
+    mkdir -p "${TEXMF}/doc/latex/ydoc/"
+    mkdir -p "${TEXMF}/tex/generic/ydoc/"
+    cp ydoc.sty ydoc.cls ydoc-code.sty ydoc-desc.sty ydoc-doc.sty ydoc-expl.sty ydoc.cfg "${TEXMF}/tex/latex/ydoc"
+    cp ydoc.dtx ydoc.ins "${TEXMF}/source/latex/ydoc"
+    cp ydoc.pdf README "${TEXMF}/doc/latex/ydoc"
+    cp ydocincl.tex ydocstrip.tex "${TEXMF}/tex/generic/ydoc"
 
 Update the tree database file (might be not required for modern versions and personal TEXMF trees):
 
     texhash ${TEXMF}
-
 

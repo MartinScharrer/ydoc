@@ -10,7 +10,7 @@ export CONTRIBUTION VERSION NAME EMAIL SUMMARY DIRECTORY DONOTANNOUNCE ANNOUNCE 
 
 MAINDTXS      = ${CONTRIBUTION}.dtx
 DTXFILES      = ${MAINDTXS}
-INSFILES      = ${CONTRIBUTION}.ins
+INSFILES      = ${CONTRIBUTION}.dtx
 LTXFILES      = ${CONTRIBUTION}.sty ydoc.cls ydoc-code.sty ydoc-desc.sty ydoc-doc.sty ydoc-expl.sty ydoc.cfg
 LTXDOCFILES   = ${MAINPDFS} README
 LTXSRCFILES   = ${DTXFILES} ${INSFILES}
@@ -76,7 +76,7 @@ endif
 
 ${BUILDDIR}: ${MAINFILES}
 	-mkdir ${BUILDDIR} 2>/dev/null || true
-	cp ${MAINFILES} README ${BUILDDIR}/
+	cp ${MAINDTXS} ${INSFILES} README ${BUILDDIR}/
 	$(foreach DTX,${DTXFILES}, tex '\input ydocincl\relax\includefiles{${DTX}}{${BUILDDIR}/${DTX}}' && rm -f ydocincl.log;)
 	cd ${BUILDDIR}; $(foreach INS, ${INSFILES}, tex ${INS};)
 	cd ${BUILDDIR}; $(foreach DTX, ${MAINDTXS}, ${LATEXMK} ${DTX};)

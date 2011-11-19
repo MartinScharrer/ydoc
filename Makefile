@@ -77,8 +77,8 @@ endif
 
 ${BUILDDIR}: ${MAINFILES}
 	-mkdir ${BUILDDIR} 2>/dev/null || true
-	cp ${MAINDTXS} ${INSFILES} README ${BUILDDIR}/
-	$(foreach DTX,${DTXFILES}, tex '\input ydocincl\relax\includefiles{${DTX}}{${BUILDDIR}/${DTX}}' && rm -f ydocincl.log;)
+	cp ${INSFILES} README ${BUILDDIR}/
+	$(foreach DTX,${MAINDTXS}, tex '\input ydocincl\relax\includefiles{${DTX}}{${BUILDDIR}/${DTX}}' && rm -f ydocincl.log;)
 	cd ${BUILDDIR}; $(foreach INS, ${INSFILES}, tex ${INS};)
 	cd ${BUILDDIR}; $(foreach DTX, ${MAINDTXS}, ${LATEXMK} ${DTX};)
 	touch ${BUILDDIR}
@@ -155,7 +155,7 @@ installsymlinks:
 
 
 uninstall:
-	${RM} ${LTXDIR} ${LTXDOCDIR} ${LTXSRCDIR} \
+	${RM} -rf ${LTXDIR} ${LTXDOCDIR} ${LTXSRCDIR} \
 		${GENERICDIR} ${GENDOCDIR} ${GENSRCDIR} \
 		${PLAINDIR} ${PLAINDOCDIR} ${PLAINSRCDIR} \
 		${SCRIPTDIR} ${SCRDOCDIR}

@@ -98,62 +98,60 @@ distclean:
 	${RM} ${CLEANFILES}
 	${RM} -r ${BUILDDIR} ${TDSDIR}
 
+CPORLN=cp
 
-install: $(addprefix ${BUILDDIR}/,${TDSFILES})
+install: uninstall $(addprefix ${BUILDDIR}/,${TDSFILES})
 ifneq ($(strip $(LTXFILES)),)
 	test -d "${LTXDIR}" || mkdir -p "${LTXDIR}"
-	cd ${BUILDDIR} && cp ${LTXFILES} "$(abspath ${LTXDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/,${LTXFILES}) "$(abspath ${LTXDIR})"
 endif
 ifneq ($(strip $(LTXSRCFILES)),)
 	test -d "${LTXSRCDIR}" || mkdir -p "${LTXSRCDIR}"
-	cd ${BUILDDIR} && cp ${LTXSRCFILES} "$(abspath ${LTXSRCDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${LTXSRCFILES}) "$(abspath ${LTXSRCDIR})"
 endif
 ifneq ($(strip $(LTXDOCFILES)),)
 	test -d "${LTXDOCDIR}" || mkdir -p "${LTXDOCDIR}"
-	cd ${BUILDDIR} && cp ${LTXDOCFILES} "$(abspath ${LTXDOCDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${LTXDOCFILES}) "$(abspath ${LTXDOCDIR})"
 endif
 ifneq ($(strip $(GENERICFILES)),)
 	test -d "${GENERICDIR}" || mkdir -p "${GENERICDIR}"
-	cd ${BUILDDIR} && cp ${GENERICFILES} "$(abspath ${GENERICDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${GENERICFILES}) "$(abspath ${GENERICDIR})"
 endif
 ifneq ($(strip $(GENSRCFILES)),)
 	test -d "${GENSRCDIR}" || mkdir -p "${GENSRCDIR}"
-	cd ${BUILDDIR} && cp ${GENSRCFILES} "$(abspath ${GENSRCDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${GENSRCFILES}) "$(abspath ${GENSRCDIR})"
 endif
 ifneq ($(strip $(GENDOCFILES)),)
 	test -d "${GENDOCDIR}" || mkdir -p "${GENDOCDIR}"
-	cd ${BUILDDIR} && cp ${GENDOCFILES} "$(abspath ${GENDOCDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${GENDOCFILES}) "$(abspath ${GENDOCDIR})"
 endif
 ifneq ($(strip $(PLAINFILES)),)
 	test -d "${PLAINDIR}" || mkdir -p "${PLAINDIR}"
-	cd ${BUILDDIR} && cp ${PLAINFILES} "$(abspath ${PLAINDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${PLAINFILES}) "$(abspath ${PLAINDIR})"
 endif
 ifneq ($(strip $(PLAINSRCFILES)),)
 	test -d "${PLAINSRCDIR}" || mkdir -p "${PLAINSRCDIR}"
-	cd ${BUILDDIR} && cp ${PLAINSRCFILES} "$(abspath ${PLAINSRCDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${PLAINSRCFILES}) "$(abspath ${PLAINSRCDIR})"
 endif
 ifneq ($(strip $(PLAINDOCFILES)),)
 	test -d "${PLAINDOCDIR}" || mkdir -p "${PLAINDOCDIR}"
-	cd ${BUILDDIR} && cp ${PLAINDOCFILES} "$(abspath ${PLAINDOCDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${PLAINDOCFILES}) "$(abspath ${PLAINDOCDIR})"
 endif
 ifneq ($(strip $(SCRIPTFILES)),)
 	test -d "${SCRIPTDIR}" || mkdir -p "${SCRIPTDIR}"
-	cd ${BUILDDIR} && cp ${SCRIPTFILES} "$(abspath ${SCRIPTDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${SCRIPTFILES}) "$(abspath ${SCRIPTDIR})"
 endif
 ifneq ($(strip $(SCRDOCFILES)),)
 	test -d "${SCRDOCDIR}" || mkdir -p "${SCRDOCDIR}"
-	cd ${BUILDDIR} && cp ${SCRDOCFILES} "$(abspath ${SCRDOCDIR})"
+	${CPORLN} $(addprefix ${BUILDDIR}/, ${SCRDOCFILES}) "$(abspath ${SCRDOCDIR})"
 endif
 	touch ${TEXMF}
 	-test -f ${TEXMF}/ls-R && texhash ${TEXMF} || true
 
 
-installsymlinks:
-	test -d "${LTXDIR}" || mkdir -p "${LTXDIR}"
-	-cd ${LTXDIR} && ${RM} ${LTXFILES}
-	ln -s $(abspath ${LTXFILES}) ${LTXDIR}
-	-test -f ${TEXMF}/ls-R && texhash ${TEXMF} || true
-
+installsymlinks: CPORLN=ln -sf
+installsymlinks: BUILDDIR=${PWD}
+installsymlinks: install
 
 uninstall:
 	${RM} -rf ${LTXDIR} ${LTXDOCDIR} ${LTXSRCDIR} \

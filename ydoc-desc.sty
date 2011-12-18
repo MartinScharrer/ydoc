@@ -584,6 +584,14 @@
 %    \end{macrocode}
 % \end{macro}
 %
+% Allows `|=|' to be used directly without switching to verbatim
+% mode. This is especially useful for keys.
+%    \begin{macrocode}
+\define@Macro@handler{=}={%
+  =\read@Macro@arg
+}
+%    \end{macrocode}
+%
 % \begin{macro}{\read@Macro@verb}
 % Sets up verbatim mode calls second macro.
 %    \begin{macrocode}

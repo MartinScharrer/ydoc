@@ -49,7 +49,29 @@
 %
 % \begin{style}{examplecode}
 %    \begin{macrocode}
-\lstdefinestyle{examplecode}{numbers=left,firstnumber=1,numberstyle=\tiny\color{gray}\sffamily,numbersep=5pt}%
+\lstdefinestyle{examplecode}{%
+    language=[latex]tex,
+    basicstyle=\ttfamily,
+    columns=fullflexible,
+    numbers=left,
+    firstnumber=1,
+    numberstyle=\tiny\color{gray}\sffamily,
+    numbersep=5pt,
+    breaklines,prebreak={\mbox{\tiny$\swarrow$}},
+    commentstyle=\color{black!60},
+}%
+%    \end{macrocode}
+% \end{style}
+%
+% \begin{style}{exampleresult}
+%    \begin{macrocode}
+\lstdefinestyle{exampleresult}{%
+    firstnumber=1,
+    gobble=0,
+    basicstyle=\ttfamily,
+    columns=fullflexible,
+    commentstyle=\color{black!60},
+}
 %    \end{macrocode}
 % \end{style}
 %
@@ -72,6 +94,7 @@
     {\ydoc@exafile}%
   \unskip\color@endgroup}%
   \setbox\exampleresultbox\hbox{\color@setgroup
+    \lstset{style=exampleresult}%
     \@@input\ydoc@exafile\relax
   \unskip\color@endgroup}%
 }
@@ -128,8 +151,8 @@
 %    \begin{macrocode}
 \lstnewenvironment{examplecode}[1][]{%
   \lstdefinestyle{thisexampleprint}{#1}%
-  \lstset{style=exampleextract,#1}%
   \setbox\@tempboxa\hbox\bgroup
+  \lstset{style=exampleextract,#1}%
   \lst@BeginWriteFile{\ydoc@exafile}%
 }
 {%

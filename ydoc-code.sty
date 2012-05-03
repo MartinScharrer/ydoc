@@ -173,18 +173,20 @@
 %    \end{macrocode}
 % \end{macro}
 %
-%
-% \begin{macro}{\ydoclistingssettings}
 %    \begin{macrocode}
-\def\ydoclistingssettings{%
-  \lstset{%
+\lstdefinestyle{ydoccode}{%
     language=[latex]tex,basicstyle=\ttfamily,
     numbers=left,numberstyle=\tiny\color{gray},firstnumber=last,
     breaklines,prebreak={\mbox{\tiny$\swarrow$}},
     commentstyle=\color{black!60},
-  }%
+}%
+%    \end{macrocode}
+%
+% \begin{macro}{\ydoclistingssettings}
+%    \begin{macrocode}
+\def\ydoclistingssettings{%
+    \lstset{style=ydoccode}%
 }
-\ydoclistingssettings
 %    \end{macrocode}
 % \end{macro}
 %

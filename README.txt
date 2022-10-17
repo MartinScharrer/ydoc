@@ -1,6 +1,6 @@
 The 'ydoc' class and packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Copyright (c) 2011-2016 by Martin Scharrer <martin@scharrer-online.de>
+Copyright (c) 2011-2022 by Martin Scharrer <martin.scharrer@web.de>
 
 'ydoc' provides macros and environments to document LaTeX packages and classes.
 It is an alternative to the 'ltxdoc' class and 'doc' package.

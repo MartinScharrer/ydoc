@@ -1,1 +1,13 @@
+hard newverbs
+hard hyperref
+hard needspace
+hard xcolor
+hard listings
+hard shortvrb
+hard etoolbox
+hard xspace
+hard url
+hard showexpl
+hard float
 
+soft needspace

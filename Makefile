@@ -175,20 +175,10 @@ ${TDSZIP}: ${TDSDIR}
 
 zip: ${CTAN_FILE}
 
-${CTAN_FILE}: $(addprefix ${BUILDDIR}/,${CTANFILES})
+${CTAN_FILE}: $(addprefix ${BUILDDIR}/,${CTANFILES}) ${TDSZIP}
 	-rm -rf ${CONTRIBUTION}/
 	mkdir ${CONTRIBUTION}/
 	cp $(addprefix ${BUILDDIR}/,${CTANFILES}) ${CONTRIBUTION}/
 	-${RM} $@
-	${ZIP} $@ ${CONTRIBUTION}
-
-upload: VERSION = ${GETVERSION}
-
-upload: ${CTAN_FILE}
-	ctanupload -p
-
-webupload: VERSION = ${GETVERSION}
-webupload: ${CTAN_FILE}
-	${WEBBROWSER} 'http://dante.ctan.org/upload.html?contribution=${CONTRIBUTION}&version=${VERSION}&name=${NAME}&email=${EMAIL}&summary=${SUMMARY}&directory=${DIRECTORY}&DoNotAnnounce=${DONOTANNOUNCE}&announce=${ANNOUNCEMENT}&notes=${NOTES}&license=${LICENSE}&freeversion=${FREEVERSION}' &
-
+	${ZIP} $@ ${CONTRIBUTION} ${TDSZIP}
 

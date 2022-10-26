@@ -1,6 +1,12 @@
 The 'ydoc' class and packages
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Copyright (c) 2011-2022 by Martin Scharrer <martin.scharrer@web.de>
+License: LPPL v1.3c or later <https://www.latex-project.org/lppl/lppl-1-3c/>
+CTAN: https://www.ctan.org/pkg/ydoc
+Texdoc: https://texdoc.org/pkg/ydoc
+Homepage: https://github.com/MartinScharrer/ydoc
+Repository: https://github.com/MartinScharrer/ydoc.git
+Issue tracker: https://github.com/MartinScharrer/ydoc/issues
 
 'ydoc' provides macros and environments to document LaTeX packages and classes.
 It is an alternative to the 'ltxdoc' class and 'doc' package.

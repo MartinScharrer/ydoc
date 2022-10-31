@@ -59,3 +59,4 @@ Update the tree database file (might be not required for modern versions and per
 
     texhash ${TEXMF}
 
+
